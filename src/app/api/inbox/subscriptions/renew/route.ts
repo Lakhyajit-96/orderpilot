@@ -11,21 +11,68 @@ const renewSchema = z.object({
   force: z.boolean().optional(),
 });
 
-function isAuthorized(request: Request) {
-  const secret = env.MAILBOX_MAINTENANCE_SECRET?.trim();
+function getAuthorizedSecrets() {
+  return [env.MAILBOX_MAINTENANCE_SECRET?.trim(), env.CRON_SECRET?.trim()].filter(
+    (value): value is string => Boolean(value),
+  );
+}
 
-  if (!secret) {
+function isAuthorized(request: Request) {
+  const secrets = getAuthorizedSecrets();
+
+  if (!secrets.length) {
     return false;
   }
 
   const bearer = request.headers.get("authorization");
   const header = request.headers.get("x-orderpilot-maintenance-secret");
-  return bearer === `Bearer ${secret}` || header === secret;
+  return secrets.some((secret) => bearer === `Bearer ${secret}` || header === secret);
+}
+
+async function runRenewal(payload: unknown) {
+  const parsed = renewSchema.safeParse(payload);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  }
+
+  try {
+    const result = await renewInboxConnectionSubscriptions(parsed.data);
+    return NextResponse.json(result);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Mailbox subscription renewal failed.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request) {
+  if (!getAuthorizedSecrets().length) {
+    return NextResponse.json(
+      { error: "MAILBOX_MAINTENANCE_SECRET or CRON_SECRET is not configured." },
+      { status: 503 },
+    );
+  }
+
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: "Unauthorized mailbox maintenance request." }, { status: 401 });
+  }
+
+  const url = new URL(request.url);
+  const renewWithinMinutesParam = url.searchParams.get("renewWithinMinutes");
+  const forceParam = url.searchParams.get("force");
+
+  return runRenewal({
+    renewWithinMinutes: renewWithinMinutesParam ? Number(renewWithinMinutesParam) : 36 * 60,
+    force: forceParam === "true",
+  });
 }
 
 export async function POST(request: Request) {
-  if (!env.MAILBOX_MAINTENANCE_SECRET?.trim()) {
-    return NextResponse.json({ error: "MAILBOX_MAINTENANCE_SECRET is not configured." }, { status: 503 });
+  if (!getAuthorizedSecrets().length) {
+    return NextResponse.json(
+      { error: "MAILBOX_MAINTENANCE_SECRET or CRON_SECRET is not configured." },
+      { status: 503 },
+    );
   }
 
   if (!isAuthorized(request)) {
@@ -44,17 +91,5 @@ export async function POST(request: Request) {
     }
   }
 
-  const parsed = renewSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-  }
-
-  try {
-    const result = await renewInboxConnectionSubscriptions(parsed.data);
-    return NextResponse.json(result);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Mailbox subscription renewal failed.";
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  return runRenewal(body);
 }

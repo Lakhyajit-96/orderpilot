@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/inbox/subscriptions/renew?renewWithinMinutes=2160",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
