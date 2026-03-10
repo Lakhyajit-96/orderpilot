@@ -1,0 +1,382 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  OPERATOR
+  REVIEWER
+}
+
+enum InboxProvider {
+  MANUAL
+  GMAIL
+  MICROSOFT365
+}
+
+enum InboxSyncMode {
+  POLLING
+  WEBHOOK
+}
+
+enum OrderStatus {
+  INGESTED
+  REVIEW
+  APPROVED
+  EXPORTED
+}
+
+enum ExceptionState {
+  OPEN
+  RESOLVED
+  IGNORED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum BillingEventStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  IGNORED
+}
+
+enum ExportRunStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum OrderApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SKIPPED
+}
+
+model Organization {
+  id               String            @id @default(cuid())
+  name             String
+  slug             String            @unique
+  clerkOrgId       String?           @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  memberships      Membership[]
+  inboxConnections InboxConnection[]
+  customers        Customer[]
+  catalogItems     CatalogItem[]
+  orders           Order[]
+  subscription     Subscription?
+  billingEvents    BillingEvent[]
+  erpConnections   ErpConnection[]
+  exportRuns       ExportRun[]
+  approvalPolicy   ApprovalPolicy?
+  reasonCodes      ReasonCode[]
+  notifications    Notification[]
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  organizationId String
+  clerkUserId    String
+  role           UserRole     @default(OPERATOR)
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, clerkUserId])
+}
+
+model InboxConnection {
+  id             String        @id @default(cuid())
+  organizationId String
+  provider       InboxProvider @default(MANUAL)
+  syncMode       InboxSyncMode @default(POLLING)
+  address        String
+  isActive       Boolean       @default(true)
+  accessToken    String?
+  refreshToken   String?
+  tokenType      String?
+  tokenExpiresAt DateTime?
+  scope          String?
+  externalAccountId String?
+  cursor         String?
+  webhookSecret  String?
+  providerSubscriptionId String?
+  providerSubscriptionStatus String?
+  providerSubscriptionExpiresAt DateTime?
+  lastBootstrapAt DateTime?
+  oauthMetadata  Json?
+  lastSyncedAt   DateTime?
+  lastError      String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, provider, address])
+}
+
+model Customer {
+  id             String       @id @default(cuid())
+  organizationId String
+  externalRef    String?
+  name           String
+  email          String?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  orders         Order[]
+
+  @@unique([organizationId, externalRef])
+}
+
+model CatalogItem {
+  id             String       @id @default(cuid())
+  organizationId String
+  sku            String
+  name           String
+  description    String?
+  unitOfMeasure  String?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  orderLines     OrderLine[]
+
+  @@unique([organizationId, sku])
+}
+
+model Order {
+  id             String       @id @default(cuid())
+  organizationId String
+  customerId     String?
+  externalRef    String
+  sourceEmail    String?
+  status         OrderStatus  @default(INGESTED)
+  statusLabel    String?
+  confidence     Int          @default(0)
+  totalCents     Int?
+  summary        String?
+  shippingAddress String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer       Customer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  lineItems      OrderLine[]
+  exceptions     Exception[]
+  notes          OrderNote[]
+  activity       OrderActivity[]
+  exportRuns     ExportRun[]
+  approvals      OrderApproval[]
+  notifications  Notification[]
+
+  @@unique([organizationId, externalRef])
+}
+
+model OrderLine {
+  id            String       @id @default(cuid())
+  orderId       String
+  catalogItemId String?
+  requestedSku  String
+  description   String
+  quantity      Int
+  confidence    Int          @default(0)
+  mappingState  String?
+  createdAt     DateTime     @default(now())
+  order         Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem? @relation(fields: [catalogItemId], references: [id], onDelete: SetNull)
+}
+
+model Exception {
+  id          String         @id @default(cuid())
+  orderId     String
+  code        String
+  message     String
+  state       ExceptionState @default(OPEN)
+  createdAt   DateTime       @default(now())
+  resolvedAt  DateTime?
+  resolvedByClerkUserId String?
+  resolvedByName String?
+  order       Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderNote {
+  id                String   @id @default(cuid())
+  orderId           String
+  body              String
+  authorClerkUserId String?
+  authorName        String?
+  createdAt         DateTime @default(now())
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderActivity {
+  id                String      @id @default(cuid())
+  orderId           String
+  label             String
+  actionType        String?
+  actorClerkUserId  String?
+  actorName         String?
+  timestampLabel    String?
+  targetExceptionId String?
+  fromStatus        OrderStatus?
+  toStatus          OrderStatus?
+  undoable          Boolean     @default(false)
+  undoneAt          DateTime?
+  metadata          Json?
+  createdAt         DateTime    @default(now())
+  order             Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model ErpConnection {
+  id             String       @id @default(cuid())
+  organizationId String
+  provider       String       @default("WEBHOOK")
+  name           String
+  endpointUrl    String
+  authHeader     String?
+  fieldMappings  Json?
+  adapterSettings Json?
+  isActive       Boolean      @default(true)
+  lastExportedAt DateTime?
+  lastError      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  exportRuns     ExportRun[]
+
+  @@unique([organizationId, name])
+}
+
+model ExportRun {
+  id             String          @id @default(cuid())
+  organizationId String
+  orderId        String
+  erpConnectionId String?
+  status         ExportRunStatus @default(PENDING)
+  attemptCount   Int             @default(1)
+  externalRef    String?
+  message        String?
+  requestBody    Json?
+  responseBody   Json?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  order          Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  erpConnection  ErpConnection?  @relation(fields: [erpConnectionId], references: [id], onDelete: SetNull)
+}
+
+model ApprovalPolicy {
+  id                     String          @id @default(cuid())
+  organizationId         String          @unique
+  isActive               Boolean         @default(true)
+  requireReasonCodes     Boolean         @default(true)
+  autoApproveConfidence  Int?
+  financeThresholdCents  Int?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  organization           Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  stages                 ApprovalStage[]
+}
+
+model ApprovalStage {
+  id                String             @id @default(cuid())
+  approvalPolicyId  String
+  sequence          Int
+  role              UserRole
+  title             String
+  minOrderValueCents Int?
+  requireReasonCode Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  approvalPolicy    ApprovalPolicy     @relation(fields: [approvalPolicyId], references: [id], onDelete: Cascade)
+  approvals         OrderApproval[]
+
+  @@unique([approvalPolicyId, sequence])
+}
+
+model OrderApproval {
+  id                   String              @id @default(cuid())
+  orderId              String
+  approvalStageId      String
+  status               OrderApprovalStatus @default(PENDING)
+  reasonCode           String?
+  comment              String?
+  approvedByClerkUserId String?
+  approvedByName       String?
+  approvedAt           DateTime?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  order                Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  approvalStage        ApprovalStage       @relation(fields: [approvalStageId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, approvalStageId])
+}
+
+model ReasonCode {
+  id             String       @id @default(cuid())
+  organizationId String
+  actionType     String
+  code           String
+  label          String
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, actionType, code])
+}
+
+model Notification {
+  id                  String       @id @default(cuid())
+  organizationId      String
+  orderId             String?
+  recipientClerkUserId String
+  type                String
+  title               String
+  body                String
+  route               String?
+  isRead              Boolean      @default(false)
+  createdAt           DateTime     @default(now())
+  readAt              DateTime?
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  order               Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+}
+
+model Subscription {
+  id                  String             @id @default(cuid())
+  organizationId      String             @unique
+  stripeCustomerId    String?            @unique
+  stripeSubscriptionId String?           @unique
+  planKey             String
+  status              SubscriptionStatus @default(TRIALING)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  organization        Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model BillingEvent {
+  id                   String             @id @default(cuid())
+  organizationId       String?
+  provider             String             @default("stripe")
+  externalEventId      String             @unique
+  eventType            String
+  livemode             Boolean            @default(false)
+  status               BillingEventStatus @default(RECEIVED)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  planKey              String?
+  message              String?
+  processedAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  organization         Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+}
+
