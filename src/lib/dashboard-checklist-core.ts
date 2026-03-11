@@ -69,7 +69,7 @@ export function buildDashboardLaunchChecklist(
       supportText: workspaceReady
         ? "You can now configure mailbox sync, approvals, and billing from authenticated screens."
         : "Start by confirming authenticated access and workspace creation.",
-      href: "/settings",
+      href: "/settings#guided-setup",
       ctaLabel: workspaceReady ? "Review settings" : "Verify access",
       completed: workspaceReady,
     },
@@ -82,7 +82,7 @@ export function buildDashboardLaunchChecklist(
       supportText: hasMailbox
         ? "You can trigger syncs, refresh tokens, and bootstrap webhook subscriptions from Settings."
         : "Mailbox onboarding is the fastest way to prove OrderPilot against live inbound traffic.",
-      href: "/settings",
+      href: "/settings#mailbox-provider-integration",
       ctaLabel: hasMailbox ? "Manage mailbox" : "Connect mailbox",
       completed: hasMailbox,
     },
@@ -121,7 +121,7 @@ export function buildDashboardLaunchChecklist(
       supportText: hasErpConnection
         ? "Approved orders can now be handed off into the customer’s downstream system."
         : "ERP connectivity is what turns approval into an operational outcome.",
-      href: "/settings",
+      href: "/settings#erp-export-integration",
       ctaLabel: hasErpConnection ? "Manage exports" : "Add ERP connection",
       completed: hasErpConnection,
     },
@@ -134,7 +134,7 @@ export function buildDashboardLaunchChecklist(
       supportText: hasBilling
         ? "The workspace has a persisted plan context for customer rollout and support."
         : "A verified plan is the final commercial checkpoint before launch.",
-      href: "/settings",
+      href: "/settings#workspace-billing",
       ctaLabel: hasBilling ? "Open billing" : "Verify billing",
       completed: hasBilling,
     },

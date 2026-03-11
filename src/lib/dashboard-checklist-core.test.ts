@@ -27,6 +27,8 @@ test("buildDashboardLaunchChecklist reflects completed onboarding milestones", (
   });
 
   assert.equal(checklist.every((item) => item.completed), true);
+  assert.equal(checklist.find((item) => item.key === "mailbox")?.href, "/settings#mailbox-provider-integration");
+  assert.equal(checklist.find((item) => item.key === "billing")?.href, "/settings#workspace-billing");
 
   const progress = getDashboardLaunchProgress(checklist);
   assert.deepEqual(progress, { completed: 6, total: 6, percent: 100 });

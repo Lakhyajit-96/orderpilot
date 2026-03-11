@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowUpRight, CheckCircle2, CircleDashed } from "lucide-react";
 import { BillingReplayButton } from "@/components/platform/billing-replay-button";
 import { CustomerPortalButton } from "@/components/platform/customer-portal-button";
 import { ErpConnectionForm } from "@/components/platform/erp-connection-form";
@@ -14,9 +16,15 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getViewer } from "@/lib/auth";
 import { getBillingDiagnosticsSnapshot } from "@/lib/billing-diagnostics";
+import {
+  buildDashboardLaunchChecklist,
+  getDashboardLaunchProgress,
+  getNextDashboardLaunchStep,
+} from "@/lib/dashboard-checklist-core";
 import { getWorkspaceErpConnections, getWorkspaceExportRuns } from "@/lib/erp";
 import { env, flags } from "@/lib/env";
 import { getWorkspaceInboxConnections } from "@/lib/inbox";
+import { getWorkspaceOrders } from "@/lib/orders";
 import { plans } from "@/lib/plans";
 import { getWorkspaceNotifications, getWorkspaceWorkflowSettings } from "@/lib/workflow";
 
@@ -73,7 +81,7 @@ function getEventBadgeVariant(status: string) {
 
 export default async function SettingsPage() {
   const viewer = await getViewer();
-  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications] = await Promise.all([
+  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders] = await Promise.all([
     getWorkspaceInboxConnections(viewer.workspace?.id),
     getWorkspaceErpConnections(viewer.workspace?.id),
     getWorkspaceExportRuns(viewer.workspace?.id),
@@ -82,14 +90,16 @@ export default async function SettingsPage() {
       organizationId: viewer.workspace?.id,
       clerkUserId: viewer.clerkUserId,
     }),
+    getWorkspaceOrders(viewer.workspace?.id),
   ]);
   const billingDiagnostics = await getBillingDiagnosticsSnapshot(viewer.workspace?.id);
   const recentBillingEvents = billingDiagnostics.recentEvents;
   const failedBillingEvents = billingDiagnostics.failedEvents;
-  const activePlan = viewer.workspace?.subscription?.planKey ?? null;
+  const currentSubscription = billingDiagnostics.subscription ?? viewer.workspace?.subscription ?? null;
+  const activePlan = currentSubscription?.planKey ?? null;
   const hasManagedSubscription = Boolean(
-    viewer.workspace?.subscription?.stripeCustomerId ||
-      viewer.workspace?.subscription?.stripeSubscriptionId,
+    currentSubscription?.stripeCustomerId ||
+      currentSubscription?.stripeSubscriptionId,
   );
   const hasPortalAccess = Boolean(
     flags.hasStripe && hasManagedSubscription,
@@ -97,6 +107,21 @@ export default async function SettingsPage() {
   const workflowReasonCodesText = workflowSettings.reasonCodes
     .map((code) => `${code.actionType} | ${code.code} | ${code.label}`)
     .join("\n");
+  const checklist = buildDashboardLaunchChecklist({
+    viewerName: viewer.displayName,
+    isAuthenticated: viewer.isAuthenticated,
+    workspaceName: viewer.workspace?.name ?? null,
+    workspaceRole: viewer.workspace?.role ?? null,
+    inboxConnectionCount: inboxConnections.length,
+    orderCount: workspaceOrders.length,
+    orderStatuses: workspaceOrders.map((order) => order.status),
+    erpConnectionCount: erpConnections.length,
+    subscriptionPlanKey: currentSubscription?.planKey ?? null,
+    subscriptionStatus: currentSubscription?.status ?? null,
+  });
+  const checklistProgress = getDashboardLaunchProgress(checklist);
+  const nextLaunchStep = getNextDashboardLaunchStep(checklist);
+  const settingsChecklistLinks = checklist.filter((item) => item.href.startsWith("/settings#"));
 
   const readiness = [
     {
@@ -134,7 +159,7 @@ export default async function SettingsPage() {
         <Badge variant="violet">System settings</Badge>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white">Control the operating model behind the automation</h1>
         <p className="mt-3 max-w-3xl text-base leading-8 text-white/64">
-          This is where production concerns plug in next: auth, billing, mailbox sync, approvals, and team-based routing.
+          This is where launch readiness gets completed: mailbox setup, approvals, exports, billing, and the final steps needed to turn OrderPilot into a daily operating system.
         </p>
       </div>
 
@@ -168,11 +193,88 @@ export default async function SettingsPage() {
         ))}
       </div>
 
+      <section id="guided-setup" className="scroll-mt-24">
+        <Card>
+          <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <CardTitle>Guided launch setup</CardTitle>
+              <CardDescription>
+                The dashboard checklist now routes here. Complete the launch steps in order instead of hunting through generic settings.
+              </CardDescription>
+            </div>
+            <Badge variant={checklistProgress.completed === checklistProgress.total ? "success" : "violet"}>
+              {checklistProgress.completed}/{checklistProgress.total} complete
+            </Badge>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap items-center gap-3">
+              {nextLaunchStep ? (
+                <Button asChild>
+                  <Link href={nextLaunchStep.href}>Continue with {nextLaunchStep.title}</Link>
+                </Button>
+              ) : (
+                <Button asChild>
+                  <Link href="/dashboard">Launch checklist complete</Link>
+                </Button>
+              )}
+              <Button asChild variant="secondary"><Link href="/dashboard">Back to dashboard</Link></Button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {settingsChecklistLinks.map((item) => (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/72 transition hover:bg-white/[0.06]"
+                >
+                  {item.title} <ArrowUpRight className="size-4" />
+                </Link>
+              ))}
+            </div>
+
+            <div className="grid gap-3 xl:grid-cols-2">
+              {checklist.map((item, index) => {
+                const isNextStep = !item.completed && nextLaunchStep?.key === item.key;
+
+                return (
+                  <div key={item.key} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-4">
+                    <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="flex min-w-0 gap-3">
+                        <div className="mt-0.5 rounded-full border border-white/10 bg-white/[0.04] p-2 text-white/78">
+                          {item.completed ? <CheckCircle2 className="size-4 text-emerald-300" /> : <CircleDashed className="size-4 text-violet-200" />}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-sm font-medium text-white">{index + 1}. {item.title}</p>
+                            <Badge variant={item.completed ? "success" : isNextStep ? "violet" : "muted"}>
+                              {item.completed ? "Done" : isNextStep ? "Next" : "Pending"}
+                            </Badge>
+                          </div>
+                          <p className="mt-2 text-sm text-white/68">{item.description}</p>
+                          <p className="mt-1 text-xs uppercase tracking-[0.24em] text-white/38">{item.supportText}</p>
+                        </div>
+                      </div>
+                      <Link
+                        href={item.href}
+                        className="inline-flex shrink-0 self-start items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                      >
+                        {item.ctaLabel} <ArrowUpRight className="size-4" />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section id="mailbox-provider-integration" className="scroll-mt-24">
       <Card>
         <CardHeader>
           <CardTitle>Mailbox provider integration</CardTitle>
           <CardDescription>
-            Connect Gmail or Microsoft 365 with polling today, or use the webhook-ready endpoint for normalized push ingestion.
+            Step 2 of launch: connect Gmail or Microsoft 365 with polling today, or use the webhook-ready endpoint for normalized push ingestion.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -221,11 +323,14 @@ export default async function SettingsPage() {
         </CardContent>
       </Card>
 
+      </section>
+
+      <section id="erp-export-integration" className="scroll-mt-24">
       <Card>
         <CardHeader>
           <CardTitle>ERP/export integration</CardTitle>
           <CardDescription>
-            Push approved orders into a real downstream endpoint and retry failed runs safely.
+            Step 5 of launch: push approved orders into a real downstream endpoint and retry failed runs safely.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -275,6 +380,9 @@ export default async function SettingsPage() {
         </CardContent>
       </Card>
 
+      </section>
+
+      <section id="review-workflow-policy" className="scroll-mt-24">
       <Card>
         <CardHeader>
           <CardTitle>Review workflow policy</CardTitle>
@@ -305,6 +413,9 @@ export default async function SettingsPage() {
         </CardContent>
       </Card>
 
+      </section>
+
+      <section id="workflow-notifications" className="scroll-mt-24">
       <Card>
         <CardHeader>
           <CardTitle>Workflow notifications</CardTitle>
@@ -332,10 +443,13 @@ export default async function SettingsPage() {
         </CardContent>
       </Card>
 
+      </section>
+
+      <section id="workspace-billing" className="scroll-mt-24 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Workspace billing</CardTitle>
-          <CardDescription>Live tenant and subscription state from your configured backend.</CardDescription>
+          <CardDescription>Step 6 of launch: confirm live tenant and subscription state before customer rollout.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
@@ -472,6 +586,8 @@ export default async function SettingsPage() {
           </Card>
         ))}
       </div>
+
+      </section>
     </div>
   );
 }
