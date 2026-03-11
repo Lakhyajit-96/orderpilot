@@ -61,22 +61,22 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {reviewQueue.map((order) => (
-              <div key={order.id} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5">
-                <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="min-w-0">
+              <div key={order.id} className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.035] p-5">
+                <div className="flex min-w-0 flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                  <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-3 text-sm text-white/74">
                       <span>{order.source}</span>
                       <span className="text-white/34">·</span>
                       <span>{order.receivedAt}</span>
                     </div>
-                    <h2 className="mt-3 break-words text-xl font-semibold text-white">{order.id} · {order.customer}</h2>
+                    <h2 className="mt-3 break-all text-xl font-semibold text-white">{order.id} · {order.customer}</h2>
                     <p className="mt-2 text-sm text-white/56">
                       {order.exceptions[0] ?? `${order.lines} lines · ${order.value} · ${order.status}`}
                     </p>
                   </div>
                   <Link
                     href={`/orders/${order.id}`}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                    className="inline-flex shrink-0 self-start items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
                   >
                     Open order <ArrowRight className="size-4" />
                   </Link>
