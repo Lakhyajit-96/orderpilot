@@ -13,6 +13,10 @@ export function isPublicAppRoute(pathname: string) {
   );
 }
 
+export function isProxyProtectedRoute(pathname: string) {
+  return pathname.startsWith("/api/") && !isPublicAppRoute(pathname);
+}
+
 export function shouldRedirectLegacyMarketingOrderReview(pathname: string, isAuthenticated: boolean) {
   return pathname === legacyMarketingOrderReviewHref && !isAuthenticated;
 }

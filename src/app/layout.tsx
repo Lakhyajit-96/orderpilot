@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { AppProviders } from "@/components/providers/app-providers";
-import { env } from "@/lib/env";
+import { clerkRuntime } from "@/lib/env";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,7 +43,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} bg-background text-foreground antialiased`}
       >
-        <AppProviders clerkPublishableKey={env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+        <AppProviders clerkPublishableKey={clerkRuntime.publishableKey}>
           {children}
         </AppProviders>
       </body>

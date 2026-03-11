@@ -1,10 +1,43 @@
 import { z } from "zod";
 
+export type ClerkRuntimeConfigInput = {
+  nodeEnv: "development" | "test" | "production";
+  publishableKey?: string;
+  secretKey?: string;
+  vercel?: string;
+  vercelEnv?: string;
+  vercelUrl?: string;
+};
+
+function isLiveClerkKey(value?: string) {
+  return Boolean(value?.startsWith("pk_live_") || value?.startsWith("sk_live_"));
+}
+
+export function resolveClerkRuntimeConfig(input: ClerkRuntimeConfigInput) {
+  const publishableKey = input.publishableKey?.trim() || undefined;
+  const secretKey = input.secretKey?.trim() || undefined;
+  const hasKeys = Boolean(publishableKey) && Boolean(secretKey);
+  const isHostedVercelProduction =
+    input.nodeEnv === "production" && Boolean(input.vercel || input.vercelEnv || input.vercelUrl);
+  const usesLiveKeys = isLiveClerkKey(publishableKey) && isLiveClerkKey(secretKey);
+  const disableForHostedProduction = hasKeys && isHostedVercelProduction && !usesLiveKeys;
+
+  return {
+    isHostedVercelProduction,
+    usesLiveKeys,
+    isEnabled: hasKeys && !disableForHostedProduction,
+    publishableKey: disableForHostedProduction ? undefined : publishableKey,
+  };
+}
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().optional(),
   CLERK_SECRET_KEY: z.string().optional(),
+  VERCEL: z.string().optional(),
+  VERCEL_ENV: z.string().optional(),
+  VERCEL_URL: z.string().optional(),
   DATABASE_URL: z.string().optional(),
   MAILBOX_OAUTH_STATE_SECRET: z.string().optional(),
   CRON_SECRET: z.string().optional(),
@@ -31,6 +64,9 @@ export const env = envSchema.parse({
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+  VERCEL: process.env.VERCEL,
+  VERCEL_ENV: process.env.VERCEL_ENV,
+  VERCEL_URL: process.env.VERCEL_URL,
   DATABASE_URL: process.env.DATABASE_URL,
   MAILBOX_OAUTH_STATE_SECRET: process.env.MAILBOX_OAUTH_STATE_SECRET,
   CRON_SECRET: process.env.CRON_SECRET,
@@ -52,9 +88,17 @@ export const env = envSchema.parse({
   STRIPE_PRICE_ENTERPRISE: process.env.STRIPE_PRICE_ENTERPRISE,
 });
 
+export const clerkRuntime = resolveClerkRuntimeConfig({
+  nodeEnv: env.NODE_ENV,
+  publishableKey: env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  secretKey: env.CLERK_SECRET_KEY,
+  vercel: env.VERCEL,
+  vercelEnv: env.VERCEL_ENV,
+  vercelUrl: env.VERCEL_URL,
+});
+
 export const flags = {
-  hasClerk:
-    Boolean(env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) && Boolean(env.CLERK_SECRET_KEY),
+  hasClerk: clerkRuntime.isEnabled,
   hasDatabase: Boolean(env.DATABASE_URL),
   hasGmailOAuth:
     Boolean(env.GMAIL_OAUTH_CLIENT_ID) && Boolean(env.GMAIL_OAUTH_CLIENT_SECRET),
