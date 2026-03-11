@@ -42,8 +42,8 @@ export function HeroVisual() {
           </div>
         </div>
 
-        <div className="grid gap-5 p-5 xl:grid-cols-[220px_minmax(0,1fr)_320px] xl:p-6">
-          <div className="rounded-[26px] border border-white/8 bg-white/[0.03] p-4">
+        <div className="grid gap-5 p-5 2xl:grid-cols-[220px_minmax(0,1fr)] 2xl:p-6">
+          <div className="hidden rounded-[26px] border border-white/8 bg-white/[0.03] p-4 2xl:block">
             <p className="text-xs uppercase tracking-[0.28em] text-white/38">Workspace nav</p>
             <div className="mt-4 space-y-2.5">
               {heroVisualSnapshot.navigation.map((item) => (
@@ -68,10 +68,29 @@ export function HeroVisual() {
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             className="min-w-0 rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,15,35,0.86),rgba(13,18,42,0.72))] p-4"
           >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
+            <div className="2xl:hidden">
+              <p className="text-xs uppercase tracking-[0.28em] text-white/38">Workspace nav</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {heroVisualSnapshot.navigation.map((item) => (
+                  <div
+                    key={item.label}
+                    className={item.active
+                      ? "rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-cyan-100"
+                      : "rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-white/72"}
+                  >
+                    <span className="text-xs font-medium uppercase tracking-[0.18em]">{item.label}</span>
+                    <span className="hidden text-[10px] uppercase tracking-[0.18em] text-white/38 sm:ml-2 sm:inline">{item.meta}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
                 <p className="text-xs uppercase tracking-[0.28em] text-white/42">Operations overview</p>
-                <h3 className="mt-2 text-2xl font-semibold text-white">Move from inbox chaos to ERP-ready order flow.</h3>
+                <h3 className="mt-2 max-w-2xl text-xl font-semibold text-white sm:text-2xl">
+                  Move from inbox chaos to ERP-ready order flow.
+                </h3>
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-white/62">
                   OrderPilot extracts structured order data, flags exceptions with context, and gives reviewers one place to approve faster.
                 </p>
@@ -83,181 +102,185 @@ export function HeroVisual() {
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               {heroVisualSnapshot.heroMetrics.map((metric) => (
-                <div key={metric.label} className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
+                <div key={metric.label} className="min-w-0 rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
                   <p className="text-xs uppercase tracking-[0.24em] text-white/40">{metric.label}</p>
                   <div className="mt-2 flex items-end justify-between gap-3">
                     <p className="text-2xl font-semibold text-white">{metric.value}</p>
-                    <p className="text-xs uppercase tracking-[0.2em] text-white/38">{metric.detail}</p>
+                    <p className="max-w-[11rem] text-right text-xs uppercase tracking-[0.2em] text-white/38">{metric.detail}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 grid gap-4 xl:grid-cols-[0.86fr_1.14fr]">
-              <div className="rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.24em] text-white/40">Shared order intake inbox</p>
-                    <p className="mt-1 text-sm text-white/68">Recent inbound orders and files</p>
+            <div className="mt-5 grid gap-4 2xl:grid-cols-[minmax(0,1.08fr)_minmax(260px,0.92fr)]">
+              <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] 2xl:grid-cols-1">
+                <div className="min-w-0 rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.24em] text-white/40">Shared order intake inbox</p>
+                      <p className="mt-1 text-sm text-white/68">Recent inbound orders and files</p>
+                    </div>
+                    <Mail className="size-4 text-cyan-200" />
                   </div>
-                  <Mail className="size-4 text-cyan-200" />
+                  <div className="mt-4 space-y-3">
+                    {heroVisualSnapshot.inboxMessages.map((message, index) => (
+                      <motion.div
+                        key={message.subject}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.35, delay: index * 0.08 + 0.15 }}
+                        className="rounded-2xl border border-white/8 bg-slate-950/72 px-4 py-3"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <p className={`min-w-0 text-sm font-medium ${message.tone}`}>{message.subject}</p>
+                          <span className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/58">
+                            {message.status}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">{message.meta}</p>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-4 space-y-3">
-                  {heroVisualSnapshot.inboxMessages.map((message, index) => (
-                    <motion.div
-                      key={message.subject}
-                      initial={{ opacity: 0, x: 12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.35, delay: index * 0.08 + 0.15 }}
-                      className="rounded-2xl border border-white/8 bg-slate-950/72 px-4 py-3"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <p className={`text-sm font-medium ${message.tone}`}>{message.subject}</p>
-                        <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/58">
-                          {message.status}
+
+                <div className="min-w-0 rounded-[22px] border border-white/8 bg-slate-950/68 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.24em] text-white/40">Line-item mapping</p>
+                      <p className="mt-1 text-sm text-white/68">Each line keeps confidence and mapping state before export.</p>
+                    </div>
+                    <MoreHorizontal className="size-4 text-white/44" />
+                  </div>
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03]">
+                    <div className="grid grid-cols-[40px_minmax(0,1fr)_84px] gap-3 border-b border-white/8 px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-white/38 sm:grid-cols-[40px_minmax(0,1fr)_56px_84px] 2xl:grid-cols-[48px_minmax(0,1.55fr)_0.7fr_0.75fr_0.95fr]">
+                      <span>Line</span>
+                      <span>Requested SKU</span>
+                      <span className="hidden sm:block">Qty</span>
+                      <span>Match</span>
+                      <span className="hidden 2xl:block">ERP target</span>
+                    </div>
+                    {heroVisualSnapshot.lineItems.map((line, index) => (
+                      <motion.div
+                        key={`${line.line}-${line.sku}`}
+                        animate={{ backgroundColor: index === 2 ? ["rgba(255,255,255,0.02)", "rgba(124,92,255,0.10)", "rgba(255,255,255,0.02)"] : ["rgba(255,255,255,0.02)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.02)"] }}
+                        transition={{ duration: 6 + index, repeat: Infinity, ease: "easeInOut" }}
+                        className="grid grid-cols-[40px_minmax(0,1fr)_84px] gap-3 border-b border-white/6 px-4 py-3 text-sm text-white/74 last:border-b-0 sm:grid-cols-[40px_minmax(0,1fr)_56px_84px] 2xl:grid-cols-[48px_minmax(0,1.55fr)_0.7fr_0.75fr_0.95fr]"
+                      >
+                        <span className="font-medium text-white/84">{line.line}</span>
+                        <div className="min-w-0">
+                          <p className="truncate text-white/84">{line.sku}</p>
+                          <p className="mt-1 truncate text-xs text-white/42">{line.description}</p>
+                        </div>
+                        <span className="hidden sm:block">{line.qty}</span>
+                        <span className={line.state === "Review" ? "text-violet-200" : "text-emerald-300"}>{line.match}</span>
+                        <span className={line.state === "Review" ? "hidden truncate text-violet-200 2xl:block" : "hidden truncate text-white/78 2xl:block"}>
+                          {line.mappedTo}
                         </span>
-                      </div>
-                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">{message.meta}</p>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="rounded-[22px] border border-white/8 bg-slate-950/68 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.24em] text-white/40">Line-item mapping</p>
-                    <p className="mt-1 text-sm text-white/68">Each line keeps confidence and mapping state before export.</p>
+              <div className="grid min-w-0 gap-4 md:grid-cols-2 2xl:grid-cols-1">
+                <motion.div
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+                  className="visual-float min-w-0 rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(2,8,30,0.34)]"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <Badge variant="violet">Structured draft order</Badge>
+                    <MoreHorizontal className="size-4 text-white/44" />
                   </div>
-                  <MoreHorizontal className="size-4 text-white/44" />
-                </div>
-                <div className="mt-4 overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03]">
-                  <div className="grid grid-cols-[48px_minmax(0,1.6fr)_0.8fr_0.75fr_0.95fr] gap-3 border-b border-white/8 px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-white/38">
-                    <span>Line</span>
-                    <span>Requested SKU</span>
-                    <span>Qty</span>
-                    <span>Match</span>
-                    <span>ERP target</span>
-                  </div>
-                  {heroVisualSnapshot.lineItems.map((line, index) => (
-                    <motion.div
-                      key={`${line.line}-${line.sku}`}
-                      animate={{ backgroundColor: index === 2 ? ["rgba(255,255,255,0.02)", "rgba(124,92,255,0.10)", "rgba(255,255,255,0.02)"] : ["rgba(255,255,255,0.02)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.02)"] }}
-                      transition={{ duration: 6 + index, repeat: Infinity, ease: "easeInOut" }}
-                      className="grid grid-cols-[48px_minmax(0,1.6fr)_0.8fr_0.75fr_0.95fr] gap-3 border-b border-white/6 px-4 py-3 text-sm text-white/74 last:border-b-0"
-                    >
-                      <span className="font-medium text-white/84">{line.line}</span>
-                      <div className="min-w-0">
-                        <p className="truncate text-white/84">{line.sku}</p>
-                        <p className="mt-1 truncate text-xs text-white/42">{line.description}</p>
+                  <div className="mt-4 space-y-3">
+                    {heroVisualSnapshot.extractionFields.map((field) => (
+                      <div key={field.label} className="rounded-2xl border border-white/8 bg-slate-950/68 px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-white/38">{field.label}</p>
+                        <p className={`mt-2 text-sm font-medium ${field.tone}`}>{field.value}</p>
                       </div>
-                      <span>{line.qty}</span>
-                      <span className={line.state === "Review" ? "text-violet-200" : "text-emerald-300"}>{line.match}</span>
-                      <span className={line.state === "Review" ? "text-violet-200" : "text-white/78"}>{line.mappedTo}</span>
-                    </motion.div>
-                  ))}
+                    ))}
+                  </div>
+                </motion.div>
+
+                <div className="min-w-0 rounded-[26px] border border-white/8 bg-slate-950/70 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <Badge variant="muted">Approval chain</Badge>
+                    <ShieldCheck className="size-4 text-violet-200" />
+                  </div>
+                  <div className="mt-4 space-y-3">
+                    {heroVisualSnapshot.approvalChain.map((step) => (
+                      <div key={step.step} className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-medium text-white">{step.title}</p>
+                          <span className="text-xs uppercase tracking-[0.2em] text-white/38">{step.step}</span>
+                        </div>
+                        <p className="mt-2 text-sm text-white/58">{step.meta}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
+                <div className="min-w-0 rounded-[26px] border border-white/8 bg-slate-950/70 p-4 md:col-span-2 2xl:col-span-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <Badge variant="violet">Reviewer queue</Badge>
+                    <ShieldCheck className="size-4 text-violet-200" />
+                  </div>
+                  <div className="mt-4 space-y-3">
+                    {heroVisualSnapshot.reviewQueue.map((item) => (
+                      <div key={item.id} className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-medium text-white">{item.id}</p>
+                          <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/62">
+                            {item.status}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm text-white/60">{item.detail}</p>
+                        <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/34">{item.meta}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <motion.div
+                  animate={{ scale: [1, 1.018, 1] }}
+                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                  className="visual-float-delayed min-w-0 rounded-[26px] border border-white/10 bg-[linear-gradient(135deg,rgba(114,228,255,0.18),rgba(124,92,255,0.16))] p-4 md:col-span-2 2xl:col-span-1"
+                >
+                  <div className="flex items-center justify-between gap-3 text-white">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.28em] text-white/52">ERP handoff</p>
+                      <h4 className="mt-2 text-xl font-semibold">{heroVisualSnapshot.exportSummary.title}</h4>
+                    </div>
+                    <Sparkles className="size-5 text-cyan-200" />
+                  </div>
+                  <p className="mt-3 text-sm text-white/72">{heroVisualSnapshot.exportSummary.detail}</p>
+                  <div className="mt-4 rounded-[22px] border border-white/12 bg-slate-950/55 p-4">
+                    <div className="flex items-center justify-between text-sm text-white/76">
+                      <span>Approval finished in 2m 16s</span>
+                      <CheckCircle2 className="size-4 text-emerald-300" />
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-white/74">
+                      {heroVisualSnapshot.exportSummary.timeline.map((item, index) => (
+                        <div key={item} className="flex items-center gap-3">
+                          <span>{item}</span>
+                          {index < heroVisualSnapshot.exportSummary.timeline.length - 1 ? <ArrowRight className="size-4 text-white/42" /> : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  animate={{ x: [0, 6, 0] }}
+                  transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+                  className="inline-flex items-center gap-2 self-start rounded-full border border-cyan-300/20 bg-slate-950/85 px-4 py-2 text-xs uppercase tracking-[0.24em] text-cyan-100/80 md:col-span-2 2xl:col-span-1"
+                >
+                  <Send className="size-3.5" />
+                  AI mapping resolved 14 SKU aliases
+                </motion.div>
               </div>
             </div>
           </motion.div>
-
-          <div className="relative flex flex-col gap-4">
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-              className="visual-float rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(2,8,30,0.34)]"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <Badge variant="violet">Structured draft order</Badge>
-                <MoreHorizontal className="size-4 text-white/44" />
-              </div>
-              <div className="mt-4 space-y-3">
-                {heroVisualSnapshot.extractionFields.map((field) => (
-                  <div key={field.label} className="rounded-2xl border border-white/8 bg-slate-950/68 px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.2em] text-white/38">{field.label}</p>
-                    <p className={`mt-2 text-sm font-medium ${field.tone}`}>{field.value}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <div className="rounded-[26px] border border-white/8 bg-slate-950/70 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <Badge variant="muted">Approval chain</Badge>
-                <ShieldCheck className="size-4 text-violet-200" />
-              </div>
-              <div className="mt-4 space-y-3">
-                {heroVisualSnapshot.approvalChain.map((step) => (
-                  <div key={step.step} className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-white">{step.title}</p>
-                      <span className="text-xs uppercase tracking-[0.2em] text-white/38">{step.step}</span>
-                    </div>
-                    <p className="mt-2 text-sm text-white/58">{step.meta}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[26px] border border-white/8 bg-slate-950/70 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <Badge variant="violet">Reviewer queue</Badge>
-                <ShieldCheck className="size-4 text-violet-200" />
-              </div>
-              <div className="mt-4 space-y-3">
-                {heroVisualSnapshot.reviewQueue.map((item) => (
-                  <div key={item.id} className="rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-white">{item.id}</p>
-                      <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/62">
-                        {item.status}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm text-white/60">{item.detail}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/34">{item.meta}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <motion.div
-              animate={{ scale: [1, 1.018, 1] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="visual-float-delayed rounded-[26px] border border-white/10 bg-[linear-gradient(135deg,rgba(114,228,255,0.18),rgba(124,92,255,0.16))] p-4"
-            >
-              <div className="flex items-center justify-between gap-3 text-white">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.28em] text-white/52">ERP handoff</p>
-                  <h4 className="mt-2 text-xl font-semibold">{heroVisualSnapshot.exportSummary.title}</h4>
-                </div>
-                <Sparkles className="size-5 text-cyan-200" />
-              </div>
-              <p className="mt-3 text-sm text-white/72">{heroVisualSnapshot.exportSummary.detail}</p>
-              <div className="mt-4 rounded-[22px] border border-white/12 bg-slate-950/55 p-4">
-                <div className="flex items-center justify-between text-sm text-white/76">
-                  <span>Approval finished in 2m 16s</span>
-                  <CheckCircle2 className="size-4 text-emerald-300" />
-                </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-white/74">
-                  {heroVisualSnapshot.exportSummary.timeline.map((item, index) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <span>{item}</span>
-                      {index < heroVisualSnapshot.exportSummary.timeline.length - 1 ? <ArrowRight className="size-4 text-white/42" /> : null}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              animate={{ x: [0, 6, 0] }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-3 left-4 hidden rounded-full border border-cyan-300/20 bg-slate-950/85 px-4 py-2 text-xs uppercase tracking-[0.24em] text-cyan-100/80 xl:flex xl:items-center xl:gap-2"
-            >
-              <Send className="size-3.5" />
-              AI mapping resolved 14 SKU aliases
-            </motion.div>
-          </div>
         </div>
       </div>
     </motion.div>

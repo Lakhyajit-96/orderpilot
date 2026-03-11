@@ -157,7 +157,7 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="grid flex-1 items-center gap-10 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+        <section className="grid flex-1 items-center gap-10 py-14 lg:grid-cols-[0.96fr_1.04fr] lg:py-20 xl:grid-cols-[0.9fr_1.1fr]">
           <div>
             <Badge>Built for distributor operations</Badge>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
