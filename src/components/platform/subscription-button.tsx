@@ -37,9 +37,9 @@ export function SubscriptionButton({
         return;
       }
 
-      window.alert(payload.error ?? "Checkout is not ready yet.");
+      window.alert(payload.error ?? "Plan checkout isn’t available yet.");
     } catch {
-      window.alert("Checkout failed. Please verify billing and sign-in setup.");
+      window.alert("We couldn’t start checkout. Please confirm workspace access and billing availability, then try again.");
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +58,7 @@ export function SubscriptionButton({
   return (
     <Button onClick={handleCheckout} disabled={!isCheckoutReady || isLoading} className="w-full">
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-      {isCheckoutReady ? "Start subscription" : "Billing setup required"}
+      {isCheckoutReady ? "Choose plan" : "Plans unavailable right now"}
     </Button>
   );
 }

@@ -24,8 +24,8 @@ test("marketing visual data covers the hero, workflow, and feature surfaces", ()
   assert.equal(orderReviewPreview.sourceMailbox, "Microsoft 365 · ops@atlasindustrial.com");
   assert.equal(orderReviewPreview.notes.length, 2);
   assert.equal(orderReviewPreview.activity.length, 3);
-  assert.match(workflowStages[0]?.preview[0]?.secondary ?? "", /OAuth connected/);
+  assert.match(workflowStages[0]?.preview[0]?.secondary ?? "", /Secure sign-in complete/);
   assert.equal(settingsPreview.readiness[2], "Plan · Growth");
   assert.equal(settingsPreview.connections[0]?.detail, "ops@atlasindustrial.com");
-  assert.equal(settingsPreview.connections[2]?.status, "Portal unlocked");
+  assert.equal(settingsPreview.connections[2]?.status, "Manage billing any time");
 });

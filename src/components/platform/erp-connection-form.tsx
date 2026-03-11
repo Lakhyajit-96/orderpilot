@@ -55,27 +55,27 @@ export function ErpConnectionForm() {
   return (
     <form className="grid gap-3" onSubmit={handleSubmit}>
       <div className="grid gap-3 md:grid-cols-2">
-        <input className={fieldClassName} placeholder="Connection name" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
+        <input className={fieldClassName} placeholder="Destination name" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
         <input className={fieldClassName} placeholder="ERP endpoint URL" value={form.endpointUrl} onChange={(event) => setForm((current) => ({ ...current, endpointUrl: event.target.value }))} />
       </div>
       <div className="grid gap-3 md:grid-cols-2">
-        <input className={fieldClassName} placeholder="Authorization header (optional)" value={form.authHeader} onChange={(event) => setForm((current) => ({ ...current, authHeader: event.target.value }))} />
+        <input className={fieldClassName} placeholder="Secure access header (optional)" value={form.authHeader} onChange={(event) => setForm((current) => ({ ...current, authHeader: event.target.value }))} />
         <select className={fieldClassName} value={form.provider} onChange={(event) => setForm((current) => ({ ...current, provider: event.target.value }))}>
-          <option value="WEBHOOK">Generic webhook</option>
+          <option value="WEBHOOK">Custom destination</option>
           <option value="NETSUITE">NetSuite</option>
           <option value="SAP">SAP</option>
           <option value="DYNAMICS">Dynamics</option>
         </select>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
-        <textarea className={fieldClassName} rows={5} placeholder="Field mappings JSON" value={form.fieldMappingsText} onChange={(event) => setForm((current) => ({ ...current, fieldMappingsText: event.target.value }))} />
-        <textarea className={fieldClassName} rows={5} placeholder="Adapter settings JSON" value={form.adapterSettingsText} onChange={(event) => setForm((current) => ({ ...current, adapterSettingsText: event.target.value }))} />
+        <textarea className={fieldClassName} rows={5} placeholder="Field matching (JSON)" value={form.fieldMappingsText} onChange={(event) => setForm((current) => ({ ...current, fieldMappingsText: event.target.value }))} />
+        <textarea className={fieldClassName} rows={5} placeholder="Advanced options (JSON)" value={form.adapterSettingsText} onChange={(event) => setForm((current) => ({ ...current, adapterSettingsText: event.target.value }))} />
       </div>
       <div className="flex items-center justify-between gap-3">
-        <p className="text-xs text-white/45">Choose a provider adapter and optionally map tenant-specific field names into the export payload.</p>
+        <p className="text-xs text-white/45">Choose your destination and, if needed, match your team’s field names to the outgoing order format.</p>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-          Save ERP connection
+          Save handoff destination
         </Button>
       </div>
     </form>

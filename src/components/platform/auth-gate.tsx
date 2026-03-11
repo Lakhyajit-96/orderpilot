@@ -11,16 +11,16 @@ export function AuthGate({ viewer }: { viewer: Viewer }) {
   const isSignInRequired = accessState === "SIGN_IN_REQUIRED";
   const isSetupRequired = accessState === "SIGN_IN_SETUP_REQUIRED";
   const title = isSetupRequired
-    ? "Secure workspace access isn’t available"
+    ? "Secure workspace access is temporarily unavailable"
     : isSignInRequired
       ? "Sign in to access your workspace"
-      : "We couldn’t load your workspace";
+      : "We couldn’t open your workspace";
   const description = isSetupRequired
-    ? "This environment is missing the required sign-in setup, so platform routes stay unavailable until workspace access is configured."
+    ? "Secure workspace access is still being finalized for this site. Until then, workspace pages will stay unavailable."
     : isSignInRequired
       ? "Sign in to open the dashboard, inbox, orders, and settings for your workspace."
-      : "Your session is active, but the workspace data layer could not be loaded. Restore workspace storage access and reload the page.";
-  const badgeLabel = isSignInRequired ? "Protected workspace" : "Workspace unavailable";
+      : "Your session is active, but we couldn’t load saved orders and workspace settings right now. Restore workspace access and reload the page.";
+  const badgeLabel = isSignInRequired ? "Workspace access" : "Needs attention";
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center">

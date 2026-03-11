@@ -17,13 +17,13 @@ export function MailboxBootstrapButton({ connectionId }: { connectionId: string 
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        window.alert(payload.error ?? "Could not start push sync for this mailbox.");
+        window.alert(payload.error ?? "Could not start instant updates for this mailbox.");
         return;
       }
 
       router.refresh();
     } catch {
-      window.alert("Could not start push sync for this mailbox. Please try again.");
+      window.alert("Could not start instant updates for this mailbox. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +32,7 @@ export function MailboxBootstrapButton({ connectionId }: { connectionId: string 
   return (
     <Button variant="secondary" size="sm" disabled={isLoading} onClick={handleBootstrap}>
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-      Start push sync
+      Start instant updates
     </Button>
   );
 }

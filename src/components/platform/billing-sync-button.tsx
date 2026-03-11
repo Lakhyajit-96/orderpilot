@@ -21,13 +21,13 @@ export function BillingSyncButton() {
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        setError(payload.error ?? "Billing status could not be refreshed.");
+        setError(payload.error ?? "Plan status could not be refreshed.");
         return;
       }
 
       window.location.href = "/settings?billing=refreshed#workspace-billing";
     } catch {
-      setError("Billing status could not be refreshed. Please try again.");
+      setError("Plan status could not be refreshed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -37,10 +37,10 @@ export function BillingSyncButton() {
     <div className="space-y-2">
       <Button onClick={handleSync} disabled={isLoading} variant="secondary" size="sm" className="w-auto">
         {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCcw className="size-4" />}
-        Refresh billing status
+        Refresh plan status
       </Button>
       <p className="text-xs text-white/48">
-        Use this if payment completed but the workspace billing status has not refreshed yet.
+        Use this if a purchase is complete but the plan status has not updated yet.
       </p>
       {error ? <p className="text-xs text-amber-200/80">{error}</p> : null}
     </div>

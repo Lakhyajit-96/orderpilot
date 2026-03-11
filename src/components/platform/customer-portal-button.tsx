@@ -33,9 +33,9 @@ export function CustomerPortalButton({
         return;
       }
 
-      window.alert(payload.error ?? "Billing portal is not ready yet.");
+      window.alert(payload.error ?? "Billing management isn’t available yet.");
     } catch {
-      window.alert("Could not open the billing portal. Please try again.");
+      window.alert("Could not open billing management. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +49,7 @@ export function CustomerPortalButton({
       className={cn("w-full", className)}
     >
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-      {isReady ? "Manage subscription" : "Portal available after checkout"}
+      {isReady ? "Manage billing" : "Available after first plan purchase"}
     </Button>
   );
 }

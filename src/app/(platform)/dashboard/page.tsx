@@ -62,7 +62,7 @@ export default async function DashboardPage() {
     {
       title: "ERP handoff readiness",
       detail: erpConnections.length
-        ? `${erpConnections.length} export destination${erpConnections.length === 1 ? " is" : "s are"} configured for approved orders.`
+        ? `${erpConnections.length} export destination${erpConnections.length === 1 ? " is" : "s are"} ready for approved orders.`
         : "Add an ERP destination before rollout.",
     },
   ];

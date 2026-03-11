@@ -11,14 +11,14 @@ export default function SignUpPage() {
       ) : (
         <Card className="max-w-xl">
           <CardHeader>
-            <Badge variant="violet">Sign-up setup required</Badge>
-            <CardTitle className="mt-4 text-3xl">Sign-up isn&apos;t available yet</CardTitle>
+            <Badge variant="violet">Team access</Badge>
+            <CardTitle className="mt-4 text-3xl">New team access will be available soon</CardTitle>
             <CardDescription className="text-base leading-8">
-              This environment still needs sign-in keys before self-serve workspace access can be enabled.
+              Self-serve workspace access is still being finalized for this site.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-sm leading-7 text-white/68">
-            Once configured, new teammates will be able to create or join a workspace from this page.
+            Once it is ready, teammates will be able to create or join a workspace from this page.
           </CardContent>
         </Card>
       )}

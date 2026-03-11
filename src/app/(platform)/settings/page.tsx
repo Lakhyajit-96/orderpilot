@@ -87,7 +87,7 @@ function formatCurrencyFromCents(value: number | null | undefined) {
 
 function formatSyncMode(value: string) {
   if (value === "WEBHOOK") {
-    return "Push sync";
+    return "Instant updates";
   }
 
   if (value === "POLLING") {
@@ -107,6 +107,18 @@ function formatPlanLabel(value: string | null | undefined) {
   }
 
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function formatAccessStateLabel(value: string) {
+  if (value === "READY") {
+    return "Ready";
+  }
+
+  if (value === "SIGN_IN_REQUIRED") {
+    return "Sign in needed";
+  }
+
+  return "Needs attention";
 }
 
 type SettingsNotice = {
@@ -154,7 +166,7 @@ export default async function SettingsPage({
         expectedOrganizationId: viewer.workspace.id,
       });
     } catch (error) {
-      checkoutSyncError = error instanceof Error ? error.message : "Stripe confirmed checkout, but the workspace status could not be refreshed yet.";
+      checkoutSyncError = error instanceof Error ? error.message : "Your purchase was confirmed, but the plan status has not refreshed yet.";
     }
   }
 
@@ -165,7 +177,7 @@ export default async function SettingsPage({
         organizationId: viewer.workspace.id,
       });
     } catch (error) {
-      portalSyncError = error instanceof Error ? error.message : "We could not refresh the billing portal changes yet.";
+      portalSyncError = error instanceof Error ? error.message : "We could not refresh the billing management changes yet.";
     }
   }
 
@@ -191,12 +203,12 @@ export default async function SettingsPage({
     flags.hasStripe && hasManagedSubscription,
   );
   const accessSummary = accessState === "READY"
-    ? "Workspace access is active and ready for your team."
+    ? "Workspace access is live and ready for your team."
     : accessState === "SIGN_IN_REQUIRED"
-      ? "Sign in is required before the protected workspace routes open."
+      ? "Sign in to open the workspace for your team."
       : accessState === "SIGN_IN_SETUP_REQUIRED"
-        ? "Sign-in still needs to be configured for this environment."
-        : "Workspace storage needs attention before operators can use the platform.";
+        ? "Secure workspace access still needs attention before this workspace can open."
+        : "Saved orders and workspace settings need attention before your team can continue.";
   const workflowReasonCodesText = workflowSettings.reasonCodes
     .map((code) => `${code.actionType} | ${code.code} | ${code.label}`)
     .join("\n");
@@ -221,7 +233,7 @@ export default async function SettingsPage({
     notices.push({
       key: "mailbox-oauth-connected",
       title: "Mailbox connection is active",
-      description: mailboxMessage ?? "The mailbox provider finished authentication and the workspace connection is ready.",
+      description: mailboxMessage ?? "The mailbox provider finished secure sign-in and the workspace connection is ready.",
       tone: "success",
     });
   }
@@ -230,7 +242,7 @@ export default async function SettingsPage({
     notices.push({
       key: "mailbox-oauth-error",
       title: "Mailbox connection needs attention",
-      description: mailboxMessage ?? "The mailbox provider did not complete authentication.",
+      description: mailboxMessage ?? "The mailbox provider did not complete the connection.",
       tone: "warning",
     });
   }
@@ -240,14 +252,14 @@ export default async function SettingsPage({
       currentSubscription
         ? {
             key: "checkout-success",
-            title: `${formatPlanLabel(currentSubscription.planKey)} plan is now attached to this workspace`,
-            description: `Billing status is ${formatStatusLabel(currentSubscription.status)} and the workspace can use the billing portal.`,
+            title: `${formatPlanLabel(currentSubscription.planKey)} plan is now linked to this workspace`,
+            description: `Plan status is ${formatStatusLabel(currentSubscription.status)} and billing management is now available.`,
             tone: "success",
           }
         : {
             key: "checkout-pending",
             title: checkoutSyncError ? "Payment completed but billing sync needs one more pass" : "Payment completed",
-            description: checkoutSyncError ?? "Stripe confirmed the checkout. The settings page may take a moment to reflect the final subscription status.",
+            description: checkoutSyncError ?? "Your purchase was confirmed. This page may take a moment to reflect the final plan status.",
             tone: checkoutSyncError ? "warning" : "muted",
           },
     );
@@ -267,13 +279,13 @@ export default async function SettingsPage({
       currentSubscription
         ? {
             key: "portal-return",
-            title: "Billing portal changes refreshed",
-            description: `Workspace billing is currently ${formatStatusLabel(currentSubscription.status)} on the ${formatPlanLabel(currentSubscription.planKey)} plan.`,
+            title: "Billing changes refreshed",
+            description: `This workspace is currently ${formatStatusLabel(currentSubscription.status)} on the ${formatPlanLabel(currentSubscription.planKey)} plan.`,
             tone: "success",
           }
         : {
             key: "portal-return-pending",
-            title: portalSyncError ? "Returned from billing portal, but refresh needs attention" : "Returned from billing portal",
+            title: portalSyncError ? "Returned from billing management, but refresh needs attention" : "Returned from billing management",
             description: portalSyncError ?? "If you changed plans or payment details, the workspace billing status should refresh shortly.",
             tone: portalSyncError ? "warning" : "muted",
           },
@@ -285,7 +297,7 @@ export default async function SettingsPage({
       key: "billing-refreshed",
       title: currentSubscription ? "Workspace billing status refreshed" : "Billing refresh completed",
       description: currentSubscription
-        ? `Current Stripe status: ${formatStatusLabel(currentSubscription.status)} on ${formatPlanLabel(currentSubscription.planKey)}.`
+        ? `Current plan status: ${formatStatusLabel(currentSubscription.status)} on ${formatPlanLabel(currentSubscription.planKey)}.`
         : "We refreshed billing, but there is still no active subscription attached to this workspace.",
       tone: currentSubscription ? "success" : "muted",
     });
@@ -310,31 +322,31 @@ export default async function SettingsPage({
 
   const readiness = [
     {
-      title: "Sign-in",
-      status: flags.hasClerk ? "Configured" : "Pending setup",
+      title: "Workspace access",
+      status: flags.hasClerk ? "Ready" : "Needs attention",
       description: flags.hasClerk
         ? viewer.isAuthenticated
-          ? `Signed in as ${viewer.displayName}. Workspace access is active.`
-          : "Sign-in is configured. Sign in to manage workspace access."
-        : "Add sign-in keys to enable secure workspace access.",
+          ? `Signed in as ${viewer.displayName}. Your team can open the workspace now.`
+          : "Secure sign-in is available. Sign in to manage team access."
+        : "Finish secure sign-in so your team can open the workspace.",
     },
     {
       title: "Billing",
-      status: flags.hasStripe ? "Configured" : "Pending setup",
+      status: flags.hasStripe ? "Ready" : "Needs attention",
       description: flags.hasStripe
         ? currentSubscription
-          ? `Subscription status: ${formatStatusLabel(currentSubscription.status)} on ${formatPlanLabel(currentSubscription.planKey)}.`
-          : "Billing is configured. Complete checkout to activate a plan."
-        : "Add billing keys and price IDs to enable subscriptions.",
+          ? `Plan status: ${formatStatusLabel(currentSubscription.status)} on ${formatPlanLabel(currentSubscription.planKey)}.`
+          : "Choose a plan to activate billing for this workspace."
+        : "Finish billing access so this workspace can start a paid plan.",
     },
     {
-      title: "Data storage",
-      status: flags.hasDatabase ? "Configured" : "Pending setup",
+      title: "Saved records",
+      status: flags.hasDatabase ? "Ready" : "Needs attention",
       description: flags.hasDatabase
         ? viewer.workspace
-          ? `Workspace data is being stored for ${viewer.workspace.name}.`
-          : "Persistent workspace storage is ready and will activate after sign-in."
-        : "Add a database connection to store orders, activity, and settings.",
+          ? `Orders, activity, and settings are being saved for ${viewer.workspace.name}.`
+          : "Saved order records are ready and will appear after sign-in."
+        : "Turn on saved records so orders, activity, and settings can be stored.",
     },
   ];
 
@@ -381,7 +393,7 @@ export default async function SettingsPage({
             <CardHeader>
               <div className="flex items-center justify-between gap-3">
                 <CardTitle>{item.title}</CardTitle>
-                <Badge variant={item.status === "Configured" ? "success" : "muted"}>{item.status}</Badge>
+                <Badge variant={item.status === "Ready" ? "success" : "muted"}>{item.status}</Badge>
               </div>
               <CardDescription>{item.description}</CardDescription>
             </CardHeader>
@@ -397,7 +409,7 @@ export default async function SettingsPage({
               Confirm who is signed in to this workspace and end the session safely when you are done.
             </CardDescription>
           </div>
-          <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{formatStatusLabel(accessState)}</Badge>
+          <Badge variant={accessState === "READY" ? "success" : "muted"}>{formatAccessStateLabel(accessState)}</Badge>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -411,7 +423,7 @@ export default async function SettingsPage({
               Workspace role: <span className="font-medium text-white">{viewer.workspace?.role ?? "Not assigned"}</span>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Access state: <span className="font-medium text-white">{formatStatusLabel(accessState)}</span>
+              Access state: <span className="font-medium text-white">{formatAccessStateLabel(accessState)}</span>
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -525,7 +537,7 @@ export default async function SettingsPage({
               Scheduled sync: {inboxConnections.filter((item) => item.syncMode === "POLLING").length}
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Push sync: {inboxConnections.filter((item) => item.syncMode === "WEBHOOK").length}
+              Instant updates: {inboxConnections.filter((item) => item.syncMode === "WEBHOOK").length}
             </div>
           </div>
           {inboxConnections.length ? (
@@ -545,17 +557,17 @@ export default async function SettingsPage({
                   </div>
                 </div>
                 <p className="mt-2 text-sm text-white/55">
-                  OAuth: {connection.oauthConnected ? "Connected" : "Not connected"} · Credentials: {connection.accessToken ? "Stored securely" : "Not stored"} · Inbound verification: {connection.webhookSecret ? "Configured" : "Not configured"}
+                  Access: {connection.oauthConnected ? "Secure sign-in complete" : connection.accessToken ? "Manual access saved" : "Needs attention"} · Connection details: {connection.accessToken ? "Saved securely" : "Not added"} · {connection.syncMode === "WEBHOOK" ? `Instant updates ${connection.webhookSecret ? "ready" : "need attention"}` : "Scheduled refresh active"}
                 </p>
                 <p className="mt-1 text-sm text-white/55">
-                  Inbound subscription: {formatStatusLabel(connection.providerSubscriptionStatus)} · Expires {connection.providerSubscriptionExpiresAt ? formatEventTimestamp(connection.providerSubscriptionExpiresAt) : "not started"}
+                  Mailbox updates: {formatStatusLabel(connection.providerSubscriptionStatus)} · Renews {connection.providerSubscriptionExpiresAt ? formatEventTimestamp(connection.providerSubscriptionExpiresAt) : "when started"}
                 </p>
                 {connection.lastError ? <p className="mt-2 text-sm text-amber-200/80">Latest connection issue: {connection.lastError}</p> : null}
               </div>
             ))
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No mailbox connections are configured yet. Connect a shared inbox to start capturing inbound orders.
+              No mailbox connections are live yet. Connect a shared inbox to start capturing inbound orders.
             </div>
           )}
         </CardContent>
@@ -589,16 +601,16 @@ export default async function SettingsPage({
               <div key={connection.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4">
                 <p className="text-sm font-medium text-white">{connection.name}</p>
                 <p className="mt-1 text-xs text-white/45">{connection.provider} · Destination {connection.endpointUrl}</p>
-                <p className="mt-2 text-sm text-white/55">Authentication: {connection.authHeader ? "Stored securely" : "Not configured"}</p>
+                <p className="mt-2 text-sm text-white/55">Secure access: {connection.authHeader ? "Saved securely" : "Not added"}</p>
                 <p className="mt-1 text-sm text-white/55">
-                  Field mappings: {connection.fieldMappings ? "Configured" : "Default"} · Adapter settings: {connection.adapterSettings ? "Configured" : "Default"}
+                  Order field matching: {connection.fieldMappings ? "Custom" : "Standard"} · Advanced options: {connection.adapterSettings ? "Added" : "Standard"}
                 </p>
                 {connection.lastError ? <p className="mt-2 text-sm text-amber-200/80">Latest handoff issue: {connection.lastError}</p> : null}
               </div>
             ))
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No ERP handoff is configured yet. Add a downstream destination before rollout.
+              No ERP handoff is live yet. Add a destination before rollout.
             </div>
           )}
           {exportRuns.length ? (
@@ -714,8 +726,8 @@ export default async function SettingsPage({
             {flags.hasStripe && viewer.workspace?.id ? <BillingSyncButton /> : null}
             <p className="text-sm text-white/55">
               {hasPortalAccess
-                ? "Update payment method, switch plans, or cancel inside the billing portal. If Stripe already shows a paid plan, use refresh to sync the latest status into this workspace."
-                : "The billing portal unlocks automatically after the first completed checkout. Once payment completes, this page now syncs the subscription status back into the workspace."}
+                ? "Update payment details, switch plans, or cancel from billing management. If your purchase is already complete, use refresh to pull the latest plan status into this workspace."
+                : "Billing management becomes available after the first completed plan purchase. Once payment finishes, this page will pull the latest plan status into the workspace."}
             </p>
           </div>
         </CardContent>
@@ -745,7 +757,7 @@ export default async function SettingsPage({
                     <CustomerPortalButton isReady={hasPortalAccess} />
                   ) : (
                     <div className="rounded-2xl border border-dashed border-white/10 px-4 py-3 text-center text-sm text-white/55">
-                      Change plans from the billing portal on the current subscription.
+                      Change plans from billing management on the current subscription.
                     </div>
                   )
                 ) : (

@@ -63,26 +63,26 @@ export function MailboxConnectionForm() {
           <option value="MICROSOFT365">Microsoft 365</option>
         </select>
         <select className={fieldClassName} value={form.syncMode} onChange={(event) => setForm((current) => ({ ...current, syncMode: event.target.value }))}>
-          <option value="POLLING">Polling sync</option>
-          <option value="WEBHOOK">Webhook-ready</option>
+          <option value="POLLING">Scheduled refresh</option>
+          <option value="WEBHOOK">Instant updates</option>
         </select>
         <input className={fieldClassName} type="email" placeholder="Mailbox address" value={form.address} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} />
       </div>
-      <input className={fieldClassName} placeholder="Provider access token" value={form.accessToken} onChange={(event) => setForm((current) => ({ ...current, accessToken: event.target.value }))} />
+      <input className={fieldClassName} placeholder="Mailbox access token" value={form.accessToken} onChange={(event) => setForm((current) => ({ ...current, accessToken: event.target.value }))} />
       <div className="grid gap-3 md:grid-cols-2">
-        <input className={fieldClassName} placeholder="Refresh token (optional)" value={form.refreshToken} onChange={(event) => setForm((current) => ({ ...current, refreshToken: event.target.value }))} />
-        <input className={fieldClassName} placeholder="Webhook secret (optional)" value={form.webhookSecret} onChange={(event) => setForm((current) => ({ ...current, webhookSecret: event.target.value }))} />
+        <input className={fieldClassName} placeholder="Mailbox renewal token (optional)" value={form.refreshToken} onChange={(event) => setForm((current) => ({ ...current, refreshToken: event.target.value }))} />
+        <input className={fieldClassName} placeholder="Mailbox verification key (optional)" value={form.webhookSecret} onChange={(event) => setForm((current) => ({ ...current, webhookSecret: event.target.value }))} />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-white/45">Use OAuth for full Gmail/Microsoft onboarding, or save manual bearer tokens for advanced setups.</p>
+        <p className="text-xs text-white/45">Use secure sign-in for guided Gmail or Microsoft 365 connection, or enter advanced access details manually.</p>
         <div className="flex flex-wrap gap-3">
           <Button type="button" variant="secondary" disabled={isConnecting || !form.address} onClick={handleOAuthConnect}>
             {isConnecting ? <LoaderCircle className="size-4 animate-spin" /> : null}
-            Connect via OAuth
+            Connect securely
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-            Save manual connection
+            Save advanced connection
           </Button>
         </div>
       </div>

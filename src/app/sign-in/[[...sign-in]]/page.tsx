@@ -11,14 +11,14 @@ export default function SignInPage() {
       ) : (
         <Card className="max-w-xl">
           <CardHeader>
-            <Badge variant="violet">Sign-in setup required</Badge>
-            <CardTitle className="mt-4 text-3xl">Sign-in isn&apos;t available yet</CardTitle>
+            <Badge variant="violet">Workspace access</Badge>
+            <CardTitle className="mt-4 text-3xl">Sign-in will be available soon</CardTitle>
             <CardDescription className="text-base leading-8">
-              This environment still needs sign-in keys before secure workspace access can be enabled.
+              Secure workspace access is still being finalized for this site.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-sm leading-7 text-white/68">
-            Once sign-in is configured, your team will be able to access its workspace from this page.
+            Once it is ready, your team will be able to access its workspace from this page.
           </CardContent>
         </Card>
       )}

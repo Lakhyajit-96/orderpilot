@@ -60,13 +60,13 @@ export function WorkflowPolicyForm({
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        window.alert(payload.error ?? "Could not update workflow policy.");
+        window.alert(payload.error ?? "Could not update the review policy.");
         return;
       }
 
       router.refresh();
     } catch {
-      window.alert("Could not update workflow policy. Please try again.");
+      window.alert("Could not update the review policy. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -77,10 +77,10 @@ export function WorkflowPolicyForm({
       <div className="grid gap-3 md:grid-cols-3">
         <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white">
           <input type="checkbox" checked={requireReasonCodes} onChange={(event) => setRequireReasonCodes(event.target.checked)} />
-          Require reason codes
+          Require reasons for status changes
         </label>
-        <input className={fieldClassName} placeholder="Auto-approve confidence threshold" value={autoApproveConfidence} onChange={(event) => setAutoApproveConfidence(event.target.value)} />
-        <input className={fieldClassName} placeholder="Finance threshold (cents)" value={financeThresholdCents} onChange={(event) => setFinanceThresholdCents(event.target.value)} />
+        <input className={fieldClassName} placeholder="Auto-approve confidence score" value={autoApproveConfidence} onChange={(event) => setAutoApproveConfidence(event.target.value)} />
+        <input className={fieldClassName} placeholder="Finance review threshold (enter cents)" value={financeThresholdCents} onChange={(event) => setFinanceThresholdCents(event.target.value)} />
       </div>
       {stages.map((stage, index) => (
         <div key={stage.sequence} className="grid gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4 md:grid-cols-4">
@@ -91,18 +91,18 @@ export function WorkflowPolicyForm({
             <option value="ADMIN">Admin</option>
             <option value="OWNER">Owner</option>
           </select>
-          <input className={fieldClassName} placeholder="Min order value (cents)" value={stage.minOrderValueCents?.toString() ?? ""} onChange={(event) => setStages((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, minOrderValueCents: event.target.value ? Number(event.target.value) : null } : item))} />
+          <input className={fieldClassName} placeholder="Minimum order amount (enter cents)" value={stage.minOrderValueCents?.toString() ?? ""} onChange={(event) => setStages((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, minOrderValueCents: event.target.value ? Number(event.target.value) : null } : item))} />
           <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white">
             <input type="checkbox" checked={stage.requireReasonCode} onChange={(event) => setStages((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, requireReasonCode: event.target.checked } : item))} />
-            Reason code required
+            Reason required at this stage
           </label>
         </div>
       ))}
-      <textarea className={fieldClassName} rows={6} value={reasonCodesText} onChange={(event) => setReasonCodesText(event.target.value)} placeholder="ACTION_TYPE | CODE | Label" />
+      <textarea className={fieldClassName} rows={6} value={reasonCodesText} onChange={(event) => setReasonCodesText(event.target.value)} placeholder="One per line: action | code | label" />
       <div className="flex justify-end">
         <Button type="submit" disabled={isLoading}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-          Save workflow policy
+          Save review policy
         </Button>
       </div>
     </form>

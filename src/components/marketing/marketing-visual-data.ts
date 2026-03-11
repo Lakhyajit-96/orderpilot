@@ -8,7 +8,7 @@ export const heroVisualSnapshot = {
   heroMetrics: [
     { label: "Orders in review", value: "3", detail: "currently surfaced" },
     { label: "Inbox coverage", value: "2", detail: "shared mailbox connections" },
-    { label: "ERP readiness", value: "1", detail: "NetSuite destination configured" },
+    { label: "ERP readiness", value: "1", detail: "NetSuite handoff ready" },
   ],
   inboxMessages: [
     { subject: "PO-10482 · Atlas Industrial Supply", meta: "Microsoft 365 · 09:18 AM", status: "Needs review", tone: "text-cyan-200" },
@@ -36,8 +36,8 @@ export const heroVisualSnapshot = {
     "Review policy active",
   ],
   handoffSignals: [
-    "NetSuite adapter validated",
-    "Export queue staged",
+    "NetSuite handoff ready",
+    "Approved orders queued",
     "Desk handoff visible",
   ],
   reviewQueue: [
@@ -47,7 +47,7 @@ export const heroVisualSnapshot = {
   ],
   exportSummary: {
     title: "NetSuite handoff ready",
-    detail: "Export packet assembled · field mappings configured",
+    detail: "Order package prepared · customer fields matched",
     timeline: ["Review complete", "Approval chain satisfied", "ERP queue staged"],
   },
 } as const;
@@ -61,7 +61,7 @@ export const workflowStages = [
     variant: "default" as const,
     iconName: "mail",
     preview: [
-      { primary: "Microsoft 365 · ops@atlasindustrial.com", secondary: "OAuth connected · push sync", badge: "Connected" },
+      { primary: "Microsoft 365 · ops@atlasindustrial.com", secondary: "Secure sign-in complete · instant updates on", badge: "Connected" },
       { primary: "PO-10482 · Atlas Industrial", secondary: "09:18 AM · attachment + body parsed", badge: "New" },
       { primary: "PO-10479 · North Coast", secondary: "09:11 AM · 8 lines detected", badge: "Queued" },
     ],
@@ -75,7 +75,7 @@ export const workflowStages = [
     iconName: "bot",
     preview: [
       { primary: "Customer matched", secondary: "Atlas Industrial Supply", badge: "98%" },
-      { primary: "6 mapped lines", secondary: "ERP targets resolved for 5 lines", badge: "Live" },
+      { primary: "6 mapped lines", secondary: "Order system matches resolved for 5 lines", badge: "Live" },
       { primary: "Pack size flagged", secondary: "Needs reviewer confirmation", badge: "Issue" },
     ],
   },
@@ -101,7 +101,7 @@ export const workflowStages = [
     iconName: "check-circle",
     preview: [
       { primary: "Approval chain complete", secondary: "Ops manager signed off", badge: "Done" },
-      { primary: "Export packet assembled", secondary: "Field mappings validated", badge: "Ready" },
+      { primary: "Order package prepared", secondary: "Customer fields confirmed", badge: "Ready" },
       { primary: "Desk handoff confirmed", secondary: "Queue visible to coordinators", badge: "Live" },
     ],
   },
@@ -132,8 +132,8 @@ export const featureVisualCards = [
     text: "Show the actual readiness model: mailbox connections, ERP handoff, billing state, and rollout controls in one place.",
     iconName: "settings",
     variant: "success" as const,
-    metrics: ["Mailbox sync · Microsoft 365 live", "Billing · Growth plan active", "ERP handoff · NetSuite configured"],
-    rows: ["OAuth connected · shared inbox ready", "Export retry queue · 0 failed", "Customer portal · synced and available"],
+    metrics: ["Mailbox sync · Microsoft 365 live", "Billing · Growth plan active", "ERP handoff · NetSuite ready"],
+    rows: ["Secure sign-in complete · shared inbox ready", "Retry queue · 0 delayed handoffs", "Billing management · available"],
   },
 ] as const;
 
@@ -154,7 +154,7 @@ export const orderReviewPreview = {
   summary:
     "Atlas Industrial’s order arrives from a shared Microsoft 365 mailbox, keeps the extracted line mapping visible, and elevates the one remaining pack-size question before ERP release.",
   sourceMailbox: "Microsoft 365 · ops@atlasindustrial.com",
-  sourceDetail: "OAuth connected · push sync · attachment + body parsed at 09:18 AM",
+  sourceDetail: "Secure sign-in complete · instant updates on · attachment + body parsed at 09:18 AM",
   lineItems: heroVisualSnapshot.lineItems,
   approvals: heroVisualSnapshot.approvalChain,
   exception: "Confirm alternate pack size before export",
@@ -174,8 +174,8 @@ export const settingsPreview = {
   heading: "Manage rollout, connections, and team workflow",
   readiness: ["Mailbox connections · 2", "ERP connections · 1", "Plan · Growth"],
   connections: [
-    { title: "Microsoft 365", detail: "ops@atlasindustrial.com", status: "OAuth connected" },
-    { title: "NetSuite destination", detail: "Authentication stored securely", status: "ERP handoff ready" },
-    { title: "Billing status", detail: "Active on Growth", status: "Portal unlocked" },
+    { title: "Microsoft 365", detail: "ops@atlasindustrial.com", status: "Connected" },
+    { title: "NetSuite handoff", detail: "Secure access saved", status: "Ready for approved orders" },
+    { title: "Billing status", detail: "Active on Growth", status: "Manage billing any time" },
   ],
 } as const;
