@@ -30,7 +30,7 @@ export default function Home() {
   return (
     <main className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 grid-glow opacity-70" />
-      <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-4 pb-20 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-20 pt-6 sm:px-6 lg:px-8">
         <MarketingHeader />
 
         <section className="flex flex-1 flex-col items-center py-16 lg:py-24">
@@ -43,8 +43,8 @@ export default function Home() {
               OrderPilot turns emailed POs and attachments into structured order drafts, highlights exceptions, and routes review before the ERP handoff.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild size="lg"><Link href="/platform">Explore platform <ArrowRight className="size-4" /></Link></Button>
-              <Button asChild size="lg" variant="secondary"><Link href="/order-review">See order review</Link></Button>
+              <Button asChild size="lg"><Link href="/dashboard">Enter workspace <ArrowRight className="size-4" /></Link></Button>
+              <Button asChild size="lg" variant="secondary"><Link href="/orders/PO-10482">See order review</Link></Button>
             </div>
             <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm text-white/54">
               {proofPills.map((item) => (
@@ -166,7 +166,7 @@ export default function Home() {
               Choose the rollout path that matches your current order volume and control model.
             </h2>
             <p className="mt-4 text-base leading-8 text-white/68">
-              Pick the plan that helps your team start clearing inbound order work now, then expand into deeper approval workflow and enterprise controls only when your operation is ready for them.
+              The pricing story follows the same progression shown inside Settings: start with core intake and review, expand into approval depth and ERP handoff, and add enterprise controls when the operation demands it.
             </p>
           </div>
 
@@ -199,9 +199,9 @@ export default function Home() {
                   ))}
                   <div className="pt-2">
                     {plan.key === "enterprise" ? (
-                      <Button asChild variant="secondary" className="w-full"><Link href="/contact">Talk to rollout team</Link></Button>
+                      <Button asChild variant="secondary" className="w-full"><Link href="mailto:hello@orderpilot.ai?subject=OrderPilot%20enterprise%20rollout">Talk to sales</Link></Button>
                     ) : (
-                      <Button asChild className="w-full"><Link href="/pricing">Explore pricing details</Link></Button>
+                      <Button asChild className="w-full"><Link href="/dashboard">Open workspace</Link></Button>
                     )}
                   </div>
                 </CardContent>
@@ -275,14 +275,14 @@ export default function Home() {
             <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <Badge>Next step</Badge>
-                <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">Explore the platform story, then inspect how order review works in context.</h2>
+                <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">See the workspace, then inspect how an order gets reviewed in context.</h2>
                 <p className="mt-4 max-w-3xl text-base leading-8 text-white/68">
-                  The clearest next move is to review the full platform walkthrough and then inspect a representative order review page. That gives buyers both the business-level story and the detailed line-level proof.
+                  The clearest next move is to open the actual workspace and then inspect a representative order review surface. That gives buyers both the high-level operations picture and the detailed line-level proof.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <Button asChild size="lg"><Link href="/platform">Explore platform <ArrowRight className="size-4" /></Link></Button>
-                <Button asChild size="lg" variant="secondary"><Link href="/order-review">Inspect order review</Link></Button>
+                <Button asChild size="lg"><Link href="/dashboard">Open workspace <ArrowRight className="size-4" /></Link></Button>
+                <Button asChild size="lg" variant="secondary"><Link href="/orders/PO-10482">Inspect order review</Link></Button>
               </div>
             </div>
           </div>

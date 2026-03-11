@@ -28,17 +28,10 @@ export function BrandMark({ className, size = "md" }: { className?: string; size
     >
       <svg viewBox="0 0 1024 1024" className="size-[72%]" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
-          d="M306 744V280H540C675.3 280 760 355.7 760 474C760 592.3 675.3 668 540 668H420V744H306ZM420 566H526C590.7 566 644 529.7 644 474C644 418.3 590.7 382 526 382H420V566Z"
+          d="M260 513C260 383.8 364.8 279 494 279H598V175L818 384L598 593V489H494C480.4 489 467.7 490.2 455.8 492.6C373.4 509 311 581.7 311 669C311 769.5 392.5 851 493 851H769V969H493C327.6 969 193 834.4 193 669C193 594.6 220.4 526.6 265.7 474.6L260 513Z"
           fill="white"
-          fillRule="evenodd"
-          clipRule="evenodd"
         />
-        <path
-          d="M536 474L716 294V394H836V554H716V654L536 474Z"
-          fill="#72E4FF"
-        />
-        <circle cx="737" cy="474" r="40" fill="white" fillOpacity="0.22" />
-        <circle cx="737" cy="474" r="18" fill="white" />
+        <circle cx="753" cy="383" r="54" fill="#72E4FF" />
       </svg>
     </div>
   );

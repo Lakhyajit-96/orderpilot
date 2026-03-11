@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { CircleGauge, CreditCard, Inbox, PackageSearch } from "lucide-react";
-import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { BrandLogo } from "@/components/brand/orderpilot-logo";
 import { Badge } from "@/components/ui/badge";
 import type { Viewer } from "@/lib/auth";
+import { PlatformHomeLink } from "@/components/platform/platform-home-link";
 import { SessionActionButton } from "@/components/platform/session-action-button";
 import { getPlatformAccessState, isPlatformRouteActive } from "@/lib/platform-shell-core";
 import { cn } from "@/lib/utils";
@@ -83,7 +84,9 @@ export function AppShell({
       <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 overflow-x-hidden px-4 py-4 lg:px-6" style={shellSpacingStyle}>
         {canNavigate ? (
           <aside className="hidden w-[280px] shrink-0 rounded-[30px] border border-white/10 bg-white/[0.045] p-5 backdrop-blur-2xl lg:flex lg:flex-col">
-            <div className="space-y-2">
+            <BrandLogo href="/" className="px-2 py-3" wordmarkClassName="pr-2" />
+
+            <div className="mt-8 space-y-2">
               {navItems.map(({ href, icon: Icon, label }) => {
                 const active = isPlatformRouteActive(pathname, href);
                 return (
@@ -117,20 +120,21 @@ export function AppShell({
         ) : null}
 
         <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
-          <header className="border-b border-white/8 px-5 py-4 lg:px-8">
-            <MarketingHeader compact sticky={false} primaryCta={{ label: "Dashboard", href: "/dashboard" }} />
-            <div className="mt-4 flex min-w-0 flex-wrap items-center justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
-                <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "OrderPilot workspace"}</p>
+          <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-4 lg:px-8">
+            <div className="min-w-0 flex-1">
+              <div className="mb-3 lg:hidden">
+                <BrandLogo href="/" showTagline={false} />
               </div>
-              <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
-                <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{viewer.modeLabel}</Badge>
-                <div className="hidden rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/72 md:block">
-                  {viewer.displayName}
-                </div>
-                {viewer.isConfigured ? <SessionActionButton isAuthenticated={viewer.isAuthenticated} /> : null}
+              <PlatformHomeLink />
+              <p className="mt-3 text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
+              <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "OrderPilot workspace"}</p>
+            </div>
+            <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
+              <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{viewer.modeLabel}</Badge>
+              <div className="hidden rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/72 md:block">
+                {viewer.displayName}
               </div>
+              {viewer.isConfigured ? <SessionActionButton isAuthenticated={viewer.isAuthenticated} /> : null}
             </div>
           </header>
           <main
