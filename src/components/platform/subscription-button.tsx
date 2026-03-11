@@ -39,7 +39,7 @@ export function SubscriptionButton({
 
       window.alert(payload.error ?? "Checkout is not ready yet.");
     } catch {
-      window.alert("Checkout failed. Please verify Stripe and Clerk configuration.");
+      window.alert("Checkout failed. Please verify billing and sign-in setup.");
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +58,7 @@ export function SubscriptionButton({
   return (
     <Button onClick={handleCheckout} disabled={!isCheckoutReady || isLoading} className="w-full">
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-      {isCheckoutReady ? "Start subscription" : "Stripe setup required"}
+      {isCheckoutReady ? "Start subscription" : "Billing setup required"}
     </Button>
   );
 }

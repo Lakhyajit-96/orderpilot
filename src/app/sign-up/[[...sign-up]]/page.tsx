@@ -11,14 +11,14 @@ export default function SignUpPage() {
       ) : (
         <Card className="max-w-xl">
           <CardHeader>
-            <Badge variant="violet">Auth setup required</Badge>
-            <CardTitle className="mt-4 text-3xl">Clerk sign-up flow is waiting for keys</CardTitle>
+            <Badge variant="violet">Sign-up setup required</Badge>
+            <CardTitle className="mt-4 text-3xl">Sign-up isn&apos;t available yet</CardTitle>
             <CardDescription className="text-base leading-8">
-              Configure Clerk to turn this design system into a multi-tenant SaaS onboarding experience.
+              This environment still needs sign-in keys before self-serve workspace access can be enabled.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-sm leading-7 text-white/68">
-            Once the keys are present, this route becomes the real self-serve acquisition entry point for the product.
+            Once configured, new teammates will be able to create or join a workspace from this page.
           </CardContent>
         </Card>
       )}

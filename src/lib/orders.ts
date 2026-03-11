@@ -1,7 +1,6 @@
 import { ExceptionState, OrderApprovalStatus, OrderStatus, UserRole } from "@/generated/prisma/enums";
 import { getDb } from "@/lib/db";
 import { flags } from "@/lib/env";
-import { metrics, platformOrders } from "@/lib/mock-data";
 import {
   buildGeneratedOrderRef,
   getOrderStatusLabel,
@@ -13,6 +12,7 @@ import {
 } from "@/lib/workflow";
 import { canActForRole, type WorkflowRole } from "@/lib/workflow-core";
 import { buildLaunchValueProofMetrics } from "@/lib/launch-value-proof-core";
+import { buildWorkspaceMetricCards } from "@/lib/workspace-metrics-core";
 
 type ActivityMetadata = Record<string, string | number | boolean | null>;
 
@@ -161,11 +161,6 @@ export type CreateWorkspaceOrderInput = {
   exceptions?: string[];
 };
 
-function parseCurrencyToCents(value: string) {
-  const digits = value.replace(/[^0-9.]/g, "");
-  return Math.round(Number(digits || "0") * 100);
-}
-
 function formatCurrencyFromCents(value: number | null | undefined) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -174,45 +169,12 @@ function formatCurrencyFromCents(value: number | null | undefined) {
   }).format((value ?? 0) / 100);
 }
 
-function parseTimeLabelToDate(timeLabel: string, offsetMinutes: number) {
-  const match = timeLabel.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-
-  if (!match) {
-    return new Date(Date.now() - offsetMinutes * 60_000);
-  }
-
-  const now = new Date();
-  const hours = Number(match[1]) % 12 + (match[3].toUpperCase() === "PM" ? 12 : 0);
-  now.setHours(hours, Number(match[2]), 0, 0);
-  now.setMinutes(now.getMinutes() - offsetMinutes);
-  return now;
-}
-
-function mapDemoStatus(status: string): WritableOrderStatus {
-  if (status === "Ready to export") {
-    return "APPROVED";
-  }
-
-  return "REVIEW";
-}
-
 function toOrderStatus(status: WritableOrderStatus) {
   return status as (typeof OrderStatus)[keyof typeof OrderStatus];
 }
 
 function formatTimestamp(value: Date) {
   return value.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
-
-function parseClockLabelToMinutes(value: string) {
-  const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-
-  if (!match) {
-    return null;
-  }
-
-  const hours = Number(match[1]) % 12 + (match[3].toUpperCase() === "PM" ? 12 : 0);
-  return hours * 60 + Number(match[2]);
 }
 
 function getActorWorkflowRole(actor?: OrderActor) {
@@ -297,178 +259,6 @@ async function appendOrderNote(
       authorName: input.actor?.name ?? undefined,
     },
   });
-}
-
-async function seedMockOrders(organizationId: string) {
-  const db = getDb();
-
-  if (!db) {
-    return;
-  }
-
-  const existingCount = await db.order.count({ where: { organizationId } });
-
-  if (existingCount > 0) {
-    return;
-  }
-
-  for (const [index, order] of platformOrders.entries()) {
-    const customer = await db.customer.create({
-      data: {
-        organizationId,
-        name: order.customer,
-        externalRef: order.id,
-      },
-    });
-
-    const status = mapDemoStatus(order.status);
-    const createdOrder = await db.order.create({
-      data: {
-        organizationId,
-        customerId: customer.id,
-        externalRef: order.id,
-        sourceEmail: order.channel,
-        status: toOrderStatus(status),
-        statusLabel: order.status || getOrderStatusLabel(status),
-        confidence: order.confidence,
-        totalCents: parseCurrencyToCents(order.value),
-        summary: order.summary,
-        shippingAddress: order.shippingAddress,
-        createdAt: parseTimeLabelToDate(order.receivedAt, index * 7),
-      },
-    });
-
-    for (const line of order.lineItems) {
-      const catalogItem = line.mappedTo !== "Unmapped"
-        ? await db.catalogItem.upsert({
-            where: { organizationId_sku: { organizationId, sku: line.mappedTo } },
-            create: {
-              organizationId,
-              sku: line.mappedTo,
-              name: line.description,
-              description: line.description,
-            },
-            update: {
-              name: line.description,
-              description: line.description,
-            },
-          })
-        : null;
-
-      await db.orderLine.create({
-        data: {
-          orderId: createdOrder.id,
-          requestedSku: line.sku,
-          description: line.description,
-          quantity: line.qty,
-          catalogItemId: catalogItem?.id,
-          confidence: line.match,
-          mappingState: line.state,
-        },
-      });
-    }
-
-    for (const [noteIndex, note] of order.notes.entries()) {
-      await db.orderNote.create({
-        data: {
-          orderId: createdOrder.id,
-          body: note,
-          createdAt: new Date(createdOrder.createdAt.getTime() + noteIndex * 60_000),
-        },
-      });
-    }
-
-    for (const [activityIndex, item] of order.activity.entries()) {
-      await db.orderActivity.create({
-        data: {
-          orderId: createdOrder.id,
-          label: item.label,
-          timestampLabel: item.time,
-          createdAt: new Date(createdOrder.createdAt.getTime() + activityIndex * 60_000),
-        },
-      });
-    }
-
-    for (const [exceptionIndex, exception] of order.exceptions.entries()) {
-      await db.exception.create({
-        data: {
-          orderId: createdOrder.id,
-          code: `EXC-${index + 1}-${exceptionIndex + 1}`,
-          message: exception,
-          state: ExceptionState.OPEN,
-        },
-      });
-    }
-  }
-}
-
-function fallbackOrderRows(): WorkspaceOrderListItem[] {
-  return platformOrders.map((order) => ({
-    id: order.id,
-    customer: order.customer,
-    source: order.channel,
-    receivedAt: order.receivedAt,
-    lines: order.lines,
-    confidence: order.confidence,
-    value: order.value,
-    status: order.status,
-    exceptions: order.exceptions,
-  }));
-}
-
-function fallbackOrderDetail(externalRef: string): WorkspaceOrderDetail | null {
-  const order = platformOrders.find((item) => item.id === externalRef);
-
-  if (!order) {
-    return null;
-  }
-
-  const statusKey = mapDemoStatus(order.status);
-
-  return {
-    id: order.id,
-    customer: order.customer,
-    channel: order.channel,
-    receivedAt: order.receivedAt,
-    lines: order.lines,
-    confidence: order.confidence,
-    value: order.value,
-    status: order.status,
-    statusKey,
-    summary: order.summary,
-    shippingAddress: order.shippingAddress,
-    notes: order.notes.map((note, index) => ({
-      id: `mock-note-${index + 1}`,
-      body: note,
-      authorName: "System",
-      createdAt: order.receivedAt,
-    })),
-    lineItems: order.lineItems.map((line) => ({
-      sku: line.sku,
-      description: line.description,
-      qty: line.qty,
-      mappedTo: line.mappedTo,
-      match: line.match,
-      state: line.state,
-    })),
-    exceptions: order.exceptions.map((message, index) => ({
-      id: `mock-${index + 1}`,
-      message,
-      state: "OPEN",
-    })),
-    activity: order.activity.map((item, index) => ({
-      id: `mock-activity-${index + 1}`,
-      label: item.label,
-      time: item.time,
-      actorName: "System",
-      actionType: "MOCK",
-      undoable: false,
-      isUndone: false,
-    })),
-    exportRuns: [],
-    approvals: [],
-    nextApprovalRole: null,
-  };
 }
 
 async function getOrCreateCustomer(input: {
@@ -1125,10 +915,8 @@ export async function getWorkspaceOrders(
   const db = getDb();
 
   if (!flags.hasDatabase || !db || !organizationId) {
-    return fallbackOrderRows();
+    return [];
   }
-
-  await seedMockOrders(organizationId);
 
   const orders = await db.order.findMany({
     where: { organizationId },
@@ -1156,10 +944,8 @@ export async function getWorkspaceOrderByExternalRef(
   const db = getDb();
 
   if (!flags.hasDatabase || !db || !organizationId) {
-    return fallbackOrderDetail(externalRef);
+    return null;
   }
-
-  await seedMockOrders(organizationId);
 
   const order = await db.order.findUnique({
     where: { organizationId_externalRef: { organizationId, externalRef } },
@@ -1260,10 +1046,12 @@ export async function getWorkspaceMetrics(organizationId: string | null | undefi
   const db = getDb();
 
   if (!flags.hasDatabase || !db || !organizationId) {
-    return metrics;
+    return buildWorkspaceMetricCards({
+      ordersProcessed: 0,
+      reviewCount: 0,
+      totalRevenueCents: 0,
+    });
   }
-
-  await seedMockOrders(organizationId);
 
   const [ordersProcessed, reviewCount, totalRevenue] = await Promise.all([
     db.order.count({ where: { organizationId } }),
@@ -1271,45 +1059,24 @@ export async function getWorkspaceMetrics(organizationId: string | null | undefi
     db.order.aggregate({ where: { organizationId }, _sum: { totalCents: true } }),
   ]);
 
-  const straightThroughRate = ordersProcessed === 0 ? 0 : Math.round(((ordersProcessed - reviewCount) / ordersProcessed) * 100);
-
-  return [
-    { label: "Orders processed", value: String(ordersProcessed), delta: "Persisted in your workspace" },
-    { label: "Straight-through rate", value: `${straightThroughRate}%`, delta: `${reviewCount} order(s) still need review` },
-    { label: "Open review queue", value: String(reviewCount), delta: "Based on current order statuses" },
-    { label: "Revenue routed", value: formatCurrencyFromCents(totalRevenue._sum.totalCents), delta: "From persisted workspace orders" },
-  ];
+  return buildWorkspaceMetricCards({
+    ordersProcessed,
+    reviewCount,
+    totalRevenueCents: totalRevenue._sum.totalCents,
+  });
 }
 
 export async function getWorkspaceValueProofMetrics(organizationId: string | null | undefined) {
   const db = getDb();
 
   if (!flags.hasDatabase || !db || !organizationId) {
-    const ordersIngested = platformOrders.length;
-    const ordersReviewed = platformOrders.filter((order) => order.status !== "Intake captured").length;
-    const firstOrderMinutes = platformOrders
-      .map((order) => parseClockLabelToMinutes(order.receivedAt))
-      .filter((value): value is number => value !== null)
-      .sort((left, right) => left - right)[0] ?? null;
-    const firstErpReadyMinutes = platformOrders
-      .filter((order) => order.status === "Ready to export")
-      .map((order) => parseClockLabelToMinutes(order.receivedAt))
-      .filter((value): value is number => value !== null)
-      .sort((left, right) => left - right)[0] ?? null;
-
     return buildLaunchValueProofMetrics({
-      ordersIngested,
-      ordersReviewed,
-      firstOrderAt: firstOrderMinutes === null
-        ? null
-        : new Date(Date.UTC(2026, 2, 11, Math.floor(firstOrderMinutes / 60), firstOrderMinutes % 60)).toISOString(),
-      firstErpReadyAt: firstErpReadyMinutes === null
-        ? null
-        : new Date(Date.UTC(2026, 2, 11, Math.floor(firstErpReadyMinutes / 60), firstErpReadyMinutes % 60)).toISOString(),
+      ordersIngested: 0,
+      ordersReviewed: 0,
+      firstOrderAt: null,
+      firstErpReadyAt: null,
     });
   }
-
-  await seedMockOrders(organizationId);
 
   const [ordersIngested, ordersReviewed, firstOrder, firstErpReadyActivity, firstReadyOrder] = await Promise.all([
     db.order.count({ where: { organizationId } }),

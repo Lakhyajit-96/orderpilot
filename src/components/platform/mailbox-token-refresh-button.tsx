@@ -17,13 +17,13 @@ export function MailboxTokenRefreshButton({ connectionId }: { connectionId: stri
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        window.alert(payload.error ?? "Could not refresh mailbox token.");
+        window.alert(payload.error ?? "Could not refresh the mailbox connection.");
         return;
       }
 
       router.refresh();
     } catch {
-      window.alert("Could not refresh mailbox token. Please try again.");
+      window.alert("Could not refresh the mailbox connection. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +32,7 @@ export function MailboxTokenRefreshButton({ connectionId }: { connectionId: stri
   return (
     <Button variant="secondary" size="sm" disabled={isLoading} onClick={handleRefresh}>
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-      Refresh token
+      Refresh connection
     </Button>
   );
 }

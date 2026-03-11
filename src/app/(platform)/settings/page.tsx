@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowUpRight, CheckCircle2, CircleDashed } from "lucide-react";
-import { BillingReplayButton } from "@/components/platform/billing-replay-button";
 import { CustomerPortalButton } from "@/components/platform/customer-portal-button";
 import { ErpConnectionForm } from "@/components/platform/erp-connection-form";
 import { ExportRetryButton } from "@/components/platform/export-retry-button";
@@ -23,7 +22,7 @@ import {
   getNextDashboardLaunchStep,
 } from "@/lib/dashboard-checklist-core";
 import { getWorkspaceErpConnections, getWorkspaceExportRuns } from "@/lib/erp";
-import { env, flags } from "@/lib/env";
+import { flags } from "@/lib/env";
 import { getWorkspaceInboxConnections } from "@/lib/inbox";
 import { recordLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 import { getWorkspaceOrders } from "@/lib/orders";
@@ -32,19 +31,19 @@ import { getWorkspaceNotifications, getWorkspaceWorkflowSettings } from "@/lib/w
 
 const settingsCards = [
   {
-    title: "Inbox connections",
-    description: "Connect shared mailboxes, parsing pipelines, and file ingress.",
-    items: ["Microsoft 365 shared inbox", "Gmail routing alias", "Manual upload dropzone"],
+    title: "Input channels",
+    description: "Connect the shared inboxes and upload paths your team uses every day.",
+    items: ["Microsoft 365 shared inbox", "Gmail routing alias", "Manual upload entry"],
   },
   {
-    title: "Billing + plans",
-    description: "Seat pricing, processed order volume, and premium support controls.",
-    items: ["Starter · 2 operators", "Growth · ERP export enabled", "Enterprise SSO placeholder"],
+    title: "Plan and access",
+    description: "Keep billing, workspace roles, and rollout readiness aligned.",
+    items: ["Starter pilot coverage", "Growth plan with ERP handoff", "Team access and onboarding"],
   },
   {
-    title: "Automation rules",
-    description: "Set confidence thresholds, route exceptions, and control who approves exports.",
-    items: ["Auto-approve above 98%", "Route unmapped SKUs to catalog", "Require finance review for >$25k"],
+    title: "Review workflow",
+    description: "Set confidence thresholds, approval routing, and escalation rules.",
+    items: ["Auto-approve above 98%", "Route unmapped SKUs to catalog review", "Require finance review above $25k"],
   },
 ];
 
@@ -69,16 +68,24 @@ function formatEventTimestamp(value: Date) {
   });
 }
 
-function getEventBadgeVariant(status: string) {
-  if (status === "PROCESSED") {
-    return "success" as const;
+function formatCurrencyFromCents(value: number | null | undefined) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format((value ?? 0) / 100);
+}
+
+function formatSyncMode(value: string) {
+  if (value === "WEBHOOK") {
+    return "Push sync";
   }
 
-  if (status === "RECEIVED") {
-    return "default" as const;
+  if (value === "POLLING") {
+    return "Scheduled sync";
   }
 
-  return "muted" as const;
+  return formatStatusLabel(value);
 }
 
 export default async function SettingsPage() {
@@ -95,8 +102,6 @@ export default async function SettingsPage() {
     getWorkspaceOrders(viewer.workspace?.id),
   ]);
   const billingDiagnostics = await getBillingDiagnosticsSnapshot(viewer.workspace?.id);
-  const recentBillingEvents = billingDiagnostics.recentEvents;
-  const failedBillingEvents = billingDiagnostics.failedEvents;
   const currentSubscription = billingDiagnostics.subscription ?? viewer.workspace?.subscription ?? null;
   const activePlan = currentSubscription?.planKey ?? null;
   const hasManagedSubscription = Boolean(
@@ -143,13 +148,13 @@ export default async function SettingsPage() {
 
   const readiness = [
     {
-      title: "Authentication",
+      title: "Sign-in",
       status: flags.hasClerk ? "Configured" : "Pending setup",
       description: flags.hasClerk
         ? viewer.isAuthenticated
-          ? `Signed in as ${viewer.displayName}. Clerk session is active.`
-          : "Clerk keys detected. Sign in to activate workspace-aware access control."
-        : "Add Clerk keys to enable secure sign-in and self-serve onboarding.",
+          ? `Signed in as ${viewer.displayName}. Workspace access is active.`
+          : "Sign-in is configured. Sign in to manage workspace access."
+        : "Add sign-in keys to enable secure workspace access.",
     },
     {
       title: "Billing",
@@ -157,27 +162,27 @@ export default async function SettingsPage() {
       description: flags.hasStripe
         ? viewer.workspace?.subscription
           ? `Subscription status: ${formatStatusLabel(viewer.workspace.subscription.status)}.`
-          : "Stripe keys detected. Checkout sessions can now be created from the pricing controls below."
-        : "Add Stripe keys and price IDs to enable subscriptions.",
+          : "Billing is configured. Complete checkout to activate a plan."
+        : "Add billing keys and price IDs to enable subscriptions.",
     },
     {
-      title: "Database",
+      title: "Data storage",
       status: flags.hasDatabase ? "Configured" : "Pending setup",
       description: flags.hasDatabase
         ? viewer.workspace
-          ? `Workspace ${viewer.workspace.name} is connected to Prisma persistence.`
-          : "DATABASE_URL is available. Prisma will create a workspace on the first authenticated request."
-        : "Add a PostgreSQL connection string to enable persistence.",
+          ? `Workspace data is being stored for ${viewer.workspace.name}.`
+          : "Persistent workspace storage is ready and will activate after sign-in."
+        : "Add a database connection to store orders, activity, and settings.",
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <Badge variant="violet">System settings</Badge>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white">Control the operating model behind the automation</h1>
+        <Badge variant="violet">Workspace settings</Badge>
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white">Manage rollout, connections, and team workflow</h1>
         <p className="mt-3 max-w-3xl text-base leading-8 text-white/64">
-          This is where launch readiness gets completed: mailbox setup, approvals, exports, billing, and the final steps needed to turn OrderPilot into a daily operating system.
+          Connect intake channels, confirm approvals and exports, and keep the workspace ready for customer rollout.
         </p>
       </div>
 
@@ -225,7 +230,7 @@ export default async function SettingsPage() {
             <div className="min-w-0">
               <CardTitle>Guided launch setup</CardTitle>
               <CardDescription>
-                The dashboard checklist now routes here. Complete the launch steps in order instead of hunting through generic settings.
+                Complete the rollout steps in order and jump straight to the next action.
               </CardDescription>
             </div>
             <Badge variant={checklistProgress.completed === checklistProgress.total ? "success" : "violet"}>
@@ -298,9 +303,9 @@ export default async function SettingsPage() {
       <section id="mailbox-provider-integration" className="scroll-mt-24">
       <Card>
         <CardHeader>
-          <CardTitle>Mailbox provider integration</CardTitle>
+          <CardTitle>Mailbox connections</CardTitle>
           <CardDescription>
-            Step 2 of launch: connect Gmail or Microsoft 365 with polling today, or use the webhook-ready endpoint for normalized push ingestion.
+            Step 2 of launch: connect Gmail or Microsoft 365, run syncs, and keep inbound order coverage healthy.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -310,10 +315,10 @@ export default async function SettingsPage() {
               Connections: {inboxConnections.length}
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Polling ready: {inboxConnections.filter((item) => item.syncMode === "POLLING").length}
+              Scheduled sync: {inboxConnections.filter((item) => item.syncMode === "POLLING").length}
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Webhook-ready: {inboxConnections.filter((item) => item.syncMode === "WEBHOOK").length}
+              Push sync: {inboxConnections.filter((item) => item.syncMode === "WEBHOOK").length}
             </div>
           </div>
           {inboxConnections.length ? (
@@ -323,27 +328,27 @@ export default async function SettingsPage() {
                   <div>
                     <p className="text-sm font-medium text-white">{connection.provider} · {connection.address}</p>
                     <p className="text-xs text-white/45">
-                      {connection.syncMode} · Last sync {connection.lastSyncedAt ? formatEventTimestamp(connection.lastSyncedAt) : "never"}
+                      {formatSyncMode(connection.syncMode)} · Last sync {connection.lastSyncedAt ? formatEventTimestamp(connection.lastSyncedAt) : "never"}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <MailboxSyncButton connectionId={connection.id} />
-                    <MailboxTokenRefreshButton connectionId={connection.id} />
-                    <MailboxBootstrapButton connectionId={connection.id} />
+                    {connection.oauthConnected ? <MailboxTokenRefreshButton connectionId={connection.id} /> : null}
+                    {connection.syncMode === "WEBHOOK" ? <MailboxBootstrapButton connectionId={connection.id} /> : null}
                   </div>
                 </div>
                 <p className="mt-2 text-sm text-white/55">
-                  OAuth: {connection.oauthConnected ? "Connected" : "Manual / not connected"} · Access token: {connection.accessToken ?? "not stored"} · Webhook secret: {connection.webhookSecret ?? "not stored"}
+                  OAuth: {connection.oauthConnected ? "Connected" : "Not connected"} · Credentials: {connection.accessToken ? "Stored securely" : "Not stored"} · Inbound verification: {connection.webhookSecret ? "Configured" : "Not configured"}
                 </p>
                 <p className="mt-1 text-sm text-white/55">
-                  Subscription: {formatStatusLabel(connection.providerSubscriptionStatus)} · Expires {connection.providerSubscriptionExpiresAt ? formatEventTimestamp(connection.providerSubscriptionExpiresAt) : "not bootstrapped"}
+                  Inbound subscription: {formatStatusLabel(connection.providerSubscriptionStatus)} · Expires {connection.providerSubscriptionExpiresAt ? formatEventTimestamp(connection.providerSubscriptionExpiresAt) : "not started"}
                 </p>
-                {connection.lastError ? <p className="mt-2 text-sm text-amber-200/80">{connection.lastError}</p> : null}
+                {connection.lastError ? <p className="mt-2 text-sm text-amber-200/80">Latest connection issue: {connection.lastError}</p> : null}
               </div>
             ))
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No Gmail or Microsoft 365 mailbox connections are configured yet.
+              No mailbox connections are configured yet. Connect a shared inbox to start capturing inbound orders.
             </div>
           )}
         </CardContent>
@@ -354,9 +359,9 @@ export default async function SettingsPage() {
       <section id="erp-export-integration" className="scroll-mt-24">
       <Card>
         <CardHeader>
-          <CardTitle>ERP/export integration</CardTitle>
+          <CardTitle>ERP handoff</CardTitle>
           <CardDescription>
-            Step 5 of launch: push approved orders into a real downstream endpoint and retry failed runs safely.
+            Step 5 of launch: connect approved orders to a downstream system and retry failed handoffs safely.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -376,17 +381,17 @@ export default async function SettingsPage() {
             erpConnections.map((connection) => (
               <div key={connection.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4">
                 <p className="text-sm font-medium text-white">{connection.name}</p>
-                <p className="mt-1 text-xs text-white/45">{connection.provider} · {connection.endpointUrl}</p>
-                <p className="mt-2 text-sm text-white/55">Auth header: {connection.authHeader ?? "not stored"}</p>
+                <p className="mt-1 text-xs text-white/45">{connection.provider} · Destination {connection.endpointUrl}</p>
+                <p className="mt-2 text-sm text-white/55">Authentication: {connection.authHeader ? "Stored securely" : "Not configured"}</p>
                 <p className="mt-1 text-sm text-white/55">
                   Field mappings: {connection.fieldMappings ? "Configured" : "Default"} · Adapter settings: {connection.adapterSettings ? "Configured" : "Default"}
                 </p>
-                {connection.lastError ? <p className="mt-2 text-sm text-amber-200/80">{connection.lastError}</p> : null}
+                {connection.lastError ? <p className="mt-2 text-sm text-amber-200/80">Latest handoff issue: {connection.lastError}</p> : null}
               </div>
             ))
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No ERP/export connection is configured yet.
+              No ERP handoff is configured yet. Add a downstream destination before rollout.
             </div>
           )}
           {exportRuns.length ? (
@@ -402,7 +407,11 @@ export default async function SettingsPage() {
                 <p className="mt-2 text-sm text-white/55">{run.message ?? "No export message recorded."}</p>
               </div>
             ))
-          ) : null}
+          ) : (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
+              No ERP handoffs have been attempted yet. Approved orders will appear here after export starts.
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -412,7 +421,7 @@ export default async function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Review workflow policy</CardTitle>
-          <CardDescription>Control multi-step approval roles, thresholds, and reason codes per tenant.</CardDescription>
+          <CardDescription>Control approval roles, thresholds, and reason codes for this workspace.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
@@ -423,7 +432,7 @@ export default async function SettingsPage() {
               Approval stages: {workflowSettings.stages.length}
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Finance threshold: {workflowSettings.policy.financeThresholdCents ?? 0} cents
+              Finance threshold: {formatCurrencyFromCents(workflowSettings.policy.financeThresholdCents)}
             </div>
           </div>
           <WorkflowPolicyForm
@@ -445,7 +454,7 @@ export default async function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Workflow notifications</CardTitle>
-          <CardDescription>Unread approval and export notifications routed to your current workspace role.</CardDescription>
+          <CardDescription>Unread approval and export updates for your current workspace role.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           {notifications.length ? (
@@ -463,7 +472,7 @@ export default async function SettingsPage() {
             ))
           ) : (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No notifications are waiting for this workspace user.
+              No workflow updates are waiting for this workspace role.
             </div>
           )}
         </CardContent>
@@ -475,7 +484,7 @@ export default async function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Workspace billing</CardTitle>
-          <CardDescription>Step 6 of launch: confirm live tenant and subscription state before customer rollout.</CardDescription>
+          <CardDescription>Step 6 of launch: confirm plan status and billing access before rollout.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-3 md:grid-cols-3">
@@ -489,91 +498,18 @@ export default async function SettingsPage() {
               Plan: {activePlan ? activePlan.charAt(0).toUpperCase() + activePlan.slice(1) : "No active subscription"}
             </div>
           </div>
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+            Billing status: {billingDiagnostics.subscription?.status ? formatStatusLabel(billingDiagnostics.subscription.status) : "No subscription has been recorded yet"}
+            {billingDiagnostics.subscription?.planKey ? ` · ${billingDiagnostics.subscription.planKey}` : ""}
+          </div>
           <div className="flex flex-wrap items-center gap-3">
             <CustomerPortalButton isReady={hasPortalAccess} />
             <p className="text-sm text-white/55">
               {hasPortalAccess
-                ? "Update payment method, switch plans, or cancel inside Stripe Billing Portal."
+                ? "Update payment method, switch plans, or cancel inside the billing portal."
                 : "The billing portal unlocks automatically after the first completed checkout."}
             </p>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Billing diagnostics</CardTitle>
-          <CardDescription>
-            Recent Stripe webhook outcomes linked to this workspace for easier debugging.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Webhook secret: {env.STRIPE_WEBHOOK_SECRET ? "Configured" : "Missing"}
-            </div>
-            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Recent events: {recentBillingEvents.length}
-            </div>
-            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Failed events: {failedBillingEvents.length}
-            </div>
-          </div>
-          <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-            Linked subscription state: {billingDiagnostics.subscription?.status ? formatStatusLabel(billingDiagnostics.subscription.status) : "No persisted subscription yet"}
-            {billingDiagnostics.subscription?.planKey ? ` · ${billingDiagnostics.subscription.planKey}` : ""}
-          </div>
-          {recentBillingEvents.length ? (
-            recentBillingEvents.map((event) => (
-              <div key={event.externalEventId} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-white">{event.eventType}</p>
-                    <p className="text-xs text-white/45">{formatEventTimestamp(event.createdAt)}</p>
-                  </div>
-                  <Badge variant={getEventBadgeVariant(event.status)}>{formatStatusLabel(event.status)}</Badge>
-                </div>
-                <p className="mt-2 text-sm text-white/55">
-                  Customer: {event.stripeCustomerId ?? "pending"} · Subscription: {event.stripeSubscriptionId ?? "pending"}
-                </p>
-                {event.message ? <p className="mt-2 text-sm text-amber-200/80">{event.message}</p> : null}
-              </div>
-            ))
-          ) : (
-            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No billing events have been logged for this workspace yet. Complete a checkout or forward Stripe webhooks to populate this feed.
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Failed webhook replay queue</CardTitle>
-          <CardDescription>Only failed or ignored events can be replayed. Replays pull the canonical event from Stripe before reprocessing.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {failedBillingEvents.length ? (
-            failedBillingEvents.map((event) => (
-              <div key={`${event.externalEventId}-failed`} className="rounded-2xl border border-amber-400/20 bg-amber-400/8 px-4 py-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-white">{event.eventType}</p>
-                    <p className="text-xs text-white/55">{formatEventTimestamp(event.createdAt)} · {event.externalEventId}</p>
-                  </div>
-                  <BillingReplayButton eventId={event.externalEventId} />
-                </div>
-                <p className="mt-2 text-sm text-white/60">
-                  Customer: {event.stripeCustomerId ?? "pending"} · Subscription: {event.stripeSubscriptionId ?? "pending"} · Plan: {event.planKey ?? "pending"}
-                </p>
-                {event.message ? <p className="mt-2 text-sm text-amber-100/90">{event.message}</p> : null}
-              </div>
-            ))
-          ) : (
-            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-              No failed or ignored billing events are waiting for replay.
-            </div>
-          )}
         </CardContent>
       </Card>
 
@@ -600,9 +536,9 @@ export default async function SettingsPage() {
                   activePlan === plan.key ? (
                     <CustomerPortalButton isReady={hasPortalAccess} />
                   ) : (
-                    <Button variant="secondary" className="w-full" disabled>
-                      Change in billing portal
-                    </Button>
+                    <div className="rounded-2xl border border-dashed border-white/10 px-4 py-3 text-center text-sm text-white/55">
+                      Change plans from the billing portal on the current subscription.
+                    </div>
                   )
                 ) : (
                   <SubscriptionButton planKey={plan.key} isCheckoutReady={flags.hasStripe} />

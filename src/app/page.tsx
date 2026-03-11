@@ -5,7 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const proof = ["74% straight-through rate", "2m 16s average review", "$3.8M routed this month"];
+const proof = [
+  "Shared inbox intake for distributor teams",
+  "Reviewer-controlled exception handling",
+  "ERP-ready handoff before export",
+];
 const features = [
   {
     icon: Bot,
@@ -14,8 +18,8 @@ const features = [
   },
   {
     icon: Layers3,
-    title: "Exception routing without enterprise ugliness",
-    text: "Every mismatch is surfaced with confidence, mapping evidence, and a reviewer lane that feels modern instead of clunky.",
+    title: "Exception routing built for ops teams",
+    text: "Every mismatch is surfaced with confidence, mapping evidence, and a review flow your team can work through quickly.",
   },
   {
     icon: ShieldCheck,
@@ -46,24 +50,24 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden items-center gap-3 md:flex">
-            <Link href="/dashboard" className="text-sm text-white/62 transition hover:text-white">Product</Link>
-            <Link href="/orders" className="text-sm text-white/62 transition hover:text-white">Workspace</Link>
+            <Link href="#how-distributors-use-orderpilot" className="text-sm text-white/62 transition hover:text-white">How it works</Link>
+            <Link href="/orders/PO-10482" className="text-sm text-white/62 transition hover:text-white">See order review</Link>
             <Button asChild variant="secondary" size="sm"><Link href="/dashboard">Open app</Link></Button>
           </div>
         </header>
 
         <section className="grid flex-1 items-center gap-10 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
           <div>
-            <Badge>Build-first B2B infrastructure</Badge>
+            <Badge>Built for distributor operations</Badge>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
               Turn emailed purchase orders into <span className="text-gradient">ERP-ready draft orders.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-9 text-white/66 sm:text-xl">
-              OrderPilot ingests email threads and PDF attachments, extracts structured order data, resolves SKU ambiguity, and routes exceptions into a premium review workflow.
+              OrderPilot turns emailed POs and attachments into structured order drafts, highlights exceptions, and routes review before the ERP handoff.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg"><Link href="/dashboard">Enter workspace <ArrowRight className="size-4" /></Link></Button>
-              <Button asChild size="lg" variant="secondary"><Link href="/orders/PO-10482">See live order review</Link></Button>
+              <Button asChild size="lg" variant="secondary"><Link href="/orders/PO-10482">See order review</Link></Button>
             </div>
             <div className="mt-10 flex flex-wrap gap-3 text-sm text-white/54">
               {proof.map((item) => (
@@ -90,12 +94,17 @@ export default function Home() {
           ))}
         </section>
 
-        <section className="mt-16 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <section id="how-distributors-use-orderpilot" className="mt-16 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <Card>
             <CardHeader>
-              <CardTitle>Why this product is inevitable</CardTitle>
-              <CardDescription>Industrial distributors already live in email-driven order intake. The workflow is real, expensive, and daily.</CardDescription>
+              <CardTitle>How distributors use OrderPilot</CardTitle>
+              <CardDescription>See how a PO moves from email intake to ERP-ready review.</CardDescription>
             </CardHeader>
+            <CardContent>
+              <p className="text-base leading-8 text-white/72">
+                What changes on day one: the shared inbox becomes a structured review queue, exceptions get context, and approved orders are ready for downstream handoff.
+              </p>
+            </CardContent>
           </Card>
           <div className="grid gap-3 sm:grid-cols-2">
             {steps.map((step, index) => (

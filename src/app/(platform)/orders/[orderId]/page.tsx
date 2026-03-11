@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getViewer } from "@/lib/auth";
 import { flags } from "@/lib/env";
 import { getWorkspaceOrderByExternalRef } from "@/lib/orders";
+import { getPlatformAccessState } from "@/lib/platform-shell-core";
 import { getReasonCodesForAction, getWorkspaceWorkflowSettings } from "@/lib/workflow";
 
 export default async function OrderDetailPage({
@@ -18,8 +19,14 @@ export default async function OrderDetailPage({
 }) {
   const { orderId } = await params;
   const viewer = await getViewer();
-  const order = await getWorkspaceOrderByExternalRef(viewer.workspace?.id, orderId);
-  const workflowSettings = await getWorkspaceWorkflowSettings(viewer.workspace?.id);
+  const accessState = getPlatformAccessState(viewer);
+
+  if (accessState !== "READY" || !viewer.workspace?.id) {
+    return null;
+  }
+
+  const order = await getWorkspaceOrderByExternalRef(viewer.workspace.id, orderId);
+  const workflowSettings = await getWorkspaceWorkflowSettings(viewer.workspace.id);
 
   if (!order) {
     notFound();
@@ -95,7 +102,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle>Approval chain</CardTitle>
-              <CardDescription>Role-gated multi-step approval state for this order.</CardDescription>
+              <CardDescription>Role-based approval steps for this order.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {order.approvals.length ? (
@@ -113,7 +120,7 @@ export default async function OrderDetailPage({
                 ))
               ) : (
                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-                  This order does not currently require explicit approval stages.
+                  No extra approval steps are required for this order right now.
                 </div>
               )}
             </CardContent>
@@ -121,40 +128,52 @@ export default async function OrderDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Exceptions + notes</CardTitle>
-              <CardDescription>Reviewer context carried with the order.</CardDescription>
+              <CardTitle>Exceptions and notes</CardTitle>
+              <CardDescription>Context captured during review and handoff.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {order.exceptions.map((exception) => (
-                <div key={exception.id} className="rounded-2xl border border-violet-400/20 bg-violet-400/8 px-4 py-3 text-sm text-violet-50">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p>{exception.message}</p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-violet-100/70">{exception.state}</p>
+              {order.exceptions.length ? (
+                order.exceptions.map((exception) => (
+                  <div key={exception.id} className="rounded-2xl border border-violet-400/20 bg-violet-400/8 px-4 py-3 text-sm text-violet-50">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p>{exception.message}</p>
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-violet-100/70">{exception.state}</p>
+                      </div>
+                      <ExceptionResolveButton
+                        orderId={order.id}
+                        exceptionId={exception.id}
+                        disabled={!canEdit || exception.state === "RESOLVED"}
+                      />
                     </div>
-                    <ExceptionResolveButton
-                      orderId={order.id}
-                      exceptionId={exception.id}
-                      disabled={!canEdit || exception.state === "RESOLVED"}
-                    />
                   </div>
+                ))
+              ) : (
+                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
+                  No active exceptions are blocking this order right now.
                 </div>
-              ))}
+              )}
               <OrderNoteComposer orderId={order.id} disabled={!canEdit} />
-              {order.notes.map((note) => (
-                <div key={note.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-                  <p>{note.body}</p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">{note.authorName ?? "System"} · {note.createdAt}</p>
+              {order.notes.length ? (
+                order.notes.map((note) => (
+                  <div key={note.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+                    <p>{note.body}</p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">{note.authorName ?? "System"} · {note.createdAt}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
+                  No reviewer notes have been added yet.
                 </div>
-              ))}
+              )}
               <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/58">Ship-to: {order.shippingAddress}</div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Activity trail</CardTitle>
-              <CardDescription>Timeline for extraction, matching, and handoff.</CardDescription>
+              <CardTitle>Activity history</CardTitle>
+              <CardDescription>Timeline of intake, review, and handoff.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {order.activity.map((item) => (
@@ -182,7 +201,7 @@ export default async function OrderDetailPage({
                 ))
               ) : (
                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-                  No ERP exports have been attempted for this order yet.
+                  No ERP handoff has been attempted for this order yet. Approve the order to enable export.
                 </div>
               )}
             </CardContent>

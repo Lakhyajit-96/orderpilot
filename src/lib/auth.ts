@@ -17,9 +17,9 @@ export async function getViewer(): Promise<Viewer> {
     return {
       isConfigured: false,
       isAuthenticated: false,
-      displayName: "Demo workspace",
+      displayName: "Workspace access",
       email: null,
-      modeLabel: "Auth not configured",
+      modeLabel: "Sign-in unavailable",
       clerkUserId: null,
       workspace: null,
     };
@@ -63,7 +63,7 @@ export async function getViewer(): Promise<Viewer> {
       isAuthenticated: true,
       displayName,
       email,
-      modeLabel: "Authenticated with Clerk",
+      modeLabel: "Signed in",
       clerkUserId: authState.userId,
       workspace,
     };
@@ -74,7 +74,7 @@ export async function getViewer(): Promise<Viewer> {
       isAuthenticated: false,
       displayName: "Guest",
       email: null,
-      modeLabel: "Clerk setup incomplete",
+      modeLabel: "Sign-in issue",
       clerkUserId: null,
       workspace: null,
     };

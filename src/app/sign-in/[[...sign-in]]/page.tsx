@@ -11,14 +11,14 @@ export default function SignInPage() {
       ) : (
         <Card className="max-w-xl">
           <CardHeader>
-            <Badge variant="violet">Auth setup required</Badge>
-            <CardTitle className="mt-4 text-3xl">Clerk is not configured yet</CardTitle>
+            <Badge variant="violet">Sign-in setup required</Badge>
+            <CardTitle className="mt-4 text-3xl">Sign-in isn&apos;t available yet</CardTitle>
             <CardDescription className="text-base leading-8">
-              Add your Clerk publishable and secret keys to enable secure sign-in for the OrderPilot workspace.
+              This environment still needs sign-in keys before secure workspace access can be enabled.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-sm leading-7 text-white/68">
-            Until then, the app stays in demo workspace mode so the product can keep evolving without blocking on credentials.
+            Once sign-in is configured, your team will be able to access its workspace from this page.
           </CardContent>
         </Card>
       )}

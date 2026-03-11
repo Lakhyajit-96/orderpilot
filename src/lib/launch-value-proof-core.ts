@@ -39,18 +39,18 @@ export function buildLaunchValueProofMetrics(input: LaunchValueProofInput) {
     {
       label: "Orders ingested",
       value: String(input.ordersIngested),
-      detail: input.ordersIngested === 0 ? "No live orders have landed yet." : "Live customer traffic captured in this workspace.",
+      detail: input.ordersIngested === 0 ? "No orders have landed yet." : "Orders captured in this workspace.",
     },
     {
       label: "Orders reviewed",
       value: String(input.ordersReviewed),
-      detail: input.ordersIngested === 0 ? "Review rate unlocks after the first ingestion." : `${reviewRate}% of ingested orders have entered review or approval.`,
+      detail: input.ordersIngested === 0 ? "Review rate appears after the first order arrives." : `${reviewRate}% of ingested orders have entered review or approval.`,
     },
     {
       label: "Time to first ERP-ready order",
       value: timeToFirstErpReady,
       detail: timeToFirstErpReady === "Not reached yet"
-        ? "Approve one order to unlock the first go-live proof point."
+        ? "Approve one order to unlock the first handoff proof point."
         : "Elapsed from the first ingested order to the first approved/export-ready order.",
     },
   ];
