@@ -19,6 +19,7 @@ test("marketing site data covers navigation, proof, and trust sections", () => {
   assert.equal(workflowSteps.length, 4);
   assert.equal(headerMenuGroups.length, 4);
   assert.equal(headerMenuGroups[0]?.label, "Platform");
+  assert.equal(headerMenuGroups[0]?.items[2]?.href, "/settings");
   assert.equal(testimonials.length, 5);
   assert.equal(testimonials[0]?.company, "Atlas Industrial Supply");
   assert.match(testimonials[0]?.detail ?? "", /Microsoft 365/);

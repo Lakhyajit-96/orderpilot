@@ -267,7 +267,7 @@ export const headerMenuGroups = [
       {
         title: "Live settings controls",
         description: "Confirm rollout, billing, and ERP readiness without leaving the product.",
-        href: "#pricing",
+        href: "/settings",
       },
       {
         title: "Customer proof",
