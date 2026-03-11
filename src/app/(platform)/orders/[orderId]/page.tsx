@@ -36,12 +36,12 @@ export default async function OrderDetailPage({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <section className="panel rounded-[28px] p-6 lg:p-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
+          <div className="min-w-0">
             <Badge>{order.status}</Badge>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white lg:text-4xl">{order.id} · {order.customer}</h1>
+            <h1 className="mt-4 break-words text-3xl font-semibold tracking-tight text-white lg:text-4xl">{order.id} · {order.customer}</h1>
             <p className="mt-3 max-w-3xl text-base leading-8 text-white/64">{order.summary}</p>
             <div className="mt-5">
               <OrderReviewControls

@@ -11,10 +11,10 @@ export default async function InboxPage() {
   const reviewQueue = await getWorkspaceOrders(viewer.workspace?.id);
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div>
         <Badge variant="violet">Inbox view</Badge>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white">Shared order intake inbox</h1>
+        <h1 className="mt-4 break-words text-3xl font-semibold tracking-tight text-white">Shared order intake inbox</h1>
         <p className="mt-3 max-w-3xl text-base leading-8 text-white/64">
           Every inbound email, PO attachment, and parser status lands here first. Reviewers can jump straight into the highest-leverage exceptions.
         </p>
@@ -38,15 +38,15 @@ export default async function InboxPage() {
         <CardContent className="space-y-4">
           {reviewQueue.map((item) => (
             <div key={item.id} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <div className="flex items-center gap-3 text-sm text-white/74">
+              <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-white/74">
                     <Mail className="size-4 text-cyan-200" />
                     <span>{item.source}</span>
                     <span className="text-white/34">·</span>
                     <span>{item.receivedAt}</span>
                   </div>
-                  <h2 className="mt-3 text-xl font-semibold text-white">{item.id} · {item.customer}</h2>
+                  <h2 className="mt-3 break-words text-xl font-semibold text-white">{item.id} · {item.customer}</h2>
                   <p className="mt-2 text-sm text-white/56">{item.lines} lines · {item.value} · {item.status}</p>
                 </div>
                 <Link href={`/orders/${item.id}`} className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]">

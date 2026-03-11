@@ -26,7 +26,7 @@ export function AppShell({
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(114,228,255,0.08),transparent_24%),radial-gradient(circle_at_80%_20%,rgba(124,92,255,0.14),transparent_26%),#050816] text-white">
-      <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 px-4 py-4 lg:px-6">
+      <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 overflow-x-hidden px-4 py-4 lg:px-6">
         <aside className="hidden w-[280px] shrink-0 rounded-[30px] border border-white/10 bg-white/[0.045] p-5 backdrop-blur-2xl lg:flex lg:flex-col">
           <Link href="/" className="flex items-center gap-3 px-2 py-3">
             <div className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#72e4ff,#7c5cff)] text-slate-950 shadow-[0_14px_30px_rgba(87,153,255,0.35)]">
@@ -69,13 +69,13 @@ export function AppShell({
           </div>
         </aside>
 
-        <div className="flex min-h-screen flex-1 flex-col rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
-          <header className="flex items-center justify-between gap-4 border-b border-white/8 px-5 py-4 lg:px-8">
-            <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/44">
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
+          <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-4 lg:px-8">
+            <div className="flex min-w-0 max-w-full flex-1 items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/44 md:max-w-xl">
               <Search className="size-4" />
-              Search orders, customers, SKU aliases...
+              <span className="truncate">Search orders, customers, SKU aliases...</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
               <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{viewer.modeLabel}</Badge>
               <div className="hidden rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/72 md:block">
                 {viewer.displayName}
@@ -90,7 +90,7 @@ export function AppShell({
               </button>
             </div>
           </header>
-          <main className="flex-1 px-5 py-6 lg:px-8 lg:py-8">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-hidden px-5 py-6 lg:px-8 lg:py-8">{children}</main>
         </div>
       </div>
     </div>

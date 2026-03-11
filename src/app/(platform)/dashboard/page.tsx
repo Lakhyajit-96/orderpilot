@@ -17,19 +17,19 @@ export default async function DashboardPage() {
   const latestOrderId = reviewQueue[0]?.id ?? "PO-10482";
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <section className="panel overflow-hidden rounded-[28px] p-6 lg:p-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <Badge>Order desk command center</Badge>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white lg:text-5xl">
+            <h1 className="mt-4 break-words text-3xl font-semibold tracking-tight text-white lg:text-5xl">
               Move from inbox chaos to ERP-ready order flow.
             </h1>
             <p className="mt-4 max-w-xl text-base leading-8 text-white/66">
               OrderPilot extracts structured order data, flags exceptions with context, and gives reviewers a premium control plane to approve faster.
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Button asChild variant="secondary"><Link href="/inbox">Open inbox</Link></Button>
             <Button asChild><Link href={`/orders/${latestOrderId}`}>Review latest <ArrowRight className="size-4" /></Link></Button>
           </div>
@@ -52,8 +52,8 @@ export default async function DashboardPage() {
 
       <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
         <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <div>
+          <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
               <CardTitle>Live review queue</CardTitle>
               <CardDescription>Highest-value orders needing attention right now.</CardDescription>
             </div>
@@ -61,12 +61,12 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {reviewQueue.map((order) => (
-              <Link key={order.id} href={`/orders/${order.id}`} className="flex flex-col gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:bg-white/[0.05] lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <p className="text-sm font-medium text-white">{order.id} · {order.customer}</p>
+              <Link key={order.id} href={`/orders/${order.id}`} className="flex min-w-0 flex-col gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:bg-white/[0.05] lg:flex-row lg:items-center lg:justify-between">
+                <div className="min-w-0">
+                  <p className="break-words text-sm font-medium text-white">{order.id} · {order.customer}</p>
                   <p className="mt-1 text-sm text-white/52">{order.lines} lines · {order.value} · {order.source}</p>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-white/64">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-white/64">
                   <span>{order.status}</span>
                   <span className="rounded-full border border-white/10 px-3 py-1">{order.confidence}% confidence</span>
                 </div>
