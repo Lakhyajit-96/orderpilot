@@ -8,7 +8,7 @@ import {
 test("buildBillingPortalReturnUrl targets settings page on same origin", () => {
   assert.equal(
     buildBillingPortalReturnUrl("https://app.example.com/api/billing/portal"),
-    "https://app.example.com/settings?portal=return",
+    "https://app.example.com/settings?portal=return#workspace-billing",
   );
 });
 
@@ -24,7 +24,7 @@ test("createBillingPortalSessionUrl resolves customer from subscription when nee
     },
     createPortalSession: async ({ customer, returnUrl }) => {
       assert.equal(customer, "cus_456");
-      assert.equal(returnUrl, "https://app.example.com/settings?portal=return");
+      assert.equal(returnUrl, "https://app.example.com/settings?portal=return#workspace-billing");
       return "https://billing.stripe.com/session/test";
     },
   });

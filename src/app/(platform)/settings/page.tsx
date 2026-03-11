@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, CheckCircle2, CircleDashed } from "lucide-react";
+import { BillingSyncButton } from "@/components/platform/billing-sync-button";
 import { CustomerPortalButton } from "@/components/platform/customer-portal-button";
 import { ErpConnectionForm } from "@/components/platform/erp-connection-form";
 import { ExportRetryButton } from "@/components/platform/export-retry-button";
@@ -9,6 +10,7 @@ import { MailboxConnectionForm } from "@/components/platform/mailbox-connection-
 import { MailboxSyncButton } from "@/components/platform/mailbox-sync-button";
 import { MailboxTokenRefreshButton } from "@/components/platform/mailbox-token-refresh-button";
 import { NotificationReadButton } from "@/components/platform/notification-read-button";
+import { SessionActionButton } from "@/components/platform/session-action-button";
 import { SubscriptionButton } from "@/components/platform/subscription-button";
 import { WorkflowPolicyForm } from "@/components/platform/workflow-policy-form";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getViewer } from "@/lib/auth";
 import { getBillingDiagnosticsSnapshot } from "@/lib/billing-diagnostics";
+import { getPlatformAccessState } from "@/lib/platform-shell-core";
 import {
   buildDashboardLaunchChecklist,
   getDashboardLaunchProgress,
@@ -27,7 +30,13 @@ import { getWorkspaceInboxConnections } from "@/lib/inbox";
 import { recordLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 import { getWorkspaceOrders } from "@/lib/orders";
 import { plans } from "@/lib/plans";
+import {
+  syncCheckoutSessionSubscription,
+  syncWorkspaceSubscriptionFromStripe,
+} from "@/lib/stripe-event-processor";
+import { getStripeServer } from "@/lib/stripe";
 import { getWorkspaceNotifications, getWorkspaceWorkflowSettings } from "@/lib/workflow";
+import { cn } from "@/lib/utils";
 
 const settingsCards = [
   {
@@ -88,9 +97,79 @@ function formatSyncMode(value: string) {
   return formatStatusLabel(value);
 }
 
-export default async function SettingsPage() {
+function getSearchParamValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value ?? null;
+}
+
+function formatPlanLabel(value: string | null | undefined) {
+  if (!value) {
+    return "No active subscription";
+  }
+
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+type SettingsNotice = {
+  key: string;
+  title: string;
+  description: string;
+  tone: "success" | "warning" | "muted";
+};
+
+function getNoticeClasses(tone: SettingsNotice["tone"]) {
+  if (tone === "success") {
+    return "border-emerald-400/20 bg-emerald-400/8 text-emerald-50";
+  }
+
+  if (tone === "warning") {
+    return "border-amber-300/25 bg-amber-300/10 text-amber-50";
+  }
+
+  return "border-white/10 bg-white/[0.04] text-white";
+}
+
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const checkoutState = getSearchParamValue(resolvedSearchParams.checkout);
+  const checkoutSessionId = getSearchParamValue(resolvedSearchParams.session_id);
+  const portalState = getSearchParamValue(resolvedSearchParams.portal);
+  const billingState = getSearchParamValue(resolvedSearchParams.billing);
+  const mailboxOAuthState = getSearchParamValue(resolvedSearchParams.mailboxOAuth);
+  const mailboxMessage = getSearchParamValue(resolvedSearchParams.mailboxMessage);
   const viewer = await getViewer();
-  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders] = await Promise.all([
+  const accessState = getPlatformAccessState(viewer);
+  const stripe = flags.hasStripe ? getStripeServer() : null;
+  let checkoutSyncError: string | null = null;
+  let portalSyncError: string | null = null;
+
+  if (stripe && viewer.workspace?.id && checkoutState === "success" && checkoutSessionId) {
+    try {
+      await syncCheckoutSessionSubscription({
+        stripe,
+        sessionId: checkoutSessionId,
+        expectedOrganizationId: viewer.workspace.id,
+      });
+    } catch (error) {
+      checkoutSyncError = error instanceof Error ? error.message : "Stripe confirmed checkout, but the workspace status could not be refreshed yet.";
+    }
+  }
+
+  if (stripe && viewer.workspace?.id && portalState === "return") {
+    try {
+      await syncWorkspaceSubscriptionFromStripe({
+        stripe,
+        organizationId: viewer.workspace.id,
+      });
+    } catch (error) {
+      portalSyncError = error instanceof Error ? error.message : "We could not refresh the billing portal changes yet.";
+    }
+  }
+
+  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders, billingDiagnostics] = await Promise.all([
     getWorkspaceInboxConnections(viewer.workspace?.id),
     getWorkspaceErpConnections(viewer.workspace?.id),
     getWorkspaceExportRuns(viewer.workspace?.id),
@@ -100,8 +179,8 @@ export default async function SettingsPage() {
       clerkUserId: viewer.clerkUserId,
     }),
     getWorkspaceOrders(viewer.workspace?.id),
+    getBillingDiagnosticsSnapshot(viewer.workspace?.id),
   ]);
-  const billingDiagnostics = await getBillingDiagnosticsSnapshot(viewer.workspace?.id);
   const currentSubscription = billingDiagnostics.subscription ?? viewer.workspace?.subscription ?? null;
   const activePlan = currentSubscription?.planKey ?? null;
   const hasManagedSubscription = Boolean(
@@ -111,6 +190,13 @@ export default async function SettingsPage() {
   const hasPortalAccess = Boolean(
     flags.hasStripe && hasManagedSubscription,
   );
+  const accessSummary = accessState === "READY"
+    ? "Workspace access is active and ready for your team."
+    : accessState === "SIGN_IN_REQUIRED"
+      ? "Sign in is required before the protected workspace routes open."
+      : accessState === "SIGN_IN_SETUP_REQUIRED"
+        ? "Sign-in still needs to be configured for this environment."
+        : "Workspace storage needs attention before operators can use the platform.";
   const workflowReasonCodesText = workflowSettings.reasonCodes
     .map((code) => `${code.actionType} | ${code.code} | ${code.label}`)
     .join("\n");
@@ -129,6 +215,82 @@ export default async function SettingsPage() {
   const checklistProgress = getDashboardLaunchProgress(checklist);
   const nextLaunchStep = getNextDashboardLaunchStep(checklist);
   const settingsChecklistLinks = checklist.filter((item) => item.href.startsWith("/settings#"));
+  const notices: SettingsNotice[] = [];
+
+  if (mailboxOAuthState === "connected") {
+    notices.push({
+      key: "mailbox-oauth-connected",
+      title: "Mailbox connection is active",
+      description: mailboxMessage ?? "The mailbox provider finished authentication and the workspace connection is ready.",
+      tone: "success",
+    });
+  }
+
+  if (mailboxOAuthState === "error") {
+    notices.push({
+      key: "mailbox-oauth-error",
+      title: "Mailbox connection needs attention",
+      description: mailboxMessage ?? "The mailbox provider did not complete authentication.",
+      tone: "warning",
+    });
+  }
+
+  if (checkoutState === "success") {
+    notices.push(
+      currentSubscription
+        ? {
+            key: "checkout-success",
+            title: `${formatPlanLabel(currentSubscription.planKey)} plan is now attached to this workspace`,
+            description: `Billing status is ${formatStatusLabel(currentSubscription.status)} and the workspace can use the billing portal.`,
+            tone: "success",
+          }
+        : {
+            key: "checkout-pending",
+            title: checkoutSyncError ? "Payment completed but billing sync needs one more pass" : "Payment completed",
+            description: checkoutSyncError ?? "Stripe confirmed the checkout. The settings page may take a moment to reflect the final subscription status.",
+            tone: checkoutSyncError ? "warning" : "muted",
+          },
+    );
+  }
+
+  if (checkoutState === "canceled") {
+    notices.push({
+      key: "checkout-canceled",
+      title: "Checkout was canceled",
+      description: "No billing changes were applied. You can restart checkout whenever you are ready.",
+      tone: "muted",
+    });
+  }
+
+  if (portalState === "return") {
+    notices.push(
+      currentSubscription
+        ? {
+            key: "portal-return",
+            title: "Billing portal changes refreshed",
+            description: `Workspace billing is currently ${formatStatusLabel(currentSubscription.status)} on the ${formatPlanLabel(currentSubscription.planKey)} plan.`,
+            tone: "success",
+          }
+        : {
+            key: "portal-return-pending",
+            title: portalSyncError ? "Returned from billing portal, but refresh needs attention" : "Returned from billing portal",
+            description: portalSyncError ?? "If you changed plans or payment details, the workspace billing status should refresh shortly.",
+            tone: portalSyncError ? "warning" : "muted",
+          },
+    );
+  }
+
+  if (billingState === "refreshed") {
+    notices.push({
+      key: "billing-refreshed",
+      title: currentSubscription ? "Workspace billing status refreshed" : "Billing refresh completed",
+      description: currentSubscription
+        ? `Current Stripe status: ${formatStatusLabel(currentSubscription.status)} on ${formatPlanLabel(currentSubscription.planKey)}.`
+        : "We refreshed billing, but there is still no active subscription attached to this workspace.",
+      tone: currentSubscription ? "success" : "muted",
+    });
+  }
+
   const launchTelemetry = viewer.workspace?.id && viewer.clerkUserId
     ? await recordLaunchChecklistTelemetry({
         organizationId: viewer.workspace.id,
@@ -160,8 +322,8 @@ export default async function SettingsPage() {
       title: "Billing",
       status: flags.hasStripe ? "Configured" : "Pending setup",
       description: flags.hasStripe
-        ? viewer.workspace?.subscription
-          ? `Subscription status: ${formatStatusLabel(viewer.workspace.subscription.status)}.`
+        ? currentSubscription
+          ? `Subscription status: ${formatStatusLabel(currentSubscription.status)} on ${formatPlanLabel(currentSubscription.planKey)}.`
           : "Billing is configured. Complete checkout to activate a plan."
         : "Add billing keys and price IDs to enable subscriptions.",
     },
@@ -185,6 +347,17 @@ export default async function SettingsPage() {
           Connect intake channels, confirm approvals and exports, and keep the workspace ready for customer rollout.
         </p>
       </div>
+
+      {notices.length ? (
+        <div className="space-y-3">
+          {notices.map((notice) => (
+            <div key={notice.key} className={cn("rounded-[24px] border px-4 py-4", getNoticeClasses(notice.tone))}>
+              <p className="text-sm font-medium">{notice.title}</p>
+              <p className="mt-1 text-sm opacity-80">{notice.description}</p>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <div className="grid gap-4 xl:grid-cols-3">
         {settingsCards.map((card) => (
@@ -215,6 +388,40 @@ export default async function SettingsPage() {
           </Card>
         ))}
       </div>
+
+      <Card>
+        <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <CardTitle>Account and access</CardTitle>
+            <CardDescription>
+              Confirm who is signed in to this workspace and end the session safely when you are done.
+            </CardDescription>
+          </div>
+          <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{formatStatusLabel(accessState)}</Badge>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+              Signed in as: <span className="font-medium text-white">{viewer.displayName}</span>
+            </div>
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+              Email: <span className="break-all font-medium text-white">{viewer.email ?? "No email available"}</span>
+            </div>
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+              Workspace role: <span className="font-medium text-white">{viewer.workspace?.role ?? "Not assigned"}</span>
+            </div>
+            <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+              Access state: <span className="font-medium text-white">{formatStatusLabel(accessState)}</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="max-w-2xl text-sm text-white/58">{accessSummary}</p>
+            {viewer.isConfigured ? (
+              <SessionActionButton isAuthenticated={viewer.isAuthenticated} className="w-full sm:w-auto" />
+            ) : null}
+          </div>
+        </CardContent>
+      </Card>
 
       <LaunchChecklistExperience
         workspaceId={viewer.workspace?.id ?? null}
@@ -495,19 +702,20 @@ export default async function SettingsPage() {
               Role: {viewer.workspace?.role ?? "Not assigned"}
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-              Plan: {activePlan ? activePlan.charAt(0).toUpperCase() + activePlan.slice(1) : "No active subscription"}
+              Plan: {formatPlanLabel(activePlan)}
             </div>
           </div>
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-            Billing status: {billingDiagnostics.subscription?.status ? formatStatusLabel(billingDiagnostics.subscription.status) : "No subscription has been recorded yet"}
-            {billingDiagnostics.subscription?.planKey ? ` · ${billingDiagnostics.subscription.planKey}` : ""}
+            Billing status: {currentSubscription?.status ? formatStatusLabel(currentSubscription.status) : "No subscription has been recorded yet"}
+            {currentSubscription?.planKey ? ` · ${formatPlanLabel(currentSubscription.planKey)}` : ""}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <CustomerPortalButton isReady={hasPortalAccess} />
+          <div className="grid gap-3 xl:grid-cols-[auto_auto_minmax(0,1fr)] xl:items-start">
+            <CustomerPortalButton isReady={hasPortalAccess} className="w-auto" />
+            {flags.hasStripe && viewer.workspace?.id ? <BillingSyncButton /> : null}
             <p className="text-sm text-white/55">
               {hasPortalAccess
-                ? "Update payment method, switch plans, or cancel inside the billing portal."
-                : "The billing portal unlocks automatically after the first completed checkout."}
+                ? "Update payment method, switch plans, or cancel inside the billing portal. If Stripe already shows a paid plan, use refresh to sync the latest status into this workspace."
+                : "The billing portal unlocks automatically after the first completed checkout. Once payment completes, this page now syncs the subscription status back into the workspace."}
             </p>
           </div>
         </CardContent>

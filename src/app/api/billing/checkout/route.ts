@@ -1,6 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { buildCheckoutCancelUrl, buildCheckoutSuccessUrl } from "@/lib/billing-checkout-core";
 import { flags } from "@/lib/env";
 import { getPriceIdForPlan, getStripeServer } from "@/lib/stripe";
 import { ensureWorkspaceForUser } from "@/lib/workspace";
@@ -68,7 +69,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const url = new URL(request.url);
   const metadata = {
     product: "orderpilot",
     planKey,
@@ -78,8 +78,8 @@ export async function POST(request: Request) {
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    success_url: `${url.origin}/settings?checkout=success`,
-    cancel_url: `${url.origin}/settings?checkout=canceled`,
+    success_url: buildCheckoutSuccessUrl(request.url),
+    cancel_url: buildCheckoutCancelUrl(request.url),
     line_items: [{ price: priceId, quantity: 1 }],
     allow_promotion_codes: true,
     client_reference_id: authState?.userId ?? user?.id ?? undefined,

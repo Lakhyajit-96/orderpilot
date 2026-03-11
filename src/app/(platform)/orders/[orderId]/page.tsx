@@ -71,35 +71,37 @@ export default async function OrderDetailPage({
         </div>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-        <Card>
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <Card className="min-w-0">
           <CardHeader>
             <CardTitle>Line-item mapping</CardTitle>
             <CardDescription>Each line keeps its confidence and mapping state before export.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="min-w-0 space-y-3">
             {order.lineItems.map((line) => (
-              <div key={`${order.id}-${line.sku}`} className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-white">{line.description}</p>
-                    <p className="mt-1 text-sm text-white/56">Requested SKU {line.sku} · Qty {line.qty}</p>
+              <div key={`${order.id}-${line.sku}`} className="overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className="break-words text-sm font-medium text-white">{line.description}</p>
+                    <p className="mt-1 text-sm text-white/56">
+                      Requested SKU <span className="break-all text-white/72">{line.sku}</span> · Qty {line.qty}
+                    </p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <Badge>{line.match}% match</Badge>
                     <Badge variant={line.state === "Matched" ? "success" : "violet"}>{line.state}</Badge>
                   </div>
                 </div>
                 <div className="mt-4 rounded-2xl border border-white/8 bg-slate-950/60 px-4 py-3 text-sm text-white/70">
-                  ERP mapping target: <span className="font-medium text-white">{line.mappedTo}</span>
+                  ERP mapping target: <span className="break-all font-medium text-white">{line.mappedTo}</span>
                 </div>
               </div>
             ))}
           </CardContent>
         </Card>
 
-        <div className="space-y-4">
-          <Card>
+        <div className="min-w-0 space-y-4">
+          <Card className="min-w-0">
             <CardHeader>
               <CardTitle>Approval chain</CardTitle>
               <CardDescription>Role-based approval steps for this order.</CardDescription>

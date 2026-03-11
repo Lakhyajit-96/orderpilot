@@ -13,7 +13,7 @@ type CreatePortalSessionInput = {
 
 export function buildBillingPortalReturnUrl(requestUrl: string) {
   const url = new URL(requestUrl);
-  return `${url.origin}/settings?portal=return`;
+  return `${url.origin}/settings?portal=return#workspace-billing`;
 }
 
 export async function createBillingPortalSessionUrl(

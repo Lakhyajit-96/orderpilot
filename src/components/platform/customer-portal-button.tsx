@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function CustomerPortalButton({
   isReady,
+  className,
 }: {
   isReady: boolean;
+  className?: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,7 +42,12 @@ export function CustomerPortalButton({
   }
 
   return (
-    <Button onClick={handleOpenPortal} disabled={!isReady || isLoading} variant="secondary" className="w-full">
+    <Button
+      onClick={handleOpenPortal}
+      disabled={!isReady || isLoading}
+      variant="secondary"
+      className={cn("w-full", className)}
+    >
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
       {isReady ? "Manage subscription" : "Portal available after checkout"}
     </Button>

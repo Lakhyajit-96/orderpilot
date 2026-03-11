@@ -216,6 +216,76 @@ async function updateStatusFromInvoice(
   });
 }
 
+export async function syncCheckoutSessionSubscription(input: {
+  stripe: Stripe;
+  sessionId: string;
+  expectedOrganizationId?: string | null;
+}) {
+  const session = await input.stripe.checkout.sessions.retrieve(input.sessionId);
+  const sessionOrganizationId = getMetadataValue(session.metadata, "organizationId");
+
+  if (
+    input.expectedOrganizationId &&
+    sessionOrganizationId &&
+    sessionOrganizationId !== input.expectedOrganizationId
+  ) {
+    throw new Error("That checkout session does not belong to the active workspace.");
+  }
+
+  return handleCheckoutSessionCompleted(input.stripe, session);
+}
+
+export async function syncWorkspaceSubscriptionFromStripe(input: {
+  stripe: Stripe;
+  organizationId: string;
+}) {
+  const db = getDb();
+
+  if (!db) {
+    return null;
+  }
+
+  const persistedSubscription = await db.subscription.findUnique({
+    where: { organizationId: input.organizationId },
+    select: {
+      stripeCustomerId: true,
+      stripeSubscriptionId: true,
+      planKey: true,
+    },
+  });
+
+  if (persistedSubscription?.stripeSubscriptionId) {
+    const stripeSubscription = await input.stripe.subscriptions.retrieve(
+      persistedSubscription.stripeSubscriptionId,
+    );
+
+    return syncFromSubscription(input.stripe, stripeSubscription, {
+      organizationId: input.organizationId,
+      planKey: toPlanKey(persistedSubscription.planKey),
+    });
+  }
+
+  if (!persistedSubscription?.stripeCustomerId) {
+    return null;
+  }
+
+  const subscriptionList = await input.stripe.subscriptions.list({
+    customer: persistedSubscription.stripeCustomerId,
+    status: "all",
+    limit: 5,
+  });
+  const latestSubscription = [...subscriptionList.data].sort((left, right) => right.created - left.created)[0];
+
+  if (!latestSubscription) {
+    return null;
+  }
+
+  return syncFromSubscription(input.stripe, latestSubscription, {
+    organizationId: input.organizationId,
+    planKey: toPlanKey(persistedSubscription.planKey),
+  });
+}
+
 export async function processStripeEvent(event: Stripe.Event, stripe: Stripe) {
   await recordBillingEvent({
     externalEventId: event.id,
