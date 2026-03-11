@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
-import { ArrowUpLeft, CircleGauge, CreditCard, Inbox, PackageSearch, Sparkles } from "lucide-react";
+import { CircleGauge, CreditCard, Inbox, PackageSearch, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Viewer } from "@/lib/auth";
+import { PlatformHomeLink } from "@/components/platform/platform-home-link";
 import { SessionActionButton } from "@/components/platform/session-action-button";
 import { getPlatformAccessState, isPlatformRouteActive } from "@/lib/platform-shell-core";
 import { cn } from "@/lib/utils";
@@ -99,7 +100,7 @@ export function AppShell({
                   <Link
                     key={href}
                     href={href}
-                  aria-current={active ? "page" : undefined}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm text-white/58 transition-all hover:bg-white/6 hover:text-white",
                       active && "bg-white/8 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]",
@@ -128,13 +129,7 @@ export function AppShell({
         <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
           <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-4 lg:px-8">
             <div className="min-w-0 flex-1">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-white/72 transition hover:border-cyan-300/40 hover:text-white"
-              >
-                <ArrowUpLeft className="size-3.5" />
-                <span>Back to site</span>
-              </Link>
+              <PlatformHomeLink />
               <p className="mt-3 text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
               <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "OrderPilot workspace"}</p>
             </div>
