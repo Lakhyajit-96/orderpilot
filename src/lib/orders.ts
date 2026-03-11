@@ -12,6 +12,7 @@ import {
   getWorkspaceWorkflowSettings,
 } from "@/lib/workflow";
 import { canActForRole, type WorkflowRole } from "@/lib/workflow-core";
+import { buildLaunchValueProofMetrics } from "@/lib/launch-value-proof-core";
 
 type ActivityMetadata = Record<string, string | number | boolean | null>;
 
@@ -201,6 +202,17 @@ function toOrderStatus(status: WritableOrderStatus) {
 
 function formatTimestamp(value: Date) {
   return value.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
+function parseClockLabelToMinutes(value: string) {
+  const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+
+  if (!match) {
+    return null;
+  }
+
+  const hours = Number(match[1]) % 12 + (match[3].toUpperCase() === "PM" ? 12 : 0);
+  return hours * 60 + Number(match[2]);
 }
 
 function getActorWorkflowRole(actor?: OrderActor) {
@@ -1267,4 +1279,65 @@ export async function getWorkspaceMetrics(organizationId: string | null | undefi
     { label: "Open review queue", value: String(reviewCount), delta: "Based on current order statuses" },
     { label: "Revenue routed", value: formatCurrencyFromCents(totalRevenue._sum.totalCents), delta: "From persisted workspace orders" },
   ];
+}
+
+export async function getWorkspaceValueProofMetrics(organizationId: string | null | undefined) {
+  const db = getDb();
+
+  if (!flags.hasDatabase || !db || !organizationId) {
+    const ordersIngested = platformOrders.length;
+    const ordersReviewed = platformOrders.filter((order) => order.status !== "Intake captured").length;
+    const firstOrderMinutes = platformOrders
+      .map((order) => parseClockLabelToMinutes(order.receivedAt))
+      .filter((value): value is number => value !== null)
+      .sort((left, right) => left - right)[0] ?? null;
+    const firstErpReadyMinutes = platformOrders
+      .filter((order) => order.status === "Ready to export")
+      .map((order) => parseClockLabelToMinutes(order.receivedAt))
+      .filter((value): value is number => value !== null)
+      .sort((left, right) => left - right)[0] ?? null;
+
+    return buildLaunchValueProofMetrics({
+      ordersIngested,
+      ordersReviewed,
+      firstOrderAt: firstOrderMinutes === null
+        ? null
+        : new Date(Date.UTC(2026, 2, 11, Math.floor(firstOrderMinutes / 60), firstOrderMinutes % 60)).toISOString(),
+      firstErpReadyAt: firstErpReadyMinutes === null
+        ? null
+        : new Date(Date.UTC(2026, 2, 11, Math.floor(firstErpReadyMinutes / 60), firstErpReadyMinutes % 60)).toISOString(),
+    });
+  }
+
+  await seedMockOrders(organizationId);
+
+  const [ordersIngested, ordersReviewed, firstOrder, firstErpReadyActivity, firstReadyOrder] = await Promise.all([
+    db.order.count({ where: { organizationId } }),
+    db.order.count({ where: { organizationId, status: { in: [OrderStatus.REVIEW, OrderStatus.APPROVED, OrderStatus.EXPORTED] } } }),
+    db.order.findFirst({ where: { organizationId }, orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+    db.orderActivity.findFirst({
+      where: {
+        order: { organizationId },
+        OR: [
+          { actionType: "APPROVED_FINAL" },
+          { actionType: "ERP_EXPORT_SUCCEEDED" },
+          { actionType: "STATUS_CHANGED", toStatus: { in: [OrderStatus.APPROVED, OrderStatus.EXPORTED] } },
+        ],
+      },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }),
+    db.order.findFirst({
+      where: { organizationId, status: { in: [OrderStatus.APPROVED, OrderStatus.EXPORTED] } },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }),
+  ]);
+
+  return buildLaunchValueProofMetrics({
+    ordersIngested,
+    ordersReviewed,
+    firstOrderAt: firstOrder?.createdAt.toISOString() ?? null,
+    firstErpReadyAt: firstErpReadyActivity?.createdAt.toISOString() ?? firstReadyOrder?.createdAt.toISOString() ?? null,
+  });
 }

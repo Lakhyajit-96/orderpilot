@@ -25,7 +25,7 @@ import {
 import { getWorkspaceErpConnections, getWorkspaceExportRuns } from "@/lib/erp";
 import { env, flags } from "@/lib/env";
 import { getWorkspaceInboxConnections } from "@/lib/inbox";
-import { getLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
+import { recordLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 import { getWorkspaceOrders } from "@/lib/orders";
 import { plans } from "@/lib/plans";
 import { getWorkspaceNotifications, getWorkspaceWorkflowSettings } from "@/lib/workflow";
@@ -83,7 +83,7 @@ function getEventBadgeVariant(status: string) {
 
 export default async function SettingsPage() {
   const viewer = await getViewer();
-  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders, launchTelemetry] = await Promise.all([
+  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders] = await Promise.all([
     getWorkspaceInboxConnections(viewer.workspace?.id),
     getWorkspaceErpConnections(viewer.workspace?.id),
     getWorkspaceExportRuns(viewer.workspace?.id),
@@ -93,7 +93,6 @@ export default async function SettingsPage() {
       clerkUserId: viewer.clerkUserId,
     }),
     getWorkspaceOrders(viewer.workspace?.id),
-    getLaunchChecklistTelemetry({ organizationId: viewer.workspace?.id, clerkUserId: viewer.clerkUserId }),
   ]);
   const billingDiagnostics = await getBillingDiagnosticsSnapshot(viewer.workspace?.id);
   const recentBillingEvents = billingDiagnostics.recentEvents;
@@ -125,6 +124,22 @@ export default async function SettingsPage() {
   const checklistProgress = getDashboardLaunchProgress(checklist);
   const nextLaunchStep = getNextDashboardLaunchStep(checklist);
   const settingsChecklistLinks = checklist.filter((item) => item.href.startsWith("/settings#"));
+  const launchTelemetry = viewer.workspace?.id && viewer.clerkUserId
+    ? await recordLaunchChecklistTelemetry({
+        organizationId: viewer.workspace.id,
+        clerkUserId: viewer.clerkUserId,
+        checklist,
+      })
+    : {
+        recordedMilestones: 0,
+        firstMilestoneAt: null,
+        latestMilestone: null,
+        recentMilestones: [],
+        checklistCompletedAt: null,
+        workspaceMemberCount: 0,
+        trackedOperatorCount: 0,
+        activeNudge: null,
+      };
 
   const readiness = [
     {

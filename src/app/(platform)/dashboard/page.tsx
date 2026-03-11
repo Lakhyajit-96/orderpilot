@@ -13,19 +13,19 @@ import {
 import { getBillingDiagnosticsSnapshot } from "@/lib/billing-diagnostics";
 import { getWorkspaceErpConnections } from "@/lib/erp";
 import { getWorkspaceInboxConnections } from "@/lib/inbox";
-import { getLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
+import { recordLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 import { activityFeed } from "@/lib/mock-data";
-import { getWorkspaceMetrics, getWorkspaceOrders } from "@/lib/orders";
+import { getWorkspaceMetrics, getWorkspaceOrders, getWorkspaceValueProofMetrics } from "@/lib/orders";
 
 export default async function DashboardPage() {
   const viewer = await getViewer();
-  const [workspaceMetrics, workspaceOrders, inboxConnections, erpConnections, billingDiagnostics, launchTelemetry] = await Promise.all([
+  const [workspaceMetrics, workspaceOrders, inboxConnections, erpConnections, billingDiagnostics, valueProofMetrics] = await Promise.all([
     getWorkspaceMetrics(viewer.workspace?.id),
     getWorkspaceOrders(viewer.workspace?.id),
     getWorkspaceInboxConnections(viewer.workspace?.id),
     getWorkspaceErpConnections(viewer.workspace?.id),
     getBillingDiagnosticsSnapshot(viewer.workspace?.id),
-    getLaunchChecklistTelemetry({ organizationId: viewer.workspace?.id, clerkUserId: viewer.clerkUserId }),
+    getWorkspaceValueProofMetrics(viewer.workspace?.id),
   ]);
   const reviewQueue = workspaceOrders.slice(0, 3);
   const latestOrderId = reviewQueue[0]?.id ?? "PO-10482";
@@ -45,6 +45,22 @@ export default async function DashboardPage() {
   });
   const checklistProgress = getDashboardLaunchProgress(checklist);
   const nextLaunchStep = getNextDashboardLaunchStep(checklist);
+  const launchTelemetry = viewer.workspace?.id && viewer.clerkUserId
+    ? await recordLaunchChecklistTelemetry({
+        organizationId: viewer.workspace.id,
+        clerkUserId: viewer.clerkUserId,
+        checklist,
+      })
+    : {
+        recordedMilestones: 0,
+        firstMilestoneAt: null,
+        latestMilestone: null,
+        recentMilestones: [],
+        checklistCompletedAt: null,
+        workspaceMemberCount: 0,
+        trackedOperatorCount: 0,
+        activeNudge: null,
+      };
 
   return (
     <div className="min-w-0 space-y-6">
@@ -182,10 +198,19 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Why teams keep this open all day</CardTitle>
-            <CardDescription>Daily ops signals in one view.</CardDescription>
+            <CardTitle>First customer value proof</CardTitle>
+            <CardDescription>Show that onboarding is turning into real operational outcomes.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="grid gap-3">
+              {valueProofMetrics.map((metric) => (
+                <div key={metric.label} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+                  <p className="text-sm text-white/60">{metric.label}</p>
+                  <p className="mt-2 text-3xl font-semibold text-white">{metric.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-white/58">{metric.detail}</p>
+                </div>
+              ))}
+            </div>
             {activityFeed.map((item) => (
               <div key={item.label} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
                 <div className="flex items-start gap-3">
@@ -199,7 +224,7 @@ export default async function DashboardPage() {
             ))}
             <div className="rounded-2xl border border-violet-400/15 bg-violet-400/8 p-4 text-sm leading-7 text-white/70">
               <div className="mb-3 flex items-center gap-2 text-violet-100"><BrainCircuit className="size-4" /> Next growth milestone</div>
-              Tighten onboarding, prove the first customer go-live path, and convert the workspace from a power-user console into a daily operating system.
+              Expand proof from setup completion into daily operator value: more reviewed orders, faster ERP-ready handoff, and stronger teammate accountability.
             </div>
           </CardContent>
         </Card>
