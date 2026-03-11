@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
-import { CircleGauge, CreditCard, Inbox, PackageSearch, Sparkles } from "lucide-react";
+import { CircleGauge, CreditCard, Inbox, PackageSearch } from "lucide-react";
+import { BrandLogo } from "@/components/brand/orderpilot-logo";
 import { Badge } from "@/components/ui/badge";
 import type { Viewer } from "@/lib/auth";
 import { PlatformHomeLink } from "@/components/platform/platform-home-link";
@@ -83,15 +84,7 @@ export function AppShell({
       <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 overflow-x-hidden px-4 py-4 lg:px-6" style={shellSpacingStyle}>
         {canNavigate ? (
           <aside className="hidden w-[280px] shrink-0 rounded-[30px] border border-white/10 bg-white/[0.045] p-5 backdrop-blur-2xl lg:flex lg:flex-col">
-            <Link href="/" className="flex items-center gap-3 px-2 py-3">
-              <div className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#72e4ff,#7c5cff)] text-slate-950 shadow-[0_14px_30px_rgba(87,153,255,0.35)]">
-                <Sparkles className="size-5" />
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.32em] text-white/38">OrderPilot</p>
-                <p className="mt-1 text-sm font-medium text-white/80">Order intake operations</p>
-              </div>
-            </Link>
+            <BrandLogo href="/" className="px-2 py-3" wordmarkClassName="pr-2" />
 
             <div className="mt-8 space-y-2">
               {navItems.map(({ href, icon: Icon, label }) => {
@@ -129,6 +122,9 @@ export function AppShell({
         <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
           <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-4 lg:px-8">
             <div className="min-w-0 flex-1">
+              <div className="mb-3 lg:hidden">
+                <BrandLogo href="/" showTagline={false} />
+              </div>
               <PlatformHomeLink />
               <p className="mt-3 text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
               <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "OrderPilot workspace"}</p>
