@@ -20,4 +20,6 @@ test("marketing visual data covers the hero, workflow, and feature surfaces", ()
   assert.equal(dashboardPreview.checklist.length, 3);
   assert.equal(orderReviewPreview.badges[0], "Needs review");
   assert.equal(settingsPreview.readiness[2], "Plan · Growth");
+  assert.equal(settingsPreview.connections[0]?.detail, "ops@atlasindustrial.com");
+  assert.equal(settingsPreview.connections[2]?.status, "Portal unlocked");
 });

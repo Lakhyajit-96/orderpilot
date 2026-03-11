@@ -101,20 +101,24 @@ function SettingsSurface() {
         ))}
       </div>
       <div className="mt-3 space-y-2.5">
-        {[settingsPreview.mailbox, settingsPreview.erp, settingsPreview.billing].map((row, index) => {
+        {settingsPreview.connections.map((row, index) => {
           const RowIcon = [MailCheck, PackageSearch, CreditCard][index] ?? MailCheck;
 
           return (
             <motion.div
-              key={row}
+              key={row.title}
               animate={{ y: [0, index === 1 ? -3 : 0, 0] }}
               transition={{ duration: 7 + index, repeat: Infinity, ease: "easeInOut" }}
-              className="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.04] px-3 py-3"
+              className="flex items-start gap-3 rounded-2xl border border-white/8 bg-white/[0.04] px-3 py-3"
             >
-              <div className="rounded-full border border-white/10 bg-slate-950/75 p-2 text-cyan-200">
+              <div className="mt-0.5 rounded-full border border-white/10 bg-slate-950/75 p-2 text-cyan-200">
                 <RowIcon className="size-3.5" />
               </div>
-              <p className="text-sm text-white/74">{row}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-white/80">{row.title}</p>
+                <p className="mt-1 break-words text-xs text-white/52">{row.detail}</p>
+                <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-cyan-100/78">{row.status}</p>
+              </div>
             </motion.div>
           );
         })}

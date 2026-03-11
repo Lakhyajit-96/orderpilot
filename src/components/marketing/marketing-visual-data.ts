@@ -150,7 +150,9 @@ export const orderReviewPreview = {
 export const settingsPreview = {
   heading: "Manage rollout, connections, and team workflow",
   readiness: ["Mailbox connections · 2", "ERP connections · 1", "Plan · Growth"],
-  mailbox: "Microsoft 365 · ops@atlasindustrial.com · OAuth connected",
-  erp: "NetSuite destination · authentication stored securely",
-  billing: "Billing status · Active on Growth · portal unlocked",
+  connections: [
+    { title: "Microsoft 365", detail: "ops@atlasindustrial.com", status: "OAuth connected" },
+    { title: "NetSuite destination", detail: "Authentication stored securely", status: "ERP handoff ready" },
+    { title: "Billing status", detail: "Active on Growth", status: "Portal unlocked" },
+  ],
 } as const;
