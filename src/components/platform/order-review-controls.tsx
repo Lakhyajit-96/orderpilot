@@ -61,7 +61,7 @@ export function OrderReviewControls({
           Next approval role: {nextApprovalRole}
         </p>
       ) : null}
-      <div className="grid gap-3 md:grid-cols-[minmax(0,220px)_1fr]">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,240px)_1fr]">
         <select
           className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/40"
           value={reasonCode}
@@ -80,9 +80,10 @@ export function OrderReviewControls({
           onChange={(event) => setComment(event.target.value)}
         />
       </div>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <Button
           variant="secondary"
+          className="w-full sm:w-auto"
           disabled={!isReady || isLoading !== null || openExceptionCount > 0 || status === "APPROVED"}
           onClick={() => updateStatus("APPROVED", "Reviewer approved order for export.")}
         >
@@ -91,6 +92,7 @@ export function OrderReviewControls({
         </Button>
         <Button
           variant="secondary"
+          className="w-full sm:w-auto"
           disabled={!isReady || isLoading !== null || status === "REVIEW"}
           onClick={() => updateStatus("REVIEW", "Reviewer returned order to the review lane.")}
         >
@@ -98,6 +100,7 @@ export function OrderReviewControls({
           Return to review
         </Button>
         <Button
+          className="w-full sm:w-auto"
           disabled={!isReady || isLoading !== null || status !== "APPROVED"}
           onClick={() => updateStatus("EXPORTED", "Order marked exported after reviewer handoff.")}
         >

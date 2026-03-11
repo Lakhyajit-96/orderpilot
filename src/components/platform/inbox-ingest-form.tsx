@@ -64,11 +64,11 @@ export function InboxIngestForm() {
       <textarea className={fieldClassName} rows={4} placeholder="Email body / parser notes (optional)" value={form.body} onChange={(event) => setForm((current) => ({ ...current, body: event.target.value }))} />
       <textarea className={fieldClassName} rows={4} placeholder="Line items: SKU | Description | Quantity" value={form.lineItemsText} onChange={(event) => setForm((current) => ({ ...current, lineItemsText: event.target.value }))} />
       <textarea className={fieldClassName} rows={3} placeholder="Exceptions, one per line (optional)" value={form.exceptionsText} onChange={(event) => setForm((current) => ({ ...current, exceptionsText: event.target.value }))} />
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <p className="text-xs text-white/45">
           Example line format: <span className="font-medium text-white/75">SKU-100 | Stainless elbow fitting | 24</span>
         </p>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
           Create order from mailbox
         </Button>

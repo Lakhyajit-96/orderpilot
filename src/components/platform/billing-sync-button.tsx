@@ -34,8 +34,8 @@ export function BillingSyncButton() {
   }
 
   return (
-    <div className="space-y-2">
-      <Button onClick={handleSync} disabled={isLoading} variant="secondary" size="sm" className="w-auto">
+    <div className="w-full space-y-2 sm:w-auto">
+      <Button onClick={handleSync} disabled={isLoading} variant="secondary" size="sm" className="w-full sm:w-auto">
         {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCcw className="size-4" />}
         Refresh plan status
       </Button>

@@ -85,7 +85,7 @@ export function HeroVisual() {
                 </div>
               </div>
 
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {heroVisualSnapshot.heroMetrics.map((metric) => (
                   <div key={metric.label} className="min-w-0 rounded-2xl border border-white/8 bg-white/[0.04] px-4 py-3">
                     <p className="text-xs uppercase tracking-[0.24em] text-white/40">{metric.label}</p>
@@ -97,7 +97,7 @@ export function HeroVisual() {
                 ))}
               </div>
 
-              <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+              <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
                 <div className="min-w-0 rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>

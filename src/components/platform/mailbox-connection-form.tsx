@@ -57,7 +57,7 @@ export function MailboxConnectionForm() {
 
   return (
     <form className="grid gap-3" onSubmit={handleSubmit}>
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <select className={fieldClassName} value={form.provider} onChange={(event) => setForm((current) => ({ ...current, provider: event.target.value }))}>
           <option value="GMAIL">Gmail</option>
           <option value="MICROSOFT365">Microsoft 365</option>
@@ -66,21 +66,21 @@ export function MailboxConnectionForm() {
           <option value="POLLING">Scheduled refresh</option>
           <option value="WEBHOOK">Instant updates</option>
         </select>
-        <input className={fieldClassName} type="email" placeholder="Mailbox address" value={form.address} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} />
+        <input className={`${fieldClassName} sm:col-span-2 xl:col-span-1`} type="email" placeholder="Mailbox address" value={form.address} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} />
       </div>
       <input className={fieldClassName} placeholder="Mailbox access token" value={form.accessToken} onChange={(event) => setForm((current) => ({ ...current, accessToken: event.target.value }))} />
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-2">
         <input className={fieldClassName} placeholder="Mailbox renewal token (optional)" value={form.refreshToken} onChange={(event) => setForm((current) => ({ ...current, refreshToken: event.target.value }))} />
         <input className={fieldClassName} placeholder="Mailbox verification key (optional)" value={form.webhookSecret} onChange={(event) => setForm((current) => ({ ...current, webhookSecret: event.target.value }))} />
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <p className="text-xs text-white/45">Use secure sign-in for guided Gmail or Microsoft 365 connection, or enter advanced access details manually.</p>
-        <div className="flex flex-wrap gap-3">
-          <Button type="button" variant="secondary" disabled={isConnecting || !form.address} onClick={handleOAuthConnect}>
+        <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+          <Button type="button" variant="secondary" className="w-full sm:w-auto" disabled={isConnecting || !form.address} onClick={handleOAuthConnect}>
             {isConnecting ? <LoaderCircle className="size-4 animate-spin" /> : null}
             Connect securely
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
             {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
             Save advanced connection
           </Button>

@@ -61,7 +61,7 @@ export default async function OrderDetailPage({
               />
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex w-full flex-wrap gap-3 lg:w-auto lg:justify-end">
             <OrderUndoButton orderId={order.id} disabled={!hasUndoableAction || !canEdit} />
             <OrderExportButton orderId={order.id} disabled={!canExport} />
             <Badge variant="violet">{order.value}</Badge>
@@ -182,7 +182,7 @@ export default async function OrderDetailPage({
                   No reviewer notes have been added yet.
                 </div>
               )}
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/58">Ship-to: {order.shippingAddress}</div>
+              <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/58">Ship-to: <span className="break-words text-white/72">{order.shippingAddress}</span></div>
             </CardContent>
           </Card>
 

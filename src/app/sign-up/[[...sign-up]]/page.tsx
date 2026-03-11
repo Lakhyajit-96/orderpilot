@@ -9,7 +9,7 @@ export default function SignUpPage() {
       {flags.hasClerk ? (
         <SignUp />
       ) : (
-        <Card className="max-w-xl">
+        <Card className="w-full max-w-xl">
           <CardHeader>
             <Badge variant="violet">Team access</Badge>
             <CardTitle className="mt-4 text-3xl">New team access will be available soon</CardTitle>

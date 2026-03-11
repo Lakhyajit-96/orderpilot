@@ -426,7 +426,7 @@ export default async function SettingsPage({
               Access state: <span className="font-medium text-white">{formatAccessStateLabel(accessState)}</span>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <p className="max-w-2xl text-sm text-white/58">{accessSummary}</p>
             {viewer.isConfigured ? (
               <SessionActionButton isAuthenticated={viewer.isAuthenticated} className="w-full sm:w-auto" />
@@ -457,17 +457,17 @@ export default async function SettingsPage({
             </Badge>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               {nextLaunchStep ? (
-                <Button asChild>
+                <Button asChild className="w-full sm:w-auto">
                   <Link href={nextLaunchStep.href}>Continue with {nextLaunchStep.title}</Link>
                 </Button>
               ) : (
-                <Button asChild>
+                <Button asChild className="w-full sm:w-auto">
                   <Link href="/dashboard">Launch checklist complete</Link>
                 </Button>
               )}
-              <Button asChild variant="secondary"><Link href="/dashboard">Back to dashboard</Link></Button>
+              <Button asChild variant="secondary" className="w-full sm:w-auto"><Link href="/dashboard">Back to dashboard</Link></Button>
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -506,7 +506,7 @@ export default async function SettingsPage({
                       </div>
                       <Link
                         href={item.href}
-                        className="inline-flex shrink-0 self-start items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                        className="inline-flex w-full shrink-0 self-start items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06] sm:w-auto"
                       >
                         {item.ctaLabel} <ArrowUpRight className="size-4" />
                       </Link>
@@ -543,14 +543,14 @@ export default async function SettingsPage({
           {inboxConnections.length ? (
             inboxConnections.map((connection) => (
               <div key={connection.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-white">{connection.provider} · {connection.address}</p>
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="min-w-0">
+                    <p className="break-all text-sm font-medium text-white">{connection.provider} · {connection.address}</p>
                     <p className="text-xs text-white/45">
                       {formatSyncMode(connection.syncMode)} · Last sync {connection.lastSyncedAt ? formatEventTimestamp(connection.lastSyncedAt) : "never"}
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap lg:w-auto">
                     <MailboxSyncButton connectionId={connection.id} />
                     {connection.oauthConnected ? <MailboxTokenRefreshButton connectionId={connection.id} /> : null}
                     {connection.syncMode === "WEBHOOK" ? <MailboxBootstrapButton connectionId={connection.id} /> : null}
@@ -600,7 +600,7 @@ export default async function SettingsPage({
             erpConnections.map((connection) => (
               <div key={connection.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4">
                 <p className="text-sm font-medium text-white">{connection.name}</p>
-                <p className="mt-1 text-xs text-white/45">{connection.provider} · Destination {connection.endpointUrl}</p>
+                <p className="mt-1 break-all text-xs text-white/45">{connection.provider} · Destination {connection.endpointUrl}</p>
                 <p className="mt-2 text-sm text-white/55">Secure access: {connection.authHeader ? "Saved securely" : "Not added"}</p>
                 <p className="mt-1 text-sm text-white/55">
                   Order field matching: {connection.fieldMappings ? "Custom" : "Standard"} · Advanced options: {connection.adapterSettings ? "Added" : "Standard"}
@@ -721,8 +721,8 @@ export default async function SettingsPage({
             Billing status: {currentSubscription?.status ? formatStatusLabel(currentSubscription.status) : "No subscription has been recorded yet"}
             {currentSubscription?.planKey ? ` · ${formatPlanLabel(currentSubscription.planKey)}` : ""}
           </div>
-          <div className="grid gap-3 xl:grid-cols-[auto_auto_minmax(0,1fr)] xl:items-start">
-            <CustomerPortalButton isReady={hasPortalAccess} className="w-auto" />
+          <div className="flex flex-col gap-3 xl:grid xl:grid-cols-[auto_auto_minmax(0,1fr)] xl:items-start">
+            <CustomerPortalButton isReady={hasPortalAccess} className="sm:w-auto" />
             {flags.hasStripe && viewer.workspace?.id ? <BillingSyncButton /> : null}
             <p className="text-sm text-white/55">
               {hasPortalAccess

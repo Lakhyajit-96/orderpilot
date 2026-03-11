@@ -44,11 +44,11 @@ export default async function OrdersPage() {
                     {order.exceptions[0] ?? "Structured order ready for review and downstream handoff."}
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+                <div className="flex w-full flex-wrap items-center gap-2 lg:w-auto lg:justify-end">
                   <Badge>{order.confidence}% confidence</Badge>
                   <Badge variant="muted">{order.lines} lines</Badge>
                   <Badge variant="violet">{order.status}</Badge>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/74">
+                  <div className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/74 sm:w-auto">
                     Review order <ArrowRight className="size-4" />
                   </div>
                 </div>

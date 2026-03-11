@@ -52,7 +52,7 @@ export function OrderNoteComposer({ orderId, disabled }: { orderId: string; disa
         onChange={(event) => setBody(event.target.value)}
       />
       <div className="flex justify-end">
-        <Button type="submit" variant="secondary" disabled={disabled || isLoading || !body.trim()}>
+        <Button type="submit" variant="secondary" className="w-full sm:w-auto" disabled={disabled || isLoading || !body.trim()}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
           Save note
         </Button>

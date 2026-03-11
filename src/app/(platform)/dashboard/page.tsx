@@ -156,7 +156,7 @@ export default async function DashboardPage() {
                     </div>
                     <Link
                       href={item.href}
-                      className="inline-flex shrink-0 self-start items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                      className="inline-flex w-full shrink-0 self-start items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06] sm:w-auto"
                     >
                       {item.ctaLabel} <ArrowUpRight className="size-4" />
                     </Link>
@@ -203,7 +203,7 @@ export default async function DashboardPage() {
                     </div>
                     <Link
                       href={`/orders/${order.id}`}
-                      className="inline-flex shrink-0 self-start items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                      className="inline-flex w-full shrink-0 self-start items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06] sm:w-auto"
                     >
                       Open order <ArrowRight className="size-4" />
                     </Link>

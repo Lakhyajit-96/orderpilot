@@ -74,7 +74,7 @@ export function WorkflowPolicyForm({
 
   return (
     <form className="grid gap-4" onSubmit={handleSubmit}>
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 lg:grid-cols-3">
         <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white">
           <input type="checkbox" checked={requireReasonCodes} onChange={(event) => setRequireReasonCodes(event.target.checked)} />
           Require reasons for status changes
@@ -83,7 +83,7 @@ export function WorkflowPolicyForm({
         <input className={fieldClassName} placeholder="Finance review threshold (enter cents)" value={financeThresholdCents} onChange={(event) => setFinanceThresholdCents(event.target.value)} />
       </div>
       {stages.map((stage, index) => (
-        <div key={stage.sequence} className="grid gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4 md:grid-cols-4">
+        <div key={stage.sequence} className="grid gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4 lg:grid-cols-2 2xl:grid-cols-4">
           <input className={fieldClassName} value={stage.title} onChange={(event) => setStages((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, title: event.target.value } : item))} />
           <select className={fieldClassName} value={stage.role} onChange={(event) => setStages((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, role: event.target.value as StageConfig["role"] } : item))}>
             <option value="OPERATOR">Operator</option>
@@ -100,7 +100,7 @@ export function WorkflowPolicyForm({
       ))}
       <textarea className={fieldClassName} rows={6} value={reasonCodesText} onChange={(event) => setReasonCodesText(event.target.value)} placeholder="One per line: action | code | label" />
       <div className="flex justify-end">
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
           Save review policy
         </Button>

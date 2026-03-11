@@ -9,7 +9,7 @@ export default function SignInPage() {
       {flags.hasClerk ? (
         <SignIn />
       ) : (
-        <Card className="max-w-xl">
+        <Card className="w-full max-w-xl">
           <CardHeader>
             <Badge variant="violet">Workspace access</Badge>
             <CardTitle className="mt-4 text-3xl">Sign-in will be available soon</CardTitle>
