@@ -6,6 +6,14 @@ import { testimonials } from "@/components/marketing/marketing-site-data";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
+type TestimonialsSectionProps = {
+  items?: typeof testimonials;
+  badgeLabel?: string;
+  title?: string;
+  description?: string;
+  id?: string;
+};
+
 function HeadshotAvatar({
   id,
   accentColor,
@@ -35,22 +43,28 @@ function HeadshotAvatar({
   );
 }
 
-export function TestimonialsSection() {
-  const [featured, ...rest] = testimonials;
+export function TestimonialsSection({
+  items = testimonials,
+  badgeLabel = "Testimonials",
+  title = "Teams buy faster when the workflow feels credible to the people actually running the desk.",
+  description = "These stories reflect the outcomes operations leaders care about most: less inbox chaos, fewer manual re-entry steps, and faster review without losing control.",
+  id = "testimonials",
+}: TestimonialsSectionProps) {
+  const [featured, ...rest] = items;
 
   return (
-    <section id="testimonials" className="mt-24 space-y-8">
+    <section id={id} className="mt-24 space-y-8">
       <div className="max-w-3xl">
-        <Badge variant="violet">Testimonials</Badge>
+        <Badge variant="violet">{badgeLabel}</Badge>
         <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Teams buy faster when the workflow feels credible to the people actually running the desk.
+          {title}
         </h2>
         <p className="mt-4 text-base leading-8 text-white/64">
-          These stories reflect the outcomes operations leaders care about most: less inbox chaos, fewer manual re-entry steps, and faster review without losing control.
+          {description}
         </p>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)]">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -83,7 +97,7 @@ export function TestimonialsSection() {
           </div>
         </motion.div>
 
-        <div className="grid gap-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
           {rest.map((item, index) => (
             <motion.div
               key={item.name}

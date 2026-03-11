@@ -6,12 +6,19 @@ import { ChevronDown } from "lucide-react";
 import { faqItems } from "@/components/marketing/marketing-site-data";
 import { cn } from "@/lib/utils";
 
-export function FaqAccordion() {
+type FaqAccordionProps = {
+  items?: ReadonlyArray<{
+    question: string;
+    answer: string;
+  }>;
+};
+
+export function FaqAccordion({ items = faqItems }: FaqAccordionProps) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
     <div className="space-y-3">
-      {faqItems.map((item, index) => {
+      {items.map((item, index) => {
         const isOpen = openIndex === index;
 
         return (

@@ -27,9 +27,9 @@ export function WorkflowVisualStrip() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="relative"
+              className="relative h-full"
             >
-              <div className="panel shimmer-border relative overflow-hidden rounded-[30px] p-5">
+              <div className="panel shimmer-border relative flex h-full flex-col overflow-hidden rounded-[30px] p-5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <Badge variant={stage.variant}>{stage.label}</Badge>
@@ -40,7 +40,7 @@ export function WorkflowVisualStrip() {
                   </div>
                 </div>
 
-                <div className="story-grid mt-5 rounded-[24px] border border-white/10 bg-slate-950/72 p-4">
+                <div className="story-grid mt-5 min-h-[274px] rounded-[24px] border border-white/10 bg-slate-950/72 p-4">
                   <div className="mb-3 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-white/38">
                     <span>{stage.label} surface</span>
                     <span>{stage.metric}</span>
@@ -51,7 +51,7 @@ export function WorkflowVisualStrip() {
                         key={row.primary}
                         animate={{ x: [0, rowIndex === 0 ? 4 : 0, 0] }}
                         transition={{ duration: 6 + rowIndex, repeat: Infinity, ease: "easeInOut" }}
-                        className="rounded-2xl border border-white/8 bg-white/[0.05] px-3 py-3"
+                        className="min-h-[84px] rounded-2xl border border-white/8 bg-white/[0.05] px-3 py-3"
                       >
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-sm font-medium text-white/82">{row.primary}</p>
@@ -65,10 +65,10 @@ export function WorkflowVisualStrip() {
                   </div>
                 </div>
 
-                <p className="mt-5 text-lg font-semibold text-white">{stage.title}</p>
+                <p className="mt-5 font-display text-lg font-semibold text-white">{stage.title}</p>
                 <p className="mt-3 text-sm leading-7 text-white/66">{stage.text}</p>
 
-                <div className="mt-5 flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/42">
+                <div className="mt-auto pt-5 flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/42">
                   <span>{stage.metric}</span>
                   {index < workflowStages.length - 1 ? <ArrowRight className="size-3.5 text-white/38" /> : <Send className="size-3.5 text-cyan-200" />}
                 </div>

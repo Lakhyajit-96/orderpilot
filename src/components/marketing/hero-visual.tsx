@@ -67,7 +67,7 @@ export function HeroVisual() {
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-              className="min-w-0 rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,15,35,0.9),rgba(13,18,42,0.74))] p-4 lg:p-5"
+              className="flex h-full min-w-0 flex-col rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,15,35,0.9),rgba(13,18,42,0.74))] p-4 lg:p-5"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -161,6 +161,49 @@ export function HeroVisual() {
                           {line.mappedTo}
                         </span>
                       </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-4 lg:mt-auto lg:grid-cols-[minmax(250px,0.78fr)_minmax(0,1.22fr)]">
+                <div className="min-w-0 rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.24em] text-white/40">Launch checklist</p>
+                      <p className="mt-1 text-sm text-white/68">The rollout surface stays visible to operators.</p>
+                    </div>
+                    <CheckCircle2 className="size-4 text-emerald-300" />
+                  </div>
+                  <div className="mt-4 space-y-2.5">
+                    {heroVisualSnapshot.launchChecklist.map((item) => (
+                      <div key={item.title} className="rounded-2xl border border-white/8 bg-slate-950/72 px-4 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-medium text-white">{item.title}</p>
+                          <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/58">
+                            {item.status}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">{item.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="min-w-0 rounded-[22px] border border-cyan-300/14 bg-[linear-gradient(135deg,rgba(114,228,255,0.12),rgba(124,92,255,0.08))] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.24em] text-white/42">Desk handoff proof</p>
+                      <p className="mt-1 text-sm text-white/72">Show why the workflow feels complete before ERP release.</p>
+                    </div>
+                    <Sparkles className="size-4 text-cyan-200" />
+                  </div>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                    {heroVisualSnapshot.handoffSignals.map((item) => (
+                      <div key={item.label} className="rounded-2xl border border-white/10 bg-slate-950/66 px-4 py-3">
+                        <p className="text-xs uppercase tracking-[0.2em] text-white/38">{item.label}</p>
+                        <p className="mt-2 text-sm font-medium text-white/84">{item.value}</p>
+                      </div>
                     ))}
                   </div>
                 </div>

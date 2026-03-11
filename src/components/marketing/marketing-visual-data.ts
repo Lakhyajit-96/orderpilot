@@ -26,6 +26,16 @@ export const heroVisualSnapshot = {
     { label: "Line-item confidence", value: "96% across 6 lines", tone: "text-white" },
     { label: "Open exception", value: "Confirm alternate pack size", tone: "text-violet-200" },
   ],
+  launchChecklist: [
+    { title: "Mailbox coverage", detail: "2 shared inboxes connected", status: "Live" },
+    { title: "Reviewer chain", detail: "Ops manager approval configured", status: "Ready" },
+    { title: "ERP mapping", detail: "NetSuite destination validated", status: "Staged" },
+  ],
+  handoffSignals: [
+    { label: "Coordinator proof", value: "18m saved today" },
+    { label: "Customer response window", value: "Draft ready in 2m 16s" },
+    { label: "Release confidence", value: "Approval evidence attached" },
+  ],
   approvalChain: [
     { step: "Step 1", title: "Ops manager approval", meta: "Pending · reason APPROVAL" },
     { step: "Step 2", title: "Finance review", meta: "Not required below $25k" },

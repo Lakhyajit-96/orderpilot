@@ -197,6 +197,8 @@ a {
 
 .marketing-nav-group {
   position: relative;
+  padding-bottom: 0.65rem;
+  margin-bottom: -0.65rem;
 }
 
 .marketing-nav-link {
@@ -204,7 +206,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.65rem 0.85rem;
+  padding: 0.55rem 0.8rem;
 }
 
 .marketing-nav-link::after {
