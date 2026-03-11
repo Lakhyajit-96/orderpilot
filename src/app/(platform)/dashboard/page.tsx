@@ -59,18 +59,38 @@ export default async function DashboardPage() {
             </div>
             <Badge variant="violet">{reviewQueue.length} active</Badge>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {reviewQueue.map((order) => (
-              <Link key={order.id} href={`/orders/${order.id}`} className="flex min-w-0 flex-col gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:bg-white/[0.05] lg:flex-row lg:items-center lg:justify-between">
-                <div className="min-w-0">
-                  <p className="break-words text-sm font-medium text-white">{order.id} · {order.customer}</p>
-                  <p className="mt-1 text-sm text-white/52">{order.lines} lines · {order.value} · {order.source}</p>
+              <div key={order.id} className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5">
+                <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-white/74">
+                      <span>{order.source}</span>
+                      <span className="text-white/34">·</span>
+                      <span>{order.receivedAt}</span>
+                    </div>
+                    <h2 className="mt-3 break-words text-xl font-semibold text-white">{order.id} · {order.customer}</h2>
+                    <p className="mt-2 text-sm text-white/56">
+                      {order.exceptions[0] ?? `${order.lines} lines · ${order.value} · ${order.status}`}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/78 transition hover:bg-white/[0.06]"
+                  >
+                    Open order <ArrowRight className="size-4" />
+                  </Link>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 text-sm text-white/64">
-                  <span>{order.status}</span>
-                  <span className="rounded-full border border-white/10 px-3 py-1">{order.confidence}% confidence</span>
+
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <Badge>{order.confidence}% confidence</Badge>
+                  <Badge variant="muted">{order.lines} lines</Badge>
+                  <Badge variant="violet">{order.status}</Badge>
+                  {order.exceptions.slice(0, 2).map((exception) => (
+                    <Badge key={exception} variant="violet">{exception}</Badge>
+                  ))}
                 </div>
-              </Link>
+              </div>
             ))}
           </CardContent>
         </Card>
