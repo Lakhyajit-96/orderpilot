@@ -4,6 +4,7 @@ import { BillingReplayButton } from "@/components/platform/billing-replay-button
 import { CustomerPortalButton } from "@/components/platform/customer-portal-button";
 import { ErpConnectionForm } from "@/components/platform/erp-connection-form";
 import { ExportRetryButton } from "@/components/platform/export-retry-button";
+import { LaunchChecklistExperience } from "@/components/platform/launch-checklist-experience";
 import { MailboxBootstrapButton } from "@/components/platform/mailbox-bootstrap-button";
 import { MailboxConnectionForm } from "@/components/platform/mailbox-connection-form";
 import { MailboxSyncButton } from "@/components/platform/mailbox-sync-button";
@@ -24,6 +25,7 @@ import {
 import { getWorkspaceErpConnections, getWorkspaceExportRuns } from "@/lib/erp";
 import { env, flags } from "@/lib/env";
 import { getWorkspaceInboxConnections } from "@/lib/inbox";
+import { getLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 import { getWorkspaceOrders } from "@/lib/orders";
 import { plans } from "@/lib/plans";
 import { getWorkspaceNotifications, getWorkspaceWorkflowSettings } from "@/lib/workflow";
@@ -81,7 +83,7 @@ function getEventBadgeVariant(status: string) {
 
 export default async function SettingsPage() {
   const viewer = await getViewer();
-  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders] = await Promise.all([
+  const [inboxConnections, erpConnections, exportRuns, workflowSettings, notifications, workspaceOrders, launchTelemetry] = await Promise.all([
     getWorkspaceInboxConnections(viewer.workspace?.id),
     getWorkspaceErpConnections(viewer.workspace?.id),
     getWorkspaceExportRuns(viewer.workspace?.id),
@@ -91,6 +93,7 @@ export default async function SettingsPage() {
       clerkUserId: viewer.clerkUserId,
     }),
     getWorkspaceOrders(viewer.workspace?.id),
+    getLaunchChecklistTelemetry({ organizationId: viewer.workspace?.id, clerkUserId: viewer.clerkUserId }),
   ]);
   const billingDiagnostics = await getBillingDiagnosticsSnapshot(viewer.workspace?.id);
   const recentBillingEvents = billingDiagnostics.recentEvents;
@@ -192,6 +195,14 @@ export default async function SettingsPage() {
           </Card>
         ))}
       </div>
+
+      <LaunchChecklistExperience
+        workspaceId={viewer.workspace?.id ?? null}
+        workspaceName={viewer.workspace?.name ?? null}
+        checklist={checklist}
+        analytics={launchTelemetry}
+        surface="settings"
+      />
 
       <section id="guided-setup" className="scroll-mt-24">
         <Card>

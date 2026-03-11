@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BrainCircuit, CheckCircle2, CircleDashed, Sparkles } from "lucide-react";
+import { LaunchChecklistExperience } from "@/components/platform/launch-checklist-experience";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,17 +13,19 @@ import {
 import { getBillingDiagnosticsSnapshot } from "@/lib/billing-diagnostics";
 import { getWorkspaceErpConnections } from "@/lib/erp";
 import { getWorkspaceInboxConnections } from "@/lib/inbox";
+import { getLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 import { activityFeed } from "@/lib/mock-data";
 import { getWorkspaceMetrics, getWorkspaceOrders } from "@/lib/orders";
 
 export default async function DashboardPage() {
   const viewer = await getViewer();
-  const [workspaceMetrics, workspaceOrders, inboxConnections, erpConnections, billingDiagnostics] = await Promise.all([
+  const [workspaceMetrics, workspaceOrders, inboxConnections, erpConnections, billingDiagnostics, launchTelemetry] = await Promise.all([
     getWorkspaceMetrics(viewer.workspace?.id),
     getWorkspaceOrders(viewer.workspace?.id),
     getWorkspaceInboxConnections(viewer.workspace?.id),
     getWorkspaceErpConnections(viewer.workspace?.id),
     getBillingDiagnosticsSnapshot(viewer.workspace?.id),
+    getLaunchChecklistTelemetry({ organizationId: viewer.workspace?.id, clerkUserId: viewer.clerkUserId }),
   ]);
   const reviewQueue = workspaceOrders.slice(0, 3);
   const latestOrderId = reviewQueue[0]?.id ?? "PO-10482";
@@ -123,52 +126,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Launch readiness</CardTitle>
-            <CardDescription>The product now shows what still blocks a real customer rollout.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-[24px] border border-violet-400/20 bg-violet-400/10 p-5">
-              <p className="text-sm uppercase tracking-[0.24em] text-violet-100/72">Current score</p>
-              <p className="mt-3 text-4xl font-semibold text-white">{checklistProgress.percent}%</p>
-              <p className="mt-2 text-sm text-white/64">
-                {checklistProgress.completed} of {checklistProgress.total} launch milestones are complete for {viewer.workspace?.name ?? "this workspace"}.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-              <div className="flex items-start gap-3">
-                <div className="mt-1 rounded-full bg-cyan-400/15 p-2 text-cyan-200"><BrainCircuit className="size-4" /></div>
-                <div>
-                  <p className="text-sm font-medium text-white">Next best action</p>
-                  <p className="mt-1 text-sm text-white/62">
-                    {nextLaunchStep
-                      ? `${nextLaunchStep.title} is the clearest path to move this workspace toward a live customer rollout.`
-                      : "The core go-live checklist is complete. The next step is proving daily usage and customer outcomes."}
-                  </p>
-                  {nextLaunchStep ? (
-                    <Button asChild className="mt-4">
-                      <Link href={nextLaunchStep.href}>{nextLaunchStep.ctaLabel}</Link>
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-                Mailboxes: {inboxConnections.length}
-              </div>
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-                Orders: {workspaceOrders.length}
-              </div>
-              <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-                ERP targets: {erpConnections.length}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <LaunchChecklistExperience
+          workspaceId={viewer.workspace?.id ?? null}
+          workspaceName={viewer.workspace?.name ?? null}
+          checklist={checklist}
+          analytics={launchTelemetry}
+          surface="dashboard"
+        />
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">

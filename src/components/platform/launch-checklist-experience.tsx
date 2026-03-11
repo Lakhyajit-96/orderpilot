@@ -1,0 +1,192 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { ArrowUpRight, CheckCircle2, Sparkles, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { DashboardLaunchChecklistItem } from "@/lib/dashboard-checklist-core";
+import type { LaunchChecklistTelemetrySnapshot } from "@/lib/launch-telemetry";
+import {
+  createEmptyLaunchChecklistClientState,
+  deriveLaunchChecklistExperience,
+  dismissLaunchChecklistCelebration,
+  type LaunchChecklistExperienceSnapshot,
+} from "@/lib/launch-checklist-experience-core";
+
+type LaunchChecklistExperienceProps = {
+  workspaceId: string | null;
+  workspaceName: string | null;
+  checklist: DashboardLaunchChecklistItem[];
+  analytics: LaunchChecklistTelemetrySnapshot;
+  surface: "dashboard" | "settings";
+};
+
+function formatDateTime(value: string | null | undefined) {
+  if (!value) {
+    return "Not recorded yet";
+  }
+
+  return new Date(value).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+export function LaunchChecklistExperience({
+  workspaceId,
+  workspaceName,
+  checklist,
+  analytics,
+  surface,
+}: LaunchChecklistExperienceProps) {
+  const storageKey = `orderpilot.launch-checklist:${workspaceId ?? "workspace"}`;
+  const checklistSignature = useMemo(
+    () => checklist.map((item) => `${item.key}:${item.completed ? 1 : 0}`).join("|"),
+    [checklist],
+  );
+  const [experience, setExperience] = useState<LaunchChecklistExperienceSnapshot | null>(null);
+
+  useEffect(() => {
+    const nowISOString = new Date().toISOString();
+    const previous = (() => {
+      try {
+        const raw = window.localStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : createEmptyLaunchChecklistClientState();
+      } catch {
+        return createEmptyLaunchChecklistClientState();
+      }
+    })();
+    const snapshot = deriveLaunchChecklistExperience({
+      checklist,
+      previousState: previous,
+      nowISOString,
+    });
+
+    window.localStorage.setItem(storageKey, JSON.stringify(snapshot.state));
+    const timeoutId = window.setTimeout(() => {
+      setExperience(snapshot);
+    }, 0);
+
+    void fetch("/api/launch/checklist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ checklist }),
+    }).catch(() => undefined);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [storageKey, checklist, checklistSignature]);
+
+  const recommendedStepKey = experience?.state.lastRecommendedStepKey ?? checklist.find((item) => !item.completed)?.key ?? null;
+  const recommendedStep = checklist.find((item) => item.key === recommendedStepKey) ?? null;
+  const latestCompletedKey = experience?.latestCompletedKey ?? analytics.latestMilestone?.key ?? null;
+  const latestCompletedItem = checklist.find((item) => item.key === latestCompletedKey) ?? null;
+  const latestCompletedAt = latestCompletedKey
+    ? experience?.state.completedAtByKey[latestCompletedKey] ?? analytics.latestMilestone?.createdAt ?? null
+    : analytics.latestMilestone?.createdAt ?? null;
+  const recordedMilestones = Math.max(analytics.recordedMilestones, experience?.recordedMilestones ?? 0);
+  const celebrationId = experience?.activeCelebrationId ?? null;
+
+  function dismissCelebration() {
+    if (!experience || !celebrationId) {
+      return;
+    }
+
+    const nextState = dismissLaunchChecklistCelebration(experience.state, celebrationId);
+    window.localStorage.setItem(storageKey, JSON.stringify(nextState));
+    setExperience({ ...experience, state: nextState, activeCelebrationId: null });
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <CardTitle>{surface === "dashboard" ? "Launch momentum" : "Onboarding momentum"}</CardTitle>
+            <CardDescription>
+              Track progress, celebrate wins, and keep the next action sticky until {workspaceName ?? "this workspace"} is truly launch-ready.
+            </CardDescription>
+          </div>
+          <Badge variant="violet">Telemetry live</Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {celebrationId ? (
+          <div className="rounded-[24px] border border-emerald-300/20 bg-emerald-300/10 p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="flex gap-3">
+                <div className="mt-1 rounded-full bg-emerald-300/15 p-2 text-emerald-200"><Sparkles className="size-4" /></div>
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    {celebrationId === "launch-ready"
+                      ? "Launch checklist complete"
+                      : `Milestone unlocked: ${checklist.find((item) => `step:${item.key}` === celebrationId)?.title ?? "Launch milestone"}`}
+                  </p>
+                  <p className="mt-1 text-sm text-white/70">
+                    {celebrationId === "launch-ready"
+                      ? "Every core go-live step is done. Now the mission is proving daily operator value and customer outcomes."
+                      : "OrderPilot noticed a real onboarding win and updated the recommended next action automatically."}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recommendedStep ? (
+                  <Button asChild size="sm"><Link href={recommendedStep.href}>{recommendedStep.ctaLabel}</Link></Button>
+                ) : null}
+                <Button variant="ghost" size="sm" onClick={dismissCelebration}>Dismiss</Button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="grid gap-3 xl:grid-cols-3">
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 rounded-full bg-cyan-400/15 p-2 text-cyan-200"><TrendingUp className="size-4" /></div>
+              <div>
+                <p className="text-sm font-medium text-white">Recommended next action</p>
+                <p className="mt-1 text-sm text-white/62">
+                  {recommendedStep
+                    ? `${recommendedStep.title} is being kept front-and-center until it’s done.`
+                    : "The launch checklist is complete. Keep proving usage and customer trust."}
+                </p>
+                {recommendedStep ? (
+                  <Link href={recommendedStep.href} className="mt-3 inline-flex items-center gap-2 text-sm text-cyan-200">
+                    {recommendedStep.ctaLabel} <ArrowUpRight className="size-4" />
+                  </Link>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 rounded-full bg-emerald-300/15 p-2 text-emerald-200"><CheckCircle2 className="size-4" /></div>
+              <div>
+                <p className="text-sm font-medium text-white">Recent win</p>
+                <p className="mt-1 text-sm text-white/62">
+                  {latestCompletedItem?.title ?? analytics.latestMilestone?.title ?? "No launch milestone recorded yet."}
+                </p>
+                <p className="mt-2 text-xs uppercase tracking-[0.24em] text-white/38">{formatDateTime(latestCompletedAt)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+            <p className="text-sm font-medium text-white">Launch-readiness analytics</p>
+            <p className="mt-3 text-3xl font-semibold text-white">{recordedMilestones}</p>
+            <p className="mt-1 text-sm text-white/62">Milestone{recordedMilestones === 1 ? "" : "s"} recorded for this workspace.</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.24em] text-white/38">
+              Started {formatDateTime(experience?.state.trackedAt ?? analytics.firstMilestoneAt)}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
