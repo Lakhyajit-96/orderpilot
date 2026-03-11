@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:backend": "node --test --experimental-strip-types src/lib/workspace-core.test.ts src/lib/billing-checkout-core.test.ts src/lib/billing-portal-core.test.ts src/lib/stripe-webhook-core.test.ts src/lib/order-write-core.test.ts src/lib/inbox-core.test.ts src/lib/mailbox-oauth-core.test.ts src/lib/erp-core.test.ts src/lib/workflow-core.test.ts src/lib/dashboard-checklist-core.test.ts src/lib/launch-checklist-experience-core.test.ts src/lib/launch-telemetry-core.test.ts src/lib/launch-value-proof-core.test.ts src/lib/workspace-metrics-core.test.ts src/lib/platform-shell-core.test.ts src/components/platform/platform-home-link.test.ts",
+    "test:backend": "node --test --experimental-strip-types src/lib/workspace-core.test.ts src/lib/billing-checkout-core.test.ts src/lib/billing-portal-core.test.ts src/lib/stripe-webhook-core.test.ts src/lib/order-write-core.test.ts src/lib/inbox-core.test.ts src/lib/mailbox-oauth-core.test.ts src/lib/erp-core.test.ts src/lib/workflow-core.test.ts src/lib/dashboard-checklist-core.test.ts src/lib/launch-checklist-experience-core.test.ts src/lib/launch-telemetry-core.test.ts src/lib/launch-value-proof-core.test.ts src/lib/workspace-metrics-core.test.ts src/lib/platform-shell-core.test.ts src/components/platform/platform-home-link.test.ts src/components/marketing/marketing-visuals.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push"
   },

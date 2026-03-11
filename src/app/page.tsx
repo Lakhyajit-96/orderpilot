@@ -3,16 +3,16 @@ import {
   ArrowRight,
   Bot,
   CheckCircle2,
-  Clock3,
   FileSearch2,
-  Layers3,
   MessagesSquare,
   ShieldCheck,
   Sparkles,
   TrendingUp,
   Users,
 } from "lucide-react";
+import { FeatureVisualGrid } from "@/components/marketing/feature-visual-grid";
 import { HeroVisual } from "@/components/marketing/hero-visual";
+import { WorkflowVisualStrip } from "@/components/marketing/workflow-visual-strip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,29 +38,6 @@ const signals = [
     label: "ERP handoff",
     title: "Structured drafts your downstream system can trust",
     text: "Approved orders leave the review queue with mappings, notes, and approval history intact for the final handoff.",
-  },
-];
-
-const features = [
-  {
-    icon: Bot,
-    title: "AI extraction that understands order context",
-    text: "Parse email bodies, attachments, SKU aliases, quantities, ship dates, and notes into a clean structured draft order.",
-  },
-  {
-    icon: Layers3,
-    title: "Exception routing built for ops teams",
-    text: "Every mismatch is surfaced with confidence, mapping evidence, and a review flow your team can work through quickly.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "ERP-ready control layer",
-    text: "Keep auditability, approval history, and export confidence before anything reaches the downstream system.",
-  },
-  {
-    icon: Clock3,
-    title: "Faster first review for the order desk",
-    text: "Give coordinators a prepared draft with highlighted gaps so they can spend time deciding, not re-keying.",
   },
 ];
 
@@ -231,42 +208,31 @@ export default function Home() {
               <div className="rounded-[22px] border border-white/10 bg-slate-950/60 p-5">
                 <p className="text-xs uppercase tracking-[0.24em] text-white/40">What operations teams get</p>
                 <ul className="mt-4 space-y-3 text-sm leading-7 text-white/72">
-                  <li>• One intake surface for emails, PDFs, and attachments</li>
-                  <li>• A reviewer queue that prioritizes mismatches and ambiguity</li>
-                  <li>• Approval history that survives the ERP handoff</li>
+                  <li>• A live dashboard surface for launch readiness, queue health, and next action</li>
+                  <li>• A reviewer workstation with mapped lines, approval context, and exceptions in one place</li>
+                  <li>• Rollout controls for mailbox connections, billing state, and ERP handoff readiness</li>
                 </ul>
               </div>
-            </CardContent>
-          </Card>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {features.map(({ icon: Icon, title, text }) => (
-              <Card key={title}>
-                <CardHeader>
-                  <div className="flex size-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-cyan-200"><Icon className="size-5" /></div>
-                  <CardTitle className="mt-4">{title}</CardTitle>
-                  <CardDescription className="leading-7">{text}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section id="workflow" className="mt-16 grid gap-6 lg:grid-cols-[0.78fr_1.22fr]">
-          <Card>
-            <CardHeader>
-              <Badge variant="violet">Operational workflow</Badge>
-              <CardTitle className="mt-4">How distributor teams move from inbox intake to ERP-ready draft.</CardTitle>
-              <CardDescription className="text-base leading-8 text-white/68">
-                The goal is not to replace the order desk. The goal is to give the team a faster first draft, a clearer review queue, and a more confident handoff downstream.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-[22px] border border-white/10 bg-white/[0.04] p-5 text-sm leading-7 text-white/72">
-                What changes on day one: incoming purchase orders stop living in personal inboxes, exceptions get surfaced with evidence, and coordinators can work from the same system of record.
+              <div className="mt-4 rounded-[22px] border border-cyan-300/12 bg-[linear-gradient(135deg,rgba(114,228,255,0.08),rgba(124,92,255,0.06))] p-5 text-sm leading-7 text-white/72">
+                The visuals below are derived from the actual dashboard, review, and settings surfaces so buyers immediately understand what the live product feels like.
               </div>
             </CardContent>
           </Card>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <FeatureVisualGrid />
+        </section>
+
+        <section id="workflow" className="mt-16 space-y-6">
+          <div className="max-w-3xl">
+            <Badge variant="violet">Operational workflow</Badge>
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">A cinematic view of intake → review → approval.</h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              The landing page now shows the actual operating arc: shared inbox capture, AI draft generation, reviewer exception handling, and the final ERP-ready handoff.
+            </p>
+          </div>
+
+          <WorkflowVisualStrip />
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {steps.map((step, index) => (
               <Card key={step.title}>
                 <CardContent className="pt-6">

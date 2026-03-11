@@ -75,3 +75,117 @@ a {
   mask-image: radial-gradient(circle at center, black 34%, transparent 86%);
   pointer-events: none;
 }
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes float-diagonal {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(10px, -12px, 0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes shimmer-slide {
+  0% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+.story-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.ambient-orb,
+.ambient-orb-delayed {
+  filter: blur(36px);
+  pointer-events: none;
+}
+
+.ambient-orb {
+  animation: pulse-soft 10s ease-in-out infinite;
+}
+
+.ambient-orb-delayed {
+  animation: pulse-soft 12s ease-in-out infinite 1.4s;
+}
+
+.visual-float {
+  animation: float-slow 12s ease-in-out infinite;
+}
+
+.visual-float-delayed {
+  animation: float-diagonal 14s ease-in-out infinite;
+}
+
+.shimmer-border {
+  position: relative;
+}
+
+.shimmer-border::after {
+  content: "";
+  position: absolute;
+  inset: -10%;
+  background: linear-gradient(110deg, transparent 36%, rgba(255, 255, 255, 0.12) 50%, transparent 64%);
+  opacity: 0.3;
+  mix-blend-mode: screen;
+  filter: blur(16px);
+  animation: shimmer-slide 8s linear infinite;
+  pointer-events: none;
+}
+
+.workflow-connector {
+  width: 42px;
+  height: 12px;
+}
+
+.workflow-connector::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(114, 228, 255, 0.04), rgba(114, 228, 255, 0.42), rgba(124, 92, 255, 0.42), rgba(255, 255, 255, 0.06));
+}
+
+.workflow-connector-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(114, 228, 255, 1) 0%, rgba(114, 228, 255, 0.32) 42%, rgba(114, 228, 255, 0) 72%);
+  box-shadow: 0 0 24px rgba(114, 228, 255, 0.32);
+}
