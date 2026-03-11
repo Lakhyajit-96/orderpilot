@@ -1,6 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import { Bot, FileSearch2, MessagesSquare, ShieldCheck, TrendingUp, Users } from "lucide-react";
 
+export const marketingOrderReviewHref = "/orders/PO-10482" as const;
+
 export const proofPills = [
   "Shared mailbox capture for distributor teams",
   "Exception-first review with human approval",
@@ -178,6 +180,30 @@ export const testimonials = [
     hairColor: "#3a241d",
     accentColor: "#5EEAD4",
   },
+  {
+    name: "Leah Morgan",
+    role: "Senior Order Desk Manager",
+    company: "Trident Flow Systems",
+    quote:
+      "We finally gave the whole desk one queue and one review habit. New coordinators ramp faster because the evidence, notes, and next action are already in the order.",
+    metric: "31% less internal order handoff churn",
+    rating: 5,
+    tone: "from-amber-300/16 via-slate-950/0 to-cyan-300/10",
+    hairColor: "#2a1e19",
+    accentColor: "#FBBF24",
+  },
+  {
+    name: "Omar Bennett",
+    role: "Director of Branch Operations",
+    company: "Keystone Parts Group",
+    quote:
+      "The rollout story landed because branch leads could see where approvals stayed human-controlled while the intake work got lighter almost right away.",
+    metric: "2 branches launched from the same operating model",
+    rating: 5,
+    tone: "from-cyan-300/14 via-slate-950/0 to-emerald-300/16",
+    hairColor: "#171f33",
+    accentColor: "#7DD3FC",
+  },
 ] as const;
 
 export const trustLogos = [
@@ -232,7 +258,7 @@ export const headerMenuGroups = [
       {
         title: "Review exceptions",
         description: "Route low-confidence fields to the right human with evidence attached.",
-        href: "/orders/PO-10482",
+        href: marketingOrderReviewHref,
       },
       {
         title: "Measure impact",
@@ -276,14 +302,14 @@ export const headerMenuGroups = [
   },
   {
     label: "See order review",
-    href: "/orders/PO-10482",
+    href: marketingOrderReviewHref,
     tone: "amber",
     summary: "Open the representative order-review experience to inspect mapped lines, exceptions, and approval context in action.",
     items: [
       {
         title: "Order detail surface",
         description: "Inspect the actual mapped-line review screen used in the product visual system.",
-        href: "/orders/PO-10482",
+        href: marketingOrderReviewHref,
       },
       {
         title: "Why reviewers trust it",
@@ -318,7 +344,7 @@ export const footerLinkGroups = [
     title: "Explore",
     links: [
       { label: "Open workspace", href: "/dashboard" },
-      { label: "See order review", href: "/orders/PO-10482" },
+      { label: "See order review", href: marketingOrderReviewHref },
       { label: "Customer stories", href: "#testimonials" },
       { label: "FAQ", href: "#faq" },
     ],

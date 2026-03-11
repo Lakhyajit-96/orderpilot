@@ -30,6 +30,16 @@ export const heroVisualSnapshot = {
     { step: "Step 1", title: "Ops manager approval", meta: "Pending · reason APPROVAL" },
     { step: "Step 2", title: "Finance review", meta: "Not required below $25k" },
   ],
+  launchChecklist: [
+    "Shared mailbox live",
+    "Reason codes loaded",
+    "Review policy active",
+  ],
+  handoffSignals: [
+    "NetSuite adapter validated",
+    "Export queue staged",
+    "Desk handoff visible",
+  ],
   reviewQueue: [
     { id: "PO-10482", status: "Needs review", detail: "Pack size mismatch · 1 blocker", meta: "shared inbox · 09:18 AM" },
     { id: "PO-10479", status: "Ready to approve", detail: "Mapped 8/8 lines", meta: "gmail alias · 09:11 AM" },

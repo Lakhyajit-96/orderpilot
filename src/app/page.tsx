@@ -7,6 +7,7 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import {
   controlPillars,
   marketingSignals,
+  marketingOrderReviewHref,
   proofPills,
   teamViews,
   workflowSteps,
@@ -21,9 +22,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { plans } from "@/lib/plans";
 
 const pricingHighlights = [
-  "Launch with shared inbox intake and reviewer workflow",
-  "Expand into ERP-ready handoff as the team gains confidence",
-  "Keep billing, access, and rollout readiness aligned in one workspace",
+  "Start with shared inbox capture and a review flow buyers can understand immediately",
+  "Expand into approvals and ERP-ready handoff only when the team is ready for it",
+  "Keep rollout, billing, and launch readiness visible in one operational workspace",
 ];
 
 export default function Home() {
@@ -33,18 +34,18 @@ export default function Home() {
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-20 pt-6 sm:px-6 lg:px-8">
         <MarketingHeader />
 
-        <section className="flex flex-1 flex-col items-center py-16 lg:py-24">
-          <div className="mx-auto max-w-5xl text-center">
+        <section className="flex flex-1 flex-col items-center py-12 lg:py-20">
+          <div className="mx-auto max-w-[58rem] text-center">
             <Badge>Built for distributor operations</Badge>
-            <h1 className="mt-6 font-display text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className="mt-6 font-display text-4xl font-semibold tracking-tight text-white sm:text-6xl lg:text-[4.5rem]">
               Turn emailed purchase orders into <span className="text-gradient">ERP-ready draft orders.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-lg leading-9 text-white/66 sm:text-xl">
               OrderPilot turns emailed POs and attachments into structured order drafts, highlights exceptions, and routes review before the ERP handoff.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild size="lg"><Link href="/dashboard">Enter workspace <ArrowRight className="size-4" /></Link></Button>
-              <Button asChild size="lg" variant="secondary"><Link href="/orders/PO-10482">See order review</Link></Button>
+              <Button asChild size="lg"><Link href="/dashboard">Dashboard <ArrowRight className="size-4" /></Link></Button>
+              <Button asChild size="lg" variant="secondary"><Link href={marketingOrderReviewHref}>See live order review</Link></Button>
             </div>
             <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm text-white/54">
               {proofPills.map((item) => (
@@ -56,7 +57,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-12 w-full xl:mt-14">
+          <div className="mt-10 w-full xl:mt-12">
             <HeroVisual />
           </div>
         </section>
@@ -166,7 +167,7 @@ export default function Home() {
               Choose the rollout path that matches your current order volume and control model.
             </h2>
             <p className="mt-4 text-base leading-8 text-white/68">
-              The pricing story follows the same progression shown inside Settings: start with core intake and review, expand into approval depth and ERP handoff, and add enterprise controls when the operation demands it.
+              Start with the operational basics your team needs first, expand into approval depth and cleaner ERP release as volume grows, and add enterprise controls only when they become part of the real rollout plan.
             </p>
           </div>
 
@@ -199,9 +200,9 @@ export default function Home() {
                   ))}
                   <div className="pt-2">
                     {plan.key === "enterprise" ? (
-                      <Button asChild variant="secondary" className="w-full"><Link href="mailto:hello@orderpilot.ai?subject=OrderPilot%20enterprise%20rollout">Talk to sales</Link></Button>
+                      <Button asChild variant="secondary" className="w-full"><Link href="mailto:hello@orderpilot.ai?subject=OrderPilot%20enterprise%20rollout">Talk through rollout</Link></Button>
                     ) : (
-                      <Button asChild className="w-full"><Link href="/dashboard">Open workspace</Link></Button>
+                      <Button asChild className="w-full"><Link href="/dashboard">Explore dashboard</Link></Button>
                     )}
                   </div>
                 </CardContent>
@@ -277,12 +278,12 @@ export default function Home() {
                 <Badge>Next step</Badge>
                 <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">See the workspace, then inspect how an order gets reviewed in context.</h2>
                 <p className="mt-4 max-w-3xl text-base leading-8 text-white/68">
-                  The clearest next move is to open the actual workspace and then inspect a representative order review surface. That gives buyers both the high-level operations picture and the detailed line-level proof.
+                  The clearest next move is to open the actual dashboard and then inspect a representative order review surface. That gives buyers both the high-level operations picture and the detailed line-level proof.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <Button asChild size="lg"><Link href="/dashboard">Open workspace <ArrowRight className="size-4" /></Link></Button>
-                <Button asChild size="lg" variant="secondary"><Link href="/orders/PO-10482">Inspect order review</Link></Button>
+                <Button asChild size="lg"><Link href="/dashboard">Dashboard <ArrowRight className="size-4" /></Link></Button>
+                <Button asChild size="lg" variant="secondary"><Link href={marketingOrderReviewHref}>Inspect live order</Link></Button>
               </div>
             </div>
           </div>

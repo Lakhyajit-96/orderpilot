@@ -14,11 +14,11 @@ const menuToneClasses = {
 
 export function MarketingHeader() {
   return (
-    <header className="panel sticky top-4 z-40 rounded-[30px] px-4 py-4 sm:px-6">
+    <header className="panel sticky top-3 z-40 rounded-[26px] px-3 py-3 sm:px-4 sm:py-3.5">
       <div className="flex items-center justify-between gap-4">
-        <BrandLogo href="/" size="md" showTagline={false} />
+        <BrandLogo href="/" size="sm" showTagline={false} />
 
-        <div className="hidden items-center gap-2 xl:flex">
+        <div className="hidden items-center gap-1.5 xl:flex">
           {headerMenuGroups.map((group) => (
             <div key={group.label} className="marketing-nav-group">
               <Link href={group.href} className="marketing-nav-link font-display text-[13px] font-medium uppercase tracking-[0.22em] text-white/78">
@@ -28,7 +28,7 @@ export function MarketingHeader() {
                 <ChevronDown className="marketing-nav-chevron size-3.5 text-white/44 transition-transform duration-200" />
               </Link>
 
-              <div className="marketing-nav-panel w-[760px] max-w-[calc(100vw-8rem)] rounded-[28px] border border-white/10 bg-slate-950/95 p-4 shadow-[0_24px_80px_rgba(2,8,26,0.55)] backdrop-blur-2xl">
+              <div className="marketing-nav-panel w-[720px] max-w-[calc(100vw-6rem)] rounded-[26px] border border-white/10 bg-slate-950/95 p-3.5 shadow-[0_24px_80px_rgba(2,8,26,0.55)] backdrop-blur-2xl">
                 <div className="grid gap-4 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
                   <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5">
                     <div className={cn("inline-flex rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]", menuToneClasses[group.tone])}>
@@ -60,11 +60,8 @@ export function MarketingHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
-            <Link href="/orders/PO-10482">See order review</Link>
-          </Button>
           <Button asChild size="sm">
-            <Link href="/dashboard">Open app</Link>
+            <Link href="/dashboard">Dashboard</Link>
           </Button>
         </div>
       </div>

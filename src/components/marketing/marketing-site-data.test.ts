@@ -4,6 +4,7 @@ import {
   faqItems,
   footerLinkGroups,
   headerMenuGroups,
+  marketingOrderReviewHref,
   marketingSignals,
   proofPills,
   testimonials,
@@ -17,8 +18,10 @@ test("marketing site data covers navigation, proof, and trust sections", () => {
   assert.equal(workflowSteps.length, 4);
   assert.equal(headerMenuGroups.length, 4);
   assert.equal(headerMenuGroups[0]?.label, "Platform");
+  assert.equal(testimonials.length, 5);
   assert.equal(testimonials[0]?.company, "Atlas Industrial Supply");
   assert.equal(trustLogos[2]?.name, "NetSuite");
   assert.equal(faqItems.length, 6);
   assert.equal(footerLinkGroups[1]?.links[1]?.label, "See order review");
+  assert.equal(footerLinkGroups[1]?.links[1]?.href, marketingOrderReviewHref);
 });

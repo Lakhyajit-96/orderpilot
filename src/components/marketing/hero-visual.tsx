@@ -67,7 +67,7 @@ export function HeroVisual() {
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-              className="min-w-0 rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,15,35,0.9),rgba(13,18,42,0.74))] p-4 lg:p-5"
+              className="flex min-w-0 h-full flex-col rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(10,15,35,0.9),rgba(13,18,42,0.74))] p-4 lg:p-5"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -161,6 +161,31 @@ export function HeroVisual() {
                           {line.mappedTo}
                         </span>
                       </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:mt-auto">
+                <div className="rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/40">Launch checklist</p>
+                  <div className="mt-3 space-y-2.5">
+                    {heroVisualSnapshot.launchChecklist.map((item) => (
+                      <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/8 bg-slate-950/66 px-4 py-3 text-sm text-white/72">
+                        <CheckCircle2 className="size-4 shrink-0 text-emerald-300" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-[22px] border border-white/8 bg-white/[0.035] p-4">
+                  <p className="text-xs uppercase tracking-[0.24em] text-white/40">Desk handoff proof</p>
+                  <div className="mt-3 space-y-2.5">
+                    {heroVisualSnapshot.handoffSignals.map((item) => (
+                      <div key={item} className="rounded-2xl border border-white/8 bg-slate-950/66 px-4 py-3 text-sm text-white/72">
+                        {item}
+                      </div>
                     ))}
                   </div>
                 </div>

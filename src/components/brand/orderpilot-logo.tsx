@@ -2,9 +2,9 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const logoSizeClasses = {
-  sm: "size-10 rounded-[18px]",
-  md: "size-11 rounded-[20px]",
-  lg: "size-12 rounded-[22px]",
+  sm: "size-9 rounded-[18px]",
+  md: "size-10 rounded-[20px]",
+  lg: "size-11 rounded-[22px]",
 } as const;
 
 type BrandLogoProps = {
@@ -20,18 +20,25 @@ export function BrandMark({ className, size = "md" }: { className?: string; size
   return (
     <div
       className={cn(
-        "flex items-center justify-center bg-[linear-gradient(135deg,#72e4ff_0%,#7c5cff_55%,#4b2fde_100%)] text-white shadow-[0_18px_48px_rgba(73,116,255,0.35)]",
+        "flex items-center justify-center border border-white/14 bg-[linear-gradient(145deg,#7ae6ff_0%,#7c5cff_54%,#3a22bf_100%)] text-white shadow-[0_20px_54px_rgba(73,116,255,0.34)] ring-1 ring-white/6",
         logoSizeClasses[size],
         className,
       )}
       aria-hidden="true"
     >
       <svg viewBox="0 0 1024 1024" className="size-[72%]" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="brand-mark-dot" x1="676" y1="216" x2="790" y2="330" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#E7FBFF" />
+            <stop offset="1" stopColor="#72E4FF" />
+          </linearGradient>
+        </defs>
         <path
-          d="M260 513C260 383.8 364.8 279 494 279H598V175L818 384L598 593V489H494C480.4 489 467.7 490.2 455.8 492.6C373.4 509 311 581.7 311 669C311 769.5 392.5 851 493 851H769V969H493C327.6 969 193 834.4 193 669C193 594.6 220.4 526.6 265.7 474.6L260 513Z"
+          d="M220 610C220 409.5 382.5 247 583 247H649C716.4 247 771 301.6 771 369C771 436.4 716.4 491 649 491H529C463.8 491 411 543.8 411 609C411 674.2 463.8 727 529 727H804V837H529C403.1 837 301 734.9 301 609C301 483.1 403.1 381 529 381H649C682 381 709 354 709 321C709 288 682 261 649 261H583C443.8 261 331 373.8 331 513V610H220Z"
           fill="white"
         />
-        <circle cx="753" cy="383" r="54" fill="#72E4FF" />
+        <path d="M564 182L822 440L564 698V570H478V452H564V182Z" fill="white" />
+        <circle cx="728" cy="296" r="48" fill="url(#brand-mark-dot)" />
       </svg>
     </div>
   );
@@ -49,8 +56,8 @@ export function BrandLogo({
     <div className={cn("flex items-center gap-3", align === "center" && "justify-center text-center", className)}>
       <BrandMark size={size} />
       <div className={cn("min-w-0", align === "center" && "text-center", wordmarkClassName)}>
-        <p className="font-display text-lg font-semibold tracking-[0.02em] text-white">OrderPilot</p>
-        {showTagline ? <p className="text-sm text-white/66">AI order intake for distributors</p> : null}
+        <p className="font-display text-[1.02rem] font-semibold tracking-[0.015em] text-white">OrderPilot</p>
+        {showTagline ? <p className="text-[0.8rem] text-white/64">AI order intake for distributors</p> : null}
       </div>
     </div>
   );

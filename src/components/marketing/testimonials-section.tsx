@@ -37,9 +37,14 @@ function HeadshotAvatar({
 
 export function TestimonialsSection() {
   const [featured, ...rest] = testimonials;
+  const featuredProof = [
+    "Shared queue visibility",
+    "Evidence-backed review",
+    "Cleaner ERP handoff",
+  ];
 
   return (
-    <section id="testimonials" className="mt-24 space-y-8">
+    <section id="testimonials" className="mt-20 space-y-8">
       <div className="max-w-3xl">
         <Badge variant="violet">Testimonials</Badge>
         <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -50,13 +55,13 @@ export function TestimonialsSection() {
         </p>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.45 }}
-          className={`rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(2,8,24,0.35)] ${featured.tone}`}
+          className={`h-full rounded-[32px] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-[0_24px_80px_rgba(2,8,24,0.35)] ${featured.tone}`}
         >
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex items-center gap-4">
@@ -80,10 +85,17 @@ export function TestimonialsSection() {
             <div className="mt-5 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-100">
               {featured.metric}
             </div>
+            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+              {featuredProof.map((item) => (
+                <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/62">
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
 
-        <div className="grid gap-4">
+        <div className="grid auto-rows-fr gap-4 sm:grid-cols-2">
           {rest.map((item, index) => (
             <motion.div
               key={item.name}
@@ -92,7 +104,7 @@ export function TestimonialsSection() {
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.4, delay: index * 0.08 }}
             >
-              <Card className="overflow-hidden border-white/12 bg-white/[0.05]">
+              <Card className="h-full overflow-hidden border-white/12 bg-white/[0.05]">
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-4">

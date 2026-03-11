@@ -27,9 +27,9 @@ export function WorkflowVisualStrip() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="relative"
+              className="relative h-full"
             >
-              <div className="panel shimmer-border relative overflow-hidden rounded-[30px] p-5">
+              <div className="panel shimmer-border relative flex h-full flex-col overflow-hidden rounded-[30px] p-5">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <Badge variant={stage.variant}>{stage.label}</Badge>
@@ -40,7 +40,7 @@ export function WorkflowVisualStrip() {
                   </div>
                 </div>
 
-                <div className="story-grid mt-5 rounded-[24px] border border-white/10 bg-slate-950/72 p-4">
+                <div className="story-grid mt-5 flex-1 rounded-[24px] border border-white/10 bg-slate-950/72 p-4">
                   <div className="mb-3 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-white/38">
                     <span>{stage.label} surface</span>
                     <span>{stage.metric}</span>

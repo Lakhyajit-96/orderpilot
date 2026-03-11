@@ -157,12 +157,26 @@ export default async function OrderDetailPage({
               )}
               <OrderNoteComposer orderId={order.id} disabled={!canEdit} />
               {order.notes.length ? (
-                order.notes.map((note) => (
-                  <div key={note.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
-                    <p>{note.body}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">{note.authorName ?? "System"} · {note.createdAt}</p>
-                  </div>
-                ))
+                order.notes.map((note) => {
+                  const isMailboxBodyNote = note.body.startsWith("Mailbox body:");
+                  const mailboxBody = isMailboxBodyNote ? note.body.slice("Mailbox body:".length).trim() : "";
+
+                  return (
+                    <div key={note.id} className="min-w-0 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
+                      {isMailboxBodyNote ? (
+                        <div className="space-y-3">
+                          <p className="text-[11px] uppercase tracking-[0.22em] text-white/42">Mailbox body</p>
+                          <div className="max-h-56 overflow-y-auto rounded-2xl border border-white/8 bg-slate-950/60 px-3 py-2 text-xs leading-6 text-white/68 whitespace-pre-wrap [overflow-wrap:anywhere]">
+                            {mailboxBody || "No mailbox content captured."}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">{note.body}</p>
+                      )}
+                      <p className="mt-3 text-xs uppercase tracking-[0.2em] text-white/38">{note.authorName ?? "System"} · {note.createdAt}</p>
+                    </div>
+                  );
+                })
               ) : (
                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
                   No reviewer notes have been added yet.
