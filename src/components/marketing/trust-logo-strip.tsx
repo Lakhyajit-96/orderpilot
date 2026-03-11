@@ -1,49 +1,67 @@
 import { Badge } from "@/components/ui/badge";
 import { trustLogos } from "@/components/marketing/marketing-site-data";
 
-function TrustLogoGlyph({ name }: { name: string }) {
+function TrustLogoWordmark({ name }: { name: string }) {
   switch (name) {
     case "Microsoft 365":
       return (
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M4 4H10V10H4V4Z" fill="#72E4FF" /><path d="M14 4H20V10H14V4Z" fill="#A78BFA" />
-          <path d="M4 14H10V20H4V14Z" fill="#5EEAD4" /><path d="M14 14H20V20H14V14Z" fill="#F8FAFC" fillOpacity="0.92" />
+        <svg viewBox="0 0 194 36" className="h-8 w-auto" role="img" aria-label="Microsoft 365">
+          <path d="M4 4H15V15H4V4Z" fill="#F25022" />
+          <path d="M18 4H29V15H18V4Z" fill="#7FBA00" />
+          <path d="M4 18H15V29H4V18Z" fill="#00A4EF" />
+          <path d="M18 18H29V29H18V18Z" fill="#FFB900" />
+          <text x="40" y="22" fill="#F8FAFC" fontSize="16" fontWeight="600" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">
+            Microsoft 365
+          </text>
         </svg>
       );
     case "Gmail":
       return (
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M4 7.5L12 13.5L20 7.5" stroke="#72E4FF" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M5.5 7H18.5C19.3 7 20 7.7 20 8.5V16.5C20 17.3 19.3 18 18.5 18H5.5C4.7 18 4 17.3 4 16.5V8.5C4 7.7 4.7 7 5.5 7Z" stroke="white" strokeOpacity="0.9" strokeWidth="1.6" />
+        <svg viewBox="0 0 146 36" className="h-8 w-auto" role="img" aria-label="Gmail">
+          <path d="M4 27V9.2L10.6 14.3V27H4Z" fill="#4285F4" />
+          <path d="M10.6 14.3L18 20.1L25.4 14.3V27H10.6V14.3Z" fill="#34A853" />
+          <path d="M25.4 14.3L32 9.2V27H25.4V14.3Z" fill="#FBBC04" />
+          <path d="M4 9.2L18 20.1L32 9.2L28.1 6.2L18 14.2L7.9 6.2L4 9.2Z" fill="#EA4335" />
+          <text x="42" y="22" fill="#F8FAFC" fontSize="16" fontWeight="600" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">
+            Gmail
+          </text>
         </svg>
       );
     case "NetSuite":
       return (
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M5 17.5V6.5L12 13L19 6.5V17.5" stroke="white" strokeOpacity="0.92" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M5 17.5H19" stroke="#72E4FF" strokeWidth="1.8" strokeLinecap="round" />
+        <svg viewBox="0 0 170 36" className="h-8 w-auto" role="img" aria-label="NetSuite">
+          <path d="M7 27V8L19 20V27H7Z" fill="#75AADB" />
+          <path d="M19 20V8H31V27L19 20Z" fill="#5477A3" />
+          <text x="42" y="22" fill="#D8E5F4" fontSize="16" fontWeight="700" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">
+            NetSuite
+          </text>
         </svg>
       );
     case "SAP":
       return (
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M5 8H19" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round" />
-          <path d="M5 12H16" stroke="white" strokeOpacity="0.92" strokeWidth="1.8" strokeLinecap="round" />
-          <path d="M5 16H13" stroke="#72E4FF" strokeWidth="1.8" strokeLinecap="round" />
+        <svg viewBox="0 0 110 36" className="h-8 w-auto" role="img" aria-label="SAP">
+          <path d="M4 6H88L74 30H4V6Z" fill="#0FAAFF" />
+          <text x="18" y="23" fill="#FFFFFF" fontSize="16" fontWeight="800" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">
+            SAP
+          </text>
         </svg>
       );
     case "Dynamics 365":
       return (
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M7 5L15.5 8.5V19L7 15V5Z" fill="#72E4FF" fillOpacity="0.92" />
-          <path d="M15.5 8.5L19 5V15.5L15.5 19V8.5Z" fill="#A78BFA" fillOpacity="0.92" />
+        <svg viewBox="0 0 190 36" className="h-8 w-auto" role="img" aria-label="Dynamics 365">
+          <path d="M7 7L22 13V29L7 22V7Z" fill="#4FD1FF" />
+          <path d="M22 13L30 7V23L22 29V13Z" fill="#6366F1" />
+          <text x="42" y="22" fill="#EEF2FF" fontSize="16" fontWeight="600" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">
+            Dynamics 365
+          </text>
         </svg>
       );
     default:
       return (
-        <svg viewBox="0 0 24 24" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M7 8.5H17.5L14 12L17.5 15.5H7" stroke="white" strokeOpacity="0.92" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M9 6.5H18" stroke="#72E4FF" strokeWidth="1.8" strokeLinecap="round" />
+        <svg viewBox="0 0 138 36" className="h-8 w-auto" role="img" aria-label="Stripe">
+          <text x="4" y="24" fill="#A78BFA" fontSize="22" fontWeight="800" fontFamily="Inter, ui-sans-serif, system-ui, sans-serif">
+            stripe
+          </text>
         </svg>
       );
   }
@@ -69,13 +87,12 @@ export function TrustLogoStrip() {
           {items.map((logo, index) => (
             <div
               key={`${logo.name}-${index}`}
-              className="mx-2 flex min-w-[210px] items-center gap-4 rounded-[24px] border border-white/10 bg-white/[0.035] px-5 py-4 backdrop-blur-sm"
+              className="mx-2 flex min-w-[230px] flex-col justify-center rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] px-5 py-4 backdrop-blur-sm"
             >
-              <div className="flex size-12 items-center justify-center rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] text-cyan-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                <TrustLogoGlyph name={logo.name} />
+              <div className="flex h-8 items-center">
+                <TrustLogoWordmark name={logo.name} />
               </div>
-              <div>
-                <p className="font-display text-base font-semibold text-white">{logo.name}</p>
+              <div className="mt-4 border-t border-white/8 pt-3">
                 <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/42">{logo.label}</p>
               </div>
             </div>

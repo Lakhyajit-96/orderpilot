@@ -1,7 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import { Bot, FileSearch2, MessagesSquare, ShieldCheck, TrendingUp, Users } from "lucide-react";
+import { marketingOrderReviewHref } from "../../lib/marketing-routes.ts";
 
-export const marketingOrderReviewHref = "/orders/PO-10482" as const;
+export { marketingOrderReviewHref } from "../../lib/marketing-routes.ts";
 
 export const proofPills = [
   "Shared mailbox capture for distributor teams",
@@ -150,7 +151,14 @@ export const testimonials = [
     company: "Atlas Industrial Supply",
     quote:
       "The biggest win was not just extraction accuracy — it was finally giving our coordinators and reviewers one shared place to work every inbound PO without losing context.",
+    detail:
+      "Within the first rollout, Atlas connected its Microsoft 365 order inbox, standardized reviewer notes, and made pack-size or ship-date questions visible before a draft ever reached downstream teams.",
     metric: "42% faster first-pass review",
+    proofPoints: [
+      "Shared Microsoft 365 intake replaced inbox forwarding between coordinators.",
+      "Reviewers stopped reopening original emails just to confirm notes or dock instructions.",
+      "Approved drafts reached downstream teams with context, approvals, and shipment details intact.",
+    ],
     rating: 5,
     tone: "from-cyan-300/24 via-slate-950/0 to-violet-400/18",
     hairColor: "#10213d",
@@ -162,7 +170,13 @@ export const testimonials = [
     company: "Westport Components",
     quote:
       "Our team stopped re-keying routine orders and spent their time only where confidence dropped. That changed throughput almost immediately.",
+    detail: "Westport’s reviewers now spend their time on true exceptions instead of reconstructing the same context from inboxes and attachments.",
     metric: "3 shared inboxes unified in week one",
+    proofPoints: [
+      "Unified intake coverage across three shared inboxes.",
+      "Routine orders stayed out of manual re-entry loops.",
+      "Low-confidence lines reached the right reviewer faster.",
+    ],
     rating: 5,
     tone: "from-violet-300/18 via-slate-950/0 to-cyan-300/12",
     hairColor: "#20152c",
@@ -174,7 +188,13 @@ export const testimonials = [
     company: "Summit Fluid Power",
     quote:
       "Reviewers now see the exception, the source evidence, and the draft line in one workflow. That removed a lot of back-and-forth from our desk.",
+    detail: "Summit’s desk reduced internal context-chasing because the workflow kept evidence, mapped lines, and next action together on the order.",
     metric: "98% of orders routed with clear next action",
+    proofPoints: [
+      "Evidence stayed attached to each exception.",
+      "Reviewers could act without leaving the order surface.",
+      "Desk handoffs became clearer and faster.",
+    ],
     rating: 5,
     tone: "from-emerald-300/18 via-slate-950/0 to-cyan-300/10",
     hairColor: "#3a241d",
@@ -186,7 +206,13 @@ export const testimonials = [
     company: "Trident Flow Systems",
     quote:
       "We finally gave the whole desk one queue and one review habit. New coordinators ramp faster because the evidence, notes, and next action are already in the order.",
+    detail: "Trident used the shared review habit to reduce training drag and make new coordinators productive faster during rollout.",
     metric: "31% less internal order handoff churn",
+    proofPoints: [
+      "One shared queue replaced ad hoc teammate handoffs.",
+      "New operators learned the workflow faster.",
+      "Notes and next action stayed attached to the order.",
+    ],
     rating: 5,
     tone: "from-amber-300/16 via-slate-950/0 to-cyan-300/10",
     hairColor: "#2a1e19",
@@ -198,7 +224,13 @@ export const testimonials = [
     company: "Keystone Parts Group",
     quote:
       "The rollout story landed because branch leads could see where approvals stayed human-controlled while the intake work got lighter almost right away.",
+    detail: "Keystone’s branch leaders bought in faster once the control model was visible and the value showed up in day-one intake work.",
     metric: "2 branches launched from the same operating model",
+    proofPoints: [
+      "Human approvals remained visible to branch leads.",
+      "Day-one intake work got lighter without risky automation leaps.",
+      "Two branches launched from the same operating model.",
+    ],
     rating: 5,
     tone: "from-cyan-300/14 via-slate-950/0 to-emerald-300/16",
     hairColor: "#171f33",

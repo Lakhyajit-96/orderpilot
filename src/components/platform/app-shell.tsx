@@ -7,7 +7,6 @@ import { CircleGauge, CreditCard, Inbox, PackageSearch } from "lucide-react";
 import { BrandLogo } from "@/components/brand/orderpilot-logo";
 import { Badge } from "@/components/ui/badge";
 import type { Viewer } from "@/lib/auth";
-import { PlatformHomeLink } from "@/components/platform/platform-home-link";
 import { SessionActionButton } from "@/components/platform/session-action-button";
 import { getPlatformAccessState, isPlatformRouteActive } from "@/lib/platform-shell-core";
 import { cn } from "@/lib/utils";
@@ -120,13 +119,12 @@ export function AppShell({
         ) : null}
 
         <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
-          <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-4 lg:px-8">
+          <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-3 lg:px-8">
             <div className="min-w-0 flex-1">
-              <div className="mb-3 lg:hidden">
-                <BrandLogo href="/" showTagline={false} />
+              <div className="mb-2 lg:hidden">
+                <BrandLogo href="/" size="sm" showTagline={false} />
               </div>
-              <PlatformHomeLink />
-              <p className="mt-3 text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
+              <p className="text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
               <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "OrderPilot workspace"}</p>
             </div>
             <div className="flex max-w-full flex-wrap items-center justify-end gap-3">

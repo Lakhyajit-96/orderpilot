@@ -53,13 +53,13 @@ export function WorkflowVisualStrip() {
                         transition={{ duration: 6 + rowIndex, repeat: Infinity, ease: "easeInOut" }}
                         className="rounded-2xl border border-white/8 bg-white/[0.05] px-3 py-3"
                       >
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="text-sm font-medium text-white/82">{row.primary}</p>
-                          <span className="rounded-full border border-white/10 bg-slate-950/70 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/56">
+                        <div className="flex flex-wrap items-start justify-between gap-2.5 sm:flex-nowrap sm:items-center">
+                          <p className="min-w-0 flex-1 break-words pr-2 text-sm font-medium leading-5 text-white/82">{row.primary}</p>
+                          <span className="shrink-0 rounded-full border border-white/10 bg-slate-950/70 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-white/56">
                             {row.badge}
                           </span>
                         </div>
-                        <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/38">{row.secondary}</p>
+                        <p className="mt-1 break-words text-[11px] uppercase tracking-[0.18em] text-white/38">{row.secondary}</p>
                       </motion.div>
                     ))}
                   </div>

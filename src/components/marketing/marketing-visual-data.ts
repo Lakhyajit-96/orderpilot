@@ -151,9 +151,22 @@ export const dashboardPreview = {
 export const orderReviewPreview = {
   heading: "PO-10482 · Atlas Industrial Supply",
   badges: ["Needs review", "$18,420", "96% confidence"],
+  summary:
+    "Atlas Industrial’s order arrives from a shared Microsoft 365 mailbox, keeps the extracted line mapping visible, and elevates the one remaining pack-size question before ERP release.",
+  sourceMailbox: "Microsoft 365 · ops@atlasindustrial.com",
+  sourceDetail: "OAuth connected · push sync · attachment + body parsed at 09:18 AM",
   lineItems: heroVisualSnapshot.lineItems,
   approvals: heroVisualSnapshot.approvalChain,
   exception: "Confirm alternate pack size before export",
+  notes: [
+    "Mailbox body captured the Dock C3 delivery instruction and the customer’s alternate pack-size note directly in review context.",
+    "Reviewer confirmation is only needed for ATL-2204 before the order can move from review into ERP handoff readiness.",
+  ],
+  activity: [
+    "Mailbox ingest completed at 09:18 AM from the Atlas shared inbox.",
+    "Draft order created with mapped lines and one flagged exception.",
+    "Ops manager review lane opened with approval context attached.",
+  ],
   shippingAddress: "Ship-to: Dock C3 · 18 Westport Ave · Cleveland, OH",
 } as const;
 

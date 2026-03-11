@@ -1,17 +1,17 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { marketingOrderReviewHref } from "@/lib/marketing-routes";
+import { isPublicAppRoute, shouldRedirectLegacyMarketingOrderReview } from "@/lib/public-route-core";
 
 export default clerkMiddleware(async (auth, request) => {
   const pathname = request.nextUrl.pathname;
-  const isPublicRoute =
-    pathname === "/" ||
-    pathname.startsWith("/sign-in") ||
-    pathname.startsWith("/sign-up") ||
-    pathname.startsWith("/api/stripe/webhook") ||
-    pathname === "/api/inbox/providers/gmail/webhook" ||
-    pathname === "/api/inbox/subscriptions/renew" ||
-    /^\/api\/inbox\/connections\/[^/]+\/webhook$/.test(pathname);
+  const { userId } = await auth();
 
-  if (!isPublicRoute) {
+  if (shouldRedirectLegacyMarketingOrderReview(pathname, Boolean(userId))) {
+    return NextResponse.redirect(new URL(marketingOrderReviewHref, request.url));
+  }
+
+  if (!isPublicAppRoute(pathname)) {
     await auth.protect();
   }
 });

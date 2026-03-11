@@ -37,11 +37,7 @@ function HeadshotAvatar({
 
 export function TestimonialsSection() {
   const [featured, ...rest] = testimonials;
-  const featuredProof = [
-    "Shared queue visibility",
-    "Evidence-backed review",
-    "Cleaner ERP handoff",
-  ];
+  const featuredProof = featured.proofPoints;
 
   return (
     <section id="testimonials" className="mt-20 space-y-8">
@@ -82,12 +78,15 @@ export function TestimonialsSection() {
           <div className="mt-6 rounded-[28px] border border-white/10 bg-slate-950/65 p-5">
             <Quote className="size-6 text-cyan-200" />
             <p className="mt-4 max-w-3xl text-lg leading-8 text-white/80">“{featured.quote}”</p>
+            <p className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-7 text-white/70">
+              {featured.detail}
+            </p>
             <div className="mt-5 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-100">
               {featured.metric}
             </div>
-            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {featuredProof.map((item) => (
-                <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/62">
+                <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs leading-6 text-white/68">
                   {item}
                 </div>
               ))}
@@ -122,8 +121,16 @@ export function TestimonialsSection() {
                     </div>
                   </div>
                   <p className="mt-5 text-sm leading-7 text-white/72">“{item.quote}”</p>
+                  <p className="mt-4 text-sm leading-7 text-white/58">{item.detail}</p>
                   <div className="mt-4 inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/58">
                     {item.metric}
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    {item.proofPoints.slice(0, 2).map((proof) => (
+                      <div key={proof} className="rounded-2xl border border-white/8 bg-white/[0.03] px-3 py-2 text-xs leading-6 text-white/60">
+                        {proof}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
