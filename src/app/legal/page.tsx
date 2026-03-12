@@ -1,7 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
-import Image from "next/image";
 
 export default function LegalPage() {
   return (
@@ -18,17 +16,6 @@ export default function LegalPage() {
           </p>
         </section>
 
-        <section className="mt-10">
-          <VisualCanvas accent="emerald">
-            <Image
-              src="/assets/generated/legal.png"
-              alt="Legal and compliance screenshot"
-              width={1440}
-              height={900}
-              className="w-full h-auto"
-            />
-          </VisualCanvas>
-        </section>
 
 
         <section className="mt-14 space-y-6">

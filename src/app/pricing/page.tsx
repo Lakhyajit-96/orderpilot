@@ -5,8 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { plans } from "@/lib/plans";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
-import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
-import Image from "next/image";
 
 export default function PricingPage() {
   return (
@@ -31,17 +29,6 @@ export default function PricingPage() {
           />
         </section>
 
-        <section className="mt-10">
-          <VisualCanvas accent="emerald">
-            <Image
-              src="/assets/generated/pricing.png"
-              alt="Workspace billing screenshot"
-              width={1440}
-              height={900}
-              className="w-full h-auto"
-            />
-          </VisualCanvas>
-        </section>
 
 
         <section className="mt-16">

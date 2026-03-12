@@ -6,8 +6,6 @@ import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
 import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
-import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
-import Image from "next/image";
 
 export default function SecurityPage() {
   return (
@@ -89,17 +87,6 @@ export default function SecurityPage() {
           <ErpMappingDiagram />
         </section>
 
-        <section className="mt-10">
-          <VisualCanvas accent="amber">
-            <Image
-              src="/assets/generated/security.png"
-              alt="Security and data handling screenshot"
-              width={1440}
-              height={900}
-              className="w-full h-auto"
-            />
-          </VisualCanvas>
-        </section>
 
 
         <section className="mt-16">

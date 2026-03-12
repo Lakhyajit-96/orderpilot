@@ -3,8 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
-import Image from "next/image";
 
 export default function TermsPage() {
   return (
@@ -39,17 +37,6 @@ export default function TermsPage() {
           </div>
         </section>
 
-        <section className="mt-10">
-          <VisualCanvas accent="amber">
-            <Image
-              src="/assets/generated/terms.png"
-              alt="Terms and conditions screenshot"
-              width={1440}
-              height={900}
-              className="w-full h-auto"
-            />
-          </VisualCanvas>
-        </section>
 
         <section className="mt-14 space-y-6">
 

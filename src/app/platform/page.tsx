@@ -8,8 +8,6 @@ import { Button } from "@/components/ui/button";
 import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
-import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
-import Image from "next/image";
 
 export default function PlatformPage() {
   return (
@@ -114,18 +112,6 @@ export default function PlatformPage() {
           />
         </section>
 
-        <section className="mt-10">
-          <VisualCanvas accent="cyan">
-            <Image
-              src="/assets/generated/platform.png"
-              alt="Operations dashboard screenshot"
-              width={1440}
-              height={900}
-              className="w-full h-auto"
-              priority
-            />
-          </VisualCanvas>
-        </section>
 
 
         <AnimatedConnectors className="mt-10" />
