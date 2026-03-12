@@ -250,14 +250,14 @@ export const trustLogos = [
 export const headerMenuGroups = [
   {
     label: "Platform",
-    href: "#platform-capabilities",
+    href: "/platform",
     tone: "cyan",
     summary: "See how OrderPilot turns shared inbox demand into a reviewable order workflow built for distributor operations.",
     items: [
       {
         title: "Unified intake surface",
         description: "Shared mailboxes, uploads, and attachments land in one clean queue.",
-        href: "#platform-capabilities",
+        href: "/platform",
       },
       {
         title: "Launch-ready dashboard",
@@ -272,20 +272,20 @@ export const headerMenuGroups = [
       {
         title: "Customer proof",
         description: "Read how operations teams use the workflow in practice.",
-        href: "#testimonials",
+        href: "/customers",
       },
     ],
   },
   {
     label: "Workflow",
-    href: "#workflow",
+    href: "/workflow",
     tone: "violet",
     summary: "Understand the order arc from inbound mailbox capture through exception review and final ERP-ready release.",
     items: [
       {
         title: "Capture and classify",
         description: "Turn every inbound request into structured intake instead of manual triage.",
-        href: "#workflow",
+        href: "/workflow",
       },
       {
         title: "Review exceptions",
@@ -295,35 +295,35 @@ export const headerMenuGroups = [
       {
         title: "Measure impact",
         description: "See how coordinators, reviewers, and leaders each benefit from the workflow.",
-        href: "#team-impact",
+        href: "/workflow",
       },
       {
         title: "Customer stories",
         description: "Explore the practical wins teams cite after rollout.",
-        href: "#testimonials",
+        href: "/customers",
       },
     ],
   },
   {
     label: "Controls",
-    href: "#controls",
+    href: "/controls",
     tone: "emerald",
     summary: "Keep approvals, rollout sequencing, and downstream handoff visible so automation never becomes a black box.",
     items: [
       {
         title: "Human approval gates",
         description: "Keep release decisions under team control even as intake speeds up.",
-        href: "#controls",
+        href: "/controls",
       },
       {
         title: "Phased rollout plan",
         description: "Adopt mailbox capture, reviewer workflow, and export readiness step by step.",
-        href: "#pricing",
+        href: "/pricing",
       },
       {
         title: "FAQ and launch fit",
         description: "Get answers on rollout scope, approvals, and operational readiness.",
-        href: "#faq",
+        href: "/faq",
       },
       {
         title: "Open workspace",
@@ -366,10 +366,10 @@ export const footerLinkGroups = [
   {
     title: "Product",
     links: [
-      { label: "Platform", href: "#platform-capabilities" },
-      { label: "Workflow", href: "#workflow" },
-      { label: "Controls", href: "#controls" },
-      { label: "Pricing", href: "#pricing" },
+      { label: "Platform", href: "/platform" },
+      { label: "Workflow", href: "/workflow" },
+      { label: "Controls", href: "/controls" },
+      { label: "Pricing", href: "/pricing" },
     ],
   },
   {
@@ -377,8 +377,8 @@ export const footerLinkGroups = [
     links: [
       { label: "Open workspace", href: "/dashboard" },
       { label: "See order review", href: marketingOrderReviewHref },
-      { label: "Customer stories", href: "#testimonials" },
-      { label: "FAQ", href: "#faq" },
+      { label: "Customer stories", href: "/customers" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {
