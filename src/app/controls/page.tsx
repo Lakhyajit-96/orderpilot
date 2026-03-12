@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { controlPillars } from "@/components/marketing/marketing-site-data";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
+import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
 import Image from "next/image";
 
 export default function ControlsPage() {
@@ -27,14 +28,17 @@ export default function ControlsPage() {
         </section>
 
         <section className="mt-10">
-          <Image
-            src="/assets/marketing/controls-erp-handoff.svg"
-            alt="ERP-ready handoff screenshot"
-            width={1200}
-            height={480}
-            className="rounded-[26px] border border-white/10"
-          />
+          <VisualCanvas accent="emerald">
+            <Image
+              src="/assets/generated/controls.png"
+              alt="Controls and approvals screenshot"
+              width={1440}
+              height={900}
+              className="w-full h-auto"
+            />
+          </VisualCanvas>
         </section>
+
 
         <section className="mt-16">
           <div className="panel rounded-[32px] px-6 py-8 sm:px-8 sm:py-10">

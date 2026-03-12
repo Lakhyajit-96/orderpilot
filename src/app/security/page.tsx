@@ -6,6 +6,7 @@ import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
 import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
+import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
 import Image from "next/image";
 
 export default function SecurityPage() {
@@ -89,14 +90,17 @@ export default function SecurityPage() {
         </section>
 
         <section className="mt-10">
-          <Image
-            src="/assets/marketing/security-token-rotation.svg"
-            alt="Token rotation and revoke screenshot"
-            width={1200}
-            height={480}
-            className="rounded-[26px] border border-white/10"
-          />
+          <VisualCanvas accent="amber">
+            <Image
+              src="/assets/generated/security.png"
+              alt="Security and data handling screenshot"
+              width={1440}
+              height={900}
+              className="w-full h-auto"
+            />
+          </VisualCanvas>
         </section>
+
 
         <section className="mt-16">
           <div className="panel rounded-[32px] px-6 py-8 sm:px-8 sm:py-10">

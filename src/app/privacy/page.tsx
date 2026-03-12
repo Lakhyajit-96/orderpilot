@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
 import Image from "next/image";
 
 export default function PrivacyPage() {
@@ -39,16 +40,19 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mt-10">
-          <Image
-            src="/assets/marketing/privacy-policy.svg"
-            alt="Privacy policy screenshot"
-            width={1200}
-            height={480}
-            className="rounded-[26px] border border-white/10"
-          />
+          <VisualCanvas accent="violet">
+            <Image
+              src="/assets/generated/privacy.png"
+              alt="Privacy policy screenshot"
+              width={1440}
+              height={900}
+              className="w-full h-auto"
+            />
+          </VisualCanvas>
         </section>
 
         <section className="mt-14 space-y-6">
+
           <Card>
             <CardHeader>
               <CardTitle>Scope</CardTitle>

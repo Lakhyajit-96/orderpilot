@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { VisualCanvas } from "@/components/marketing/visuals/visual-canvas";
 import Image from "next/image";
 
 export default function CustomersPage() {
@@ -43,14 +44,17 @@ export default function CustomersPage() {
         </section>
 
         <section className="mt-10">
-          <Image
-            src="/assets/marketing/customers-stories.svg"
-            alt="Customer stories screenshot"
-            width={1200}
-            height={480}
-            className="rounded-[26px] border border-white/10"
-          />
+          <VisualCanvas accent="violet">
+            <Image
+              src="/assets/generated/customers.png"
+              alt="Customer stories screenshot"
+              width={1440}
+              height={900}
+              className="w-full h-auto"
+            />
+          </VisualCanvas>
         </section>
+
 
         <section className="mt-20 grid gap-6 lg:grid-cols-3">
           <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
