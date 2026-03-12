@@ -1,6 +1,10 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkflowVisualStrip } from "@/components/marketing/workflow-visual-strip";
+import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
+import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 
 export default function WorkflowPage() {
   return (
@@ -15,6 +19,26 @@ export default function WorkflowPage() {
           <p className="text-base leading-8 text-white/70">
             The workflow is simple: capture and structure inbound orders, surface exceptions with evidence, keep approvals explicit, and release cleaner drafts downstream. It is designed to be explainable to operators and leaders.
           </p>
+        </section>
+
+        <AnimatedConnectors className="mt-10" />
+
+        <section className="mt-16">
+          <div className="panel rounded-[32px] px-6 py-8 sm:px-8 sm:py-10">
+            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div>
+                <Badge>Next step</Badge>
+                <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">Open the workspace or inspect live order review.</h2>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-white/68">
+                  Start with the dashboard to see workspace signals, or inspect the review surface to understand exceptions and approvals in action.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+                <Button asChild size="lg"><Link href="/dashboard">Open dashboard</Link></Button>
+                <Button asChild size="lg" variant="secondary"><Link href={marketingOrderReviewHref}>Inspect order review</Link></Button>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="mt-12">
@@ -67,4 +91,3 @@ export default function WorkflowPage() {
     </main>
   );
 }
-

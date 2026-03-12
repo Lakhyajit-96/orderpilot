@@ -35,11 +35,9 @@ function isEditableElement(target: EventTarget | null) {
 export function AppShell({
   children,
   viewer,
-  stagingAuthActive = false,
 }: {
   children: React.ReactNode;
   viewer: Viewer;
-  stagingAuthActive?: boolean;
 }) {
   const pathname = usePathname();
   const accessState = getPlatformAccessState(viewer);
@@ -130,7 +128,6 @@ export function AppShell({
               <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "Workspace access"}</p>
             </div>
             <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
-              {stagingAuthActive ? <Badge variant="violet">Staging auth</Badge> : null}
               <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{viewer.modeLabel}</Badge>
               <div className="hidden rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/72 md:block">
                 {viewer.displayName}
