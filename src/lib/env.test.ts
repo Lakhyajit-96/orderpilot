@@ -39,3 +39,32 @@ test("resolveClerkRuntimeConfig preserves live keys for hosted Vercel production
   assert.equal(config.isEnabled, true);
   assert.equal(config.publishableKey, "pk_live_example");
 });
+
+test("resolveClerkRuntimeConfig allows test keys for Vercel preview or staging override", () => {
+  const previewConfig = resolveClerkRuntimeConfig({
+    nodeEnv: "production",
+    publishableKey: "pk_test_example",
+    secretKey: "sk_test_example",
+    vercel: "1",
+    vercelEnv: "preview",
+    vercelUrl: "orderpilot-mu.vercel.app",
+  });
+
+  assert.equal(previewConfig.isHostedVercelProduction, true);
+  assert.equal(previewConfig.isEnabled, true);
+  assert.equal(previewConfig.publishableKey, "pk_test_example");
+
+  const overrideConfig = resolveClerkRuntimeConfig({
+    nodeEnv: "production",
+    publishableKey: "pk_test_example",
+    secretKey: "sk_test_example",
+    vercel: "1",
+    vercelEnv: "production",
+    vercelUrl: "orderpilot-mu.vercel.app",
+    stagingAllowTestAuth: true,
+  });
+
+  assert.equal(overrideConfig.isHostedVercelProduction, true);
+  assert.equal(overrideConfig.isEnabled, true);
+  assert.equal(overrideConfig.publishableKey, "pk_test_example");
+});

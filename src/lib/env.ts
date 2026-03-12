@@ -7,6 +7,7 @@ export type ClerkRuntimeConfigInput = {
   vercel?: string;
   vercelEnv?: string;
   vercelUrl?: string;
+  stagingAllowTestAuth?: boolean;
 };
 
 function isLiveClerkKey(value?: string) {
@@ -20,7 +21,10 @@ export function resolveClerkRuntimeConfig(input: ClerkRuntimeConfigInput) {
   const isHostedVercelProduction =
     input.nodeEnv === "production" && Boolean(input.vercel || input.vercelEnv || input.vercelUrl);
   const usesLiveKeys = isLiveClerkKey(publishableKey) && isLiveClerkKey(secretKey);
-  const disableForHostedProduction = hasKeys && isHostedVercelProduction && !usesLiveKeys;
+  const allowTestAuth =
+    Boolean(input.stagingAllowTestAuth) ||
+    (input.nodeEnv === "production" && input.vercelEnv === "preview");
+  const disableForHostedProduction = hasKeys && isHostedVercelProduction && !usesLiveKeys && !allowTestAuth;
 
   return {
     isHostedVercelProduction,
@@ -38,6 +42,7 @@ const envSchema = z.object({
   VERCEL: z.string().optional(),
   VERCEL_ENV: z.string().optional(),
   VERCEL_URL: z.string().optional(),
+  CLERK_STAGING_ALLOW_TEST_AUTH: z.string().optional(),
   DATABASE_URL: z.string().optional(),
   MAILBOX_OAUTH_STATE_SECRET: z.string().optional(),
   CRON_SECRET: z.string().optional(),
@@ -67,6 +72,7 @@ export const env = envSchema.parse({
   VERCEL: process.env.VERCEL,
   VERCEL_ENV: process.env.VERCEL_ENV,
   VERCEL_URL: process.env.VERCEL_URL,
+  CLERK_STAGING_ALLOW_TEST_AUTH: process.env.CLERK_STAGING_ALLOW_TEST_AUTH,
   DATABASE_URL: process.env.DATABASE_URL,
   MAILBOX_OAUTH_STATE_SECRET: process.env.MAILBOX_OAUTH_STATE_SECRET,
   CRON_SECRET: process.env.CRON_SECRET,
@@ -95,6 +101,7 @@ export const clerkRuntime = resolveClerkRuntimeConfig({
   vercel: env.VERCEL,
   vercelEnv: env.VERCEL_ENV,
   vercelUrl: env.VERCEL_URL,
+  stagingAllowTestAuth: Boolean(env.CLERK_STAGING_ALLOW_TEST_AUTH),
 });
 
 export const flags = {
@@ -108,4 +115,3 @@ export const flags = {
   hasStripe:
     Boolean(env.STRIPE_SECRET_KEY) && Boolean(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
 } as const;
-
