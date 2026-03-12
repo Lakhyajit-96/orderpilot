@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { faqItems, marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { FaqAccordion } from "@/components/marketing/faq-accordion";
+import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 
 export default function FaqPage() {
   return (
@@ -19,17 +19,8 @@ export default function FaqPage() {
           </p>
         </section>
 
-        <section className="mt-14 grid gap-6 md:grid-cols-2">
-          {faqItems.map((item) => (
-            <Card key={item.question}>
-              <CardHeader>
-                <CardTitle>{item.question}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm leading-7 text-white/72">
-                <p>{item.answer}</p>
-              </CardContent>
-            </Card>
-          ))}
+        <section className="mt-14">
+          <FaqAccordion />
         </section>
 
         <section className="mt-16">

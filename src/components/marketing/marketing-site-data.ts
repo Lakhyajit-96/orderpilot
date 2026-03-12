@@ -321,6 +321,11 @@ export const headerMenuGroups = [
         href: "/pricing",
       },
       {
+        title: "Security & Data Handling",
+        description: "OAuth, token rotation, webhook verification, retention, and incident response.",
+        href: "/security",
+      },
+      {
         title: "FAQ and launch fit",
         description: "Get answers on rollout scope, approvals, and operational readiness.",
         href: "/faq",
@@ -370,6 +375,7 @@ export const footerLinkGroups = [
       { label: "Workflow", href: "/workflow" },
       { label: "Controls", href: "/controls" },
       { label: "Pricing", href: "/pricing" },
+      { label: "Security & Data Handling", href: "/security" },
     ],
   },
   {

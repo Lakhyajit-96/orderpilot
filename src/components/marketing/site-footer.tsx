@@ -36,16 +36,18 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-2 border-t border-white/8 pt-5 text-xs uppercase tracking-[0.2em] text-white/34 sm:flex-row sm:items-center sm:justify-between">
-        <span>© {new Date().getFullYear()} OrderPilot</span>
-        <span className="flex flex-wrap items-center gap-4">
-          <span>Distributor order intake, review, and handoff</span>
-          <span className="flex gap-4">
+      <div className="mt-8 border-t border-white/8 pt-5 text-xs uppercase tracking-[0.2em] text-white/34">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span>© {new Date().getFullYear()} OrderPilot</span>
+            <div className="mt-2">Distributor order intake, review, and handoff</div>
+          </div>
+          <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-white">Privacy</Link>
             <Link href="/terms" className="hover:text-white">Terms</Link>
             <Link href="/legal" className="hover:text-white">Legal</Link>
-          </span>
-        </span>
+          </div>
+        </div>
       </div>
     </footer>
   );

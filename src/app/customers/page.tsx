@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { testimonials } from "@/components/marketing/marketing-site-data";
+import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 
 export default function CustomersPage() {
@@ -38,23 +37,8 @@ export default function CustomersPage() {
           </div>
         </section>
 
-        <section className="mt-14 grid gap-6 md:grid-cols-2">
-          {testimonials.map((t) => (
-            <Card key={t.company} className="overflow-hidden">
-              <CardHeader>
-                <CardTitle>{t.name}</CardTitle>
-                <CardDescription className="text-sm leading-7 text-white/70">{t.role} · {t.company}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm leading-7 text-white/72">
-                <p>{t.detail}</p>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {t.proofPoints.map((p) => (
-                    <div key={p} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">{p}</div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <section className="mt-14">
+          <TestimonialsSection />
         </section>
       </div>
     </main>
