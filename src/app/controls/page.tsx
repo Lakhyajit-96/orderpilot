@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { controlPillars } from "@/components/marketing/marketing-site-data";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
 
 export default function ControlsPage() {
   return (
@@ -18,6 +19,10 @@ export default function ControlsPage() {
           <p className="text-base leading-8 text-white/70">
             OrderPilot is built for operations, not demos. Approvals are explicit, changes are evidence-backed, and rollout is staged so leaders can say yes without betting the desk on a big-bang change.
           </p>
+        </section>
+
+        <section className="mt-10">
+          <ErpMappingDiagram />
         </section>
 
         <section className="mt-16">
@@ -36,6 +41,36 @@ export default function ControlsPage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Audit trails</CardTitle>
+              <CardDescription>Changes and approvals remain visible.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>We preserve who changed what and why so leaders can defend the workflow decisions.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Staged controls</CardTitle>
+              <CardDescription>Adopt depth without risking operations.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Teams step into deeper approvals or ERP release when they are ready, not before.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Export diagnostics</CardTitle>
+              <CardDescription>Prevent silent failures downstream.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>We log export attempts and outcomes to catch issues early and reduce rework.</p>
+            </CardContent>
+          </Card>
         </section>
 
         <section className="mt-16 grid gap-6 lg:grid-cols-3">

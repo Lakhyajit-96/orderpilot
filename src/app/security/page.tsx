@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
+import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
 
 export default function SecurityPage() {
   return (
@@ -80,6 +82,11 @@ export default function SecurityPage() {
 
         <AnimatedConnectors className="mt-12" />
 
+        <section className="mt-12 grid gap-6 lg:grid-cols-2">
+          <MailboxOAuthFlow />
+          <ErpMappingDiagram />
+        </section>
+
         <section className="mt-16">
           <div className="panel rounded-[32px] px-6 py-8 sm:px-8 sm:py-10">
             <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -97,8 +104,37 @@ export default function SecurityPage() {
             </div>
           </div>
         </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Compliance notes</CardTitle>
+              <CardDescription>Audit trails and retention boundaries.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Approvals, changes, and export diagnostics remain visible and scoped to the workspace for accountability.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Token lifecycle</CardTitle>
+              <CardDescription>Rotation and revoke controls.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Administrators can confirm rotation events and revoke access in Settings when needed.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Verification</CardTitle>
+              <CardDescription>Webhook signatures and secrets.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Inbound deliveries are authenticated and logged for safe ingestion and diagnostics.</p>
+            </CardContent>
+          </Card>
+        </section>
       </div>
     </main>
   );
 }
-

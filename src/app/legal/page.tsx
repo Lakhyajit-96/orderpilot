@@ -56,9 +56,17 @@ export default function LegalPage() {
               <p>Role-based access governs who can view and act on orders. Transport encryption protects data in motion. We follow reasonable incident response practices to triage and communicate issues.</p>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Export logs</CardTitle>
+              <CardDescription>Operational diagnostics for downstream handoff.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm leading-7 text-white/72">
+              <p>We maintain export attempt logs and outcomes for troubleshooting and accountability. Logs are workspace-bound and accessible to authorized operators.</p>
+            </CardContent>
+          </Card>
         </section>
       </div>
     </main>
   );
 }
-

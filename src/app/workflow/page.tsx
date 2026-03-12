@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { WorkflowVisualStrip } from "@/components/marketing/workflow-visual-strip";
 import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
 
 export default function WorkflowPage() {
   return (
@@ -19,6 +20,10 @@ export default function WorkflowPage() {
           <p className="text-base leading-8 text-white/70">
             The workflow is simple: capture and structure inbound orders, surface exceptions with evidence, keep approvals explicit, and release cleaner drafts downstream. It is designed to be explainable to operators and leaders.
           </p>
+        </section>
+
+        <section className="mt-10">
+          <MailboxOAuthFlow />
         </section>
 
         <AnimatedConnectors className="mt-10" />
@@ -39,6 +44,36 @@ export default function WorkflowPage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Evidence stays attached</CardTitle>
+              <CardDescription>Reviewers never lose the original context.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Source files and mapping evidence remain next to the line so reviewers do not chase details across inboxes.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Reason codes</CardTitle>
+              <CardDescription>Make changes explainable to the business.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Every exception resolved carries a reason and approval trail forward so downstream teams trust the order.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Approvals chain</CardTitle>
+              <CardDescription>Human-controlled before export.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>The workflow clarifies who signs off and when, without turning approvals into bureaucracy.</p>
+            </CardContent>
+          </Card>
         </section>
 
         <section className="mt-12">

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { plans } from "@/lib/plans";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
 
 export default function PricingPage() {
   return (
@@ -18,6 +19,14 @@ export default function PricingPage() {
           <p className="text-base leading-8 text-white/70">
             Start with shared inbox visibility, expand into reviewer workflow, and graduate into ERP-ready release when the team is ready. Billing is designed for real operations, not vanity usage.
           </p>
+        </section>
+
+        <section className="mt-12">
+          <ScreenshotFrame
+            title="Workspace billing overview"
+            lines={["Current plan · Growth", "Billing status · Active", "Seats · 6", "Next invoice · Jul 28"]}
+            accent="emerald"
+          />
         </section>
 
         <section className="mt-16">
@@ -36,6 +45,36 @@ export default function PricingPage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Starter fit</CardTitle>
+              <CardDescription>Begin with intake visibility.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>For small desks that need shared inbox capture and basic review without ERP handoff yet.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Growth fit</CardTitle>
+              <CardDescription>Reviewer workflow plus export readiness.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>For teams moving more volume and ready to approve ERP-ready drafts with confidence.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Enterprise fit</CardTitle>
+              <CardDescription>Advanced controls and integrations.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>For multi-branch operations needing deeper approvals, integrations, and stronger rollout guarantees.</p>
+            </CardContent>
+          </Card>
         </section>
 
         <section className="mt-12 grid gap-4 xl:grid-cols-3">

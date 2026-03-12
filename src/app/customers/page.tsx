@@ -40,6 +40,24 @@ export default function CustomersPage() {
         <section className="mt-14">
           <TestimonialsSection />
         </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/42">Coordinators</p>
+            <p className="mt-3 text-base font-semibold text-white">Less manual re-entry</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">Structured drafts reduce re-keying and inbox chasing for routine orders.</p>
+          </div>
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/42">Reviewers</p>
+            <p className="mt-3 text-base font-semibold text-white">Evidence in one place</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">Exceptions carry source context forward so decisions feel confident.</p>
+          </div>
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/42">Leaders</p>
+            <p className="mt-3 text-base font-semibold text-white">Proof metrics</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">Value shows up in real operating signals, not vanity usage charts.</p>
+          </div>
+        </section>
       </div>
     </main>
   );

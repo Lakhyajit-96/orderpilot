@@ -109,6 +109,15 @@ export default function PrivacyPage() {
               <p>Users may request access to their data, corrections, and deletion where applicable. We provide reasonable portability of operational records upon authorized requests.</p>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Requests</CardTitle>
+              <CardDescription>How to contact us about privacy.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm leading-7 text-white/72">
+              <p>For privacy requests, contact privacy@orderpilot.ai. We respond within a reasonable timeframe and provide status updates on applicable requests.</p>
+            </CardContent>
+          </Card>
         </section>
       </div>
     </main>

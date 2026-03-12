@@ -97,6 +97,15 @@ export default function TermsPage() {
               <p>To the extent permitted by law, liability is limited. The service is provided &quot;as is&quot; for operational use, with no guarantees of specific business outcomes. Customers indemnify OrderPilot against misuse or unauthorized use.</p>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Updates</CardTitle>
+              <CardDescription>Changes to these terms.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm leading-7 text-white/72">
+              <p>We may update these terms to reflect service changes. Material updates will be communicated through appropriate channels with effective dates.</p>
+            </CardContent>
+          </Card>
         </section>
       </div>
     </main>

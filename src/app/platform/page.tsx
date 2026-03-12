@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
 
 export default function PlatformPage() {
   return (
@@ -98,6 +99,19 @@ export default function PlatformPage() {
           </Card>
         </section>
 
+        <section className="mt-14">
+          <ScreenshotFrame
+            title="Operations dashboard · queue health and launch signals"
+            lines={[
+              "Inbox coverage · 3 connections",
+              "Orders in review · 4 active",
+              "ERP readiness · 2 exports",
+              "Launch checklist · 5/6 complete",
+            ]}
+            accent="cyan"
+          />
+        </section>
+
         <AnimatedConnectors className="mt-10" />
 
         <section className="mt-16">
@@ -116,6 +130,36 @@ export default function PlatformPage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle>Queue health</CardTitle>
+              <CardDescription>See intake pace and review clearance in one view.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Leaders evaluate stability by watching intake throughput, backlog, and ERP-ready release without asking for spreadsheets.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Launch readiness</CardTitle>
+              <CardDescription>Track signals that move rollout forward.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>Mailbox coverage, approvals policy, and export readiness stay visible so the first rollout feels controlled.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Proof metrics</CardTitle>
+              <CardDescription>Show value in operations terms, not vanity usage.</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-7 text-white/72">
+              <p>We highlight faster first-pass review, fewer re-entry loops, and cleaner handoff downstream.</p>
+            </CardContent>
+          </Card>
         </section>
       </div>
     </main>

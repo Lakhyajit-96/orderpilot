@@ -40,6 +40,24 @@ export default function FaqPage() {
             </div>
           </div>
         </section>
+
+        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/42">Deployment</p>
+            <p className="mt-3 text-base font-semibold text-white">Mailbox → Review → Export</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">Start small, prove value, expand coverage and controls once the desk is ready.</p>
+          </div>
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/42">Approvals</p>
+            <p className="mt-3 text-base font-semibold text-white">Explicit and explainable</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">Reason codes and audit trails ensure changes are clear and defensible.</p>
+          </div>
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-white/42">Support</p>
+            <p className="mt-3 text-base font-semibold text-white">Operations first</p>
+            <p className="mt-3 text-sm leading-7 text-white/72">We focus on real operating outcomes, not demo metrics.</p>
+          </div>
+        </section>
       </div>
     </main>
   );
