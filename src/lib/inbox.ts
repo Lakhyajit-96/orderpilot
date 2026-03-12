@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { InboxProvider } from "@/generated/prisma/enums";
+import { decryptField, encryptField } from "@/lib/crypto";
 import { getDb } from "@/lib/db";
 import { env } from "@/lib/env";
 import {
@@ -210,8 +211,8 @@ async function refreshMailboxToken(connection: NonNullable<InboxConnectionRecord
   return db.inboxConnection.update({
     where: { id: connection.id },
     data: {
-      accessToken: payload.access_token,
-      refreshToken: payload.refresh_token ?? connection.refreshToken,
+      accessToken: encryptField(payload.access_token),
+      refreshToken: encryptField(payload.refresh_token ?? connection.refreshToken),
       tokenType: payload.token_type ?? connection.tokenType ?? undefined,
       tokenExpiresAt: normalizeTokenExpiry(payload.expires_in) ?? undefined,
       scope: payload.scope ?? connection.scope ?? undefined,
@@ -227,10 +228,11 @@ async function ensureFreshMailboxToken(connection: NonNullable<InboxConnectionRe
 
   if (connection.tokenExpiresAt && connection.tokenExpiresAt.getTime() <= Date.now() + 60_000) {
     const refreshed = await refreshMailboxToken(connection);
-    return refreshed.accessToken ?? connection.accessToken;
+    return decryptField(refreshed.accessToken) ?? connection.accessToken;
   }
 
-  return connection.accessToken;
+  // Decrypt before returning — token may be stored encrypted.
+  return decryptField(connection.accessToken) ?? connection.accessToken;
 }
 
 async function fetchMailboxProfile(provider: OAuthMailboxProvider, accessToken: string) {
@@ -280,20 +282,39 @@ async function fetchMailboxProfile(provider: OAuthMailboxProvider, accessToken: 
 }
 
 async function fetchGmailMessages(accessToken: string) {
-  const listResponse = await fetch(
-    "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10&q=in%3Ainbox",
-    { headers: { Authorization: `Bearer ${accessToken}` } },
-  );
+  // Paginate through ALL inbox messages, not just the first page of 10.
+  const allMessageIds: string[] = [];
+  let nextPageToken: string | undefined;
 
-  if (!listResponse.ok) {
-    throw new Error(`Gmail sync failed with ${listResponse.status}.`);
-  }
+  do {
+    const url = new URL("https://gmail.googleapis.com/gmail/v1/users/me/messages");
+    url.searchParams.set("maxResults", "50");
+    url.searchParams.set("q", "in:inbox");
+    if (nextPageToken) {
+      url.searchParams.set("pageToken", nextPageToken);
+    }
 
-  const listPayload = (await listResponse.json()) as { messages?: Array<{ id: string }> };
-  return fetchGmailMessagesByIds(
-    accessToken,
-    (listPayload.messages ?? []).map((message) => message.id),
-  );
+    const listResponse = await fetch(url.toString(), {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!listResponse.ok) {
+      throw new Error(`Gmail sync failed with ${listResponse.status}.`);
+    }
+
+    const listPayload = (await listResponse.json()) as {
+      messages?: Array<{ id: string }>;
+      nextPageToken?: string;
+    };
+
+    for (const msg of listPayload.messages ?? []) {
+      allMessageIds.push(msg.id);
+    }
+
+    nextPageToken = listPayload.nextPageToken;
+  } while (nextPageToken);
+
+  return fetchGmailMessagesByIds(accessToken, allMessageIds);
 }
 
 async function fetchGmailMessagesByIds(accessToken: string, messageIds: string[]) {
@@ -386,9 +407,10 @@ async function fetchGmailHistoryMessageIds(accessToken: string, startHistoryId: 
   return { kind: "ok" as const, messageIds: [...messageIds], latestHistoryId };
 }
 
-async function fetchMicrosoftMessages(accessToken: string) {
+async function fetchMicrosoftMessageBody(accessToken: string, messageId: string): Promise<string> {
+  // Fetch the full plain-text body of a single message (avoids 255-char bodyPreview truncation).
   const response = await fetch(
-    "https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages?$top=10&$select=id,subject,from,bodyPreview,receivedDateTime",
+    `https://graph.microsoft.com/v1.0/me/messages/${messageId}?$select=body`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -398,28 +420,76 @@ async function fetchMicrosoftMessages(accessToken: string) {
   );
 
   if (!response.ok) {
-    throw new Error(`Microsoft 365 sync failed with ${response.status}.`);
+    // Non-fatal: fall back to empty string; the message will get flagged as needing extraction.
+    return "";
   }
 
-  const payload = (await response.json()) as {
-    value?: Array<{
-      id: string;
-      subject?: string;
-      bodyPreview?: string;
-      receivedDateTime?: string;
-      from?: { emailAddress?: { address?: string; name?: string } };
-    }>;
-  };
+  const payload = (await response.json()) as { body?: { content?: string } };
+  return payload.body?.content?.trim() ?? "";
+}
 
-  return (payload.value ?? []).map((message) => ({
-    provider: InboxProvider.MICROSOFT365,
-    externalMessageId: message.id,
-    fromEmail: message.from?.emailAddress?.address?.toLowerCase() ?? "unknown@inbox.local",
-    fromName: message.from?.emailAddress?.name ?? "Microsoft 365 sender",
-    subject: message.subject ?? "Microsoft 365 order request",
-    bodyText: message.bodyPreview ?? "",
-    receivedAt: message.receivedDateTime ?? null,
-  })) satisfies NormalizedMailboxMessage[];
+async function fetchMicrosoftMessages(accessToken: string) {
+  // Paginate through ALL inbox messages using @odata.nextLink.
+  const allMessages: Array<{
+    id: string;
+    subject?: string;
+    bodyPreview?: string;
+    receivedDateTime?: string;
+    from?: { emailAddress?: { address?: string; name?: string } };
+  }> = [];
+
+  let nextUrl: string | undefined =
+    "https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messages" +
+    "?$top=50&$select=id,subject,from,bodyPreview,receivedDateTime";
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Prefer: 'outlook.body-content-type="text"',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Microsoft 365 sync failed with ${response.status}.`);
+    }
+
+    const payload = (await response.json()) as {
+      value?: typeof allMessages;
+      "@odata.nextLink"?: string;
+    };
+
+    for (const msg of payload.value ?? []) {
+      allMessages.push(msg);
+    }
+
+    nextUrl = payload["@odata.nextLink"];
+  }
+
+  // Fetch full body for each message in parallel (batched to avoid rate limits).
+  const BATCH_SIZE = 5;
+  const result: NormalizedMailboxMessage[] = [];
+
+  for (let i = 0; i < allMessages.length; i += BATCH_SIZE) {
+    const batch = allMessages.slice(i, i + BATCH_SIZE);
+    const bodies = await Promise.all(
+      batch.map((msg) => fetchMicrosoftMessageBody(accessToken, msg.id)),
+    );
+    for (const [j, message] of batch.entries()) {
+      result.push({
+        provider: InboxProvider.MICROSOFT365,
+        externalMessageId: message.id,
+        fromEmail: message.from?.emailAddress?.address?.toLowerCase() ?? "unknown@inbox.local",
+        fromName: message.from?.emailAddress?.name ?? "Microsoft 365 sender",
+        subject: message.subject ?? "Microsoft 365 order request",
+        // Use full body; fall back to bodyPreview only if full body fetch returned empty.
+        bodyText: bodies[j] || message.bodyPreview || "",
+        receivedAt: message.receivedDateTime ?? null,
+      });
+    }
+  }
+
+  return result;
 }
 
 async function ingestNormalizedMessages(input: {
@@ -518,8 +588,8 @@ export async function upsertInboxConnection(organizationId: string, input: Upser
       provider: input.provider,
       address: input.address,
       syncMode: input.syncMode,
-      accessToken: input.accessToken ?? undefined,
-      refreshToken: input.refreshToken ?? undefined,
+      accessToken: encryptField(input.accessToken) ?? undefined,
+      refreshToken: encryptField(input.refreshToken) ?? undefined,
       tokenType: input.tokenType ?? undefined,
       tokenExpiresAt: input.tokenExpiresAt ?? undefined,
       scope: input.scope ?? undefined,
@@ -531,8 +601,8 @@ export async function upsertInboxConnection(organizationId: string, input: Upser
     },
     update: {
       syncMode: input.syncMode,
-      accessToken: input.accessToken ?? undefined,
-      refreshToken: input.refreshToken ?? undefined,
+      accessToken: encryptField(input.accessToken) ?? undefined,
+      refreshToken: encryptField(input.refreshToken) ?? undefined,
       tokenType: input.tokenType ?? undefined,
       tokenExpiresAt: input.tokenExpiresAt ?? undefined,
       scope: input.scope ?? undefined,

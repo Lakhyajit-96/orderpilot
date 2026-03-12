@@ -95,6 +95,7 @@ model Membership {
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, clerkUserId])
+  @@index([organizationId, role])
 }
 
 model InboxConnection {
@@ -124,6 +125,8 @@ model InboxConnection {
   organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, provider, address])
+  @@index([organizationId, isActive])
+  @@index([providerSubscriptionExpiresAt])
 }
 
 model Customer {
@@ -178,6 +181,9 @@ model Order {
   notifications  Notification[]
 
   @@unique([organizationId, externalRef])
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([customerId])
 }
 
 model OrderLine {
@@ -192,6 +198,9 @@ model OrderLine {
   createdAt     DateTime     @default(now())
   order         Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
   catalogItem   CatalogItem? @relation(fields: [catalogItemId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([catalogItemId])
 }
 
 model Exception {
@@ -205,6 +214,8 @@ model Exception {
   resolvedByClerkUserId String?
   resolvedByName String?
   order       Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, state])
 }
 
 model OrderNote {
@@ -233,6 +244,9 @@ model OrderActivity {
   metadata          Json?
   createdAt         DateTime    @default(now())
   order             Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([orderId, actionType])
 }
 
 model ErpConnection {
@@ -271,6 +285,10 @@ model ExportRun {
   organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   order          Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   erpConnection  ErpConnection?  @relation(fields: [erpConnectionId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([orderId])
 }
 
 model ApprovalPolicy {
@@ -348,6 +366,9 @@ model Notification {
   readAt              DateTime?
   organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   order               Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, recipientClerkUserId, isRead])
+  @@index([organizationId, createdAt(sort: Desc)])
 }
 
 model Subscription {
@@ -378,5 +399,8 @@ model BillingEvent {
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
   organization         Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([stripeCustomerId])
 }
 

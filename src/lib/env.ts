@@ -62,6 +62,9 @@ const envSchema = z.object({
   STRIPE_PRICE_STARTER: z.string().optional(),
   STRIPE_PRICE_GROWTH: z.string().optional(),
   STRIPE_PRICE_ENTERPRISE: z.string().optional(),
+  // AES-256-GCM key for encrypting OAuth tokens at rest (64-char hex = 32 bytes)
+  // Generate: openssl rand -hex 32
+  TOKEN_ENCRYPTION_KEY: z.string().optional(),
 });
 
 export const env = envSchema.parse({
@@ -92,6 +95,7 @@ export const env = envSchema.parse({
   STRIPE_PRICE_STARTER: process.env.STRIPE_PRICE_STARTER,
   STRIPE_PRICE_GROWTH: process.env.STRIPE_PRICE_GROWTH,
   STRIPE_PRICE_ENTERPRISE: process.env.STRIPE_PRICE_ENTERPRISE,
+  TOKEN_ENCRYPTION_KEY: process.env.TOKEN_ENCRYPTION_KEY,
 });
 
 export const clerkRuntime = resolveClerkRuntimeConfig({
@@ -114,4 +118,48 @@ export const flags = {
   hasMailboxOAuthStateSecret: Boolean(env.MAILBOX_OAUTH_STATE_SECRET || env.CLERK_SECRET_KEY),
   hasStripe:
     Boolean(env.STRIPE_SECRET_KEY) && Boolean(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
+  hasTokenEncryption: Boolean(env.TOKEN_ENCRYPTION_KEY),
 } as const;
+
+/**
+ * Hard-fail in production if any business-critical environment variable is missing.
+ * This surfaces misconfigured deploys immediately at startup rather than
+ * failing silently on the first real user request.
+ * 
+ * Only runs in actual production deployment, not during local builds.
+ */
+export function validateProductionEnv(): void {
+  if (env.NODE_ENV !== "production") {
+    return;
+  }
+
+  // Only validate in actual Vercel production, not during build
+  if (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === "preview") {
+    return;
+  }
+
+  const missing: string[] = [];
+
+  if (!env.DATABASE_URL) missing.push("DATABASE_URL");
+  if (!env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) missing.push("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY");
+  if (!env.CLERK_SECRET_KEY) missing.push("CLERK_SECRET_KEY");
+  if (!env.NEXT_PUBLIC_APP_URL) missing.push("NEXT_PUBLIC_APP_URL");
+  if (!env.STRIPE_SECRET_KEY) missing.push("STRIPE_SECRET_KEY");
+  if (!env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) missing.push("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
+  if (!env.STRIPE_WEBHOOK_SECRET) missing.push("STRIPE_WEBHOOK_SECRET");
+  if (!env.CRON_SECRET) missing.push("CRON_SECRET");
+
+  if (missing.length > 0) {
+    throw new Error(
+      `[OrderPilot] Missing required environment variables for production:\n` +
+      missing.map((v) => `  - ${v}`).join("\n") +
+      `\nSet these in your Vercel project settings before deploying.`,
+    );
+  }
+}
+
+// Run immediately on module load so Next.js server startup hard-fails on misconfiguration.
+// Only in actual production deployment, not during build.
+if (env.NODE_ENV === "production" && process.env.VERCEL_ENV === "production") {
+  validateProductionEnv();
+}
