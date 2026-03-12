@@ -128,7 +128,9 @@ export function MarketingHeader() {
             >
               <Link
                 href={group.href}
-                ref={(el) => (groupLinkRefs.current[i] = el)}
+                ref={(el) => {
+                  groupLinkRefs.current[i] = el;
+                }}
                 role="menuitem"
                 aria-haspopup="true"
                 aria-expanded={openIndex === i}
