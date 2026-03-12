@@ -6,6 +6,7 @@ import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
 import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
+import Image from "next/image";
 
 export default function SecurityPage() {
   return (
@@ -85,6 +86,16 @@ export default function SecurityPage() {
         <section className="mt-12 grid gap-6 lg:grid-cols-2">
           <MailboxOAuthFlow />
           <ErpMappingDiagram />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/security-token-rotation.svg"
+            alt="Token rotation and revoke screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
+          />
         </section>
 
         <section className="mt-16">

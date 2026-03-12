@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import Image from "next/image";
 
 export default function PrivacyPage() {
   return (
@@ -35,6 +36,16 @@ export default function PrivacyPage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/privacy-policy.svg"
+            alt="Privacy policy screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
+          />
         </section>
 
         <section className="mt-14 space-y-6">

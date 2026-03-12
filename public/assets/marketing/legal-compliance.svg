@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480">
+  <rect x="40" y="40" width="1120" height="400" rx="24" fill="#0b1223" stroke="#2b3a57" stroke-width="2"/>
+  <text x="60" y="90" fill="#ffffff" opacity="0.85" font-size="28">Legal & Compliance</text>
+  <rect x="80" y="140" width="1000" height="280" rx="16" fill="#15213a" stroke="#2b3a57" stroke-width="1"/>
+</svg>

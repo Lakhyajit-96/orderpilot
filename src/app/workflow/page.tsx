@@ -6,6 +6,7 @@ import { WorkflowVisualStrip } from "@/components/marketing/workflow-visual-stri
 import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
+import Image from "next/image";
 
 export default function WorkflowPage() {
   return (
@@ -24,6 +25,16 @@ export default function WorkflowPage() {
 
         <section className="mt-10">
           <MailboxOAuthFlow />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/workflow-oauth.svg"
+            alt="Mailbox OAuth flow screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
+          />
         </section>
 
         <AnimatedConnectors className="mt-10" />

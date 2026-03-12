@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/components/marketing/faq-accordion";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import Image from "next/image";
 
 export default function FaqPage() {
   return (
@@ -21,6 +22,16 @@ export default function FaqPage() {
 
         <section className="mt-14">
           <FaqAccordion />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/faq-questions.svg"
+            alt="FAQ screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
+          />
         </section>
 
         <section className="mt-16">

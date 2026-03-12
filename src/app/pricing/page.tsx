@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { plans } from "@/lib/plans";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import Image from "next/image";
 
 export default function PricingPage() {
   return (
@@ -26,6 +27,16 @@ export default function PricingPage() {
             title="Workspace billing overview"
             lines={["Current plan · Growth", "Billing status · Active", "Seats · 6", "Next invoice · Jul 28"]}
             accent="emerald"
+          />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/pricing-billing.svg"
+            alt="Workspace billing screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
           />
         </section>
 

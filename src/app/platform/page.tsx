@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import Image from "next/image";
 
 export default function PlatformPage() {
   return (
@@ -109,6 +110,16 @@ export default function PlatformPage() {
               "Launch checklist · 5/6 complete",
             ]}
             accent="cyan"
+          />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/platform-dashboard.svg"
+            alt="Operations dashboard screenshot"
+            width={1200}
+            height={640}
+            className="rounded-[26px] border border-white/10"
           />
         </section>
 

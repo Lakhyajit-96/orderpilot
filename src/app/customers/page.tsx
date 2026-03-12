@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
+import Image from "next/image";
 
 export default function CustomersPage() {
   return (
@@ -39,6 +40,16 @@ export default function CustomersPage() {
 
         <section className="mt-14">
           <TestimonialsSection />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/customers-stories.svg"
+            alt="Customer stories screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
+          />
         </section>
 
         <section className="mt-20 grid gap-6 lg:grid-cols-3">

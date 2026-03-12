@@ -249,6 +249,34 @@ export const trustLogos = [
 
 export const headerMenuGroups = [
   {
+    label: "Security",
+    href: "/security",
+    tone: "amber",
+    summary: "Security & data handling: OAuth, token rotation, webhook verification, retention, and incident response.",
+    items: [
+      {
+        title: "Mailbox OAuth",
+        description: "Provider OAuth flows with rotation and revocation visibility.",
+        href: "/security",
+      },
+      {
+        title: "Webhook verification",
+        description: "Signature checks, secrets, and logged deliveries.",
+        href: "/security",
+      },
+      {
+        title: "Retention boundaries",
+        description: "Workspace-bound records with audit trails.",
+        href: "/security",
+      },
+      {
+        title: "Incident response",
+        description: "Measurable recovery and transparency practices.",
+        href: "/security",
+      },
+    ],
+  },
+  {
     label: "Platform",
     href: "/platform",
     tone: "cyan",
@@ -329,34 +357,6 @@ export const headerMenuGroups = [
         title: "Open workspace",
         description: "Jump into the live application shell and inspect the operational surface.",
         href: "/dashboard",
-      },
-    ],
-  },
-  {
-    label: "Security",
-    href: "/security",
-    tone: "amber",
-    summary: "Security & data handling: OAuth, token rotation, webhook verification, retention, and incident response.",
-    items: [
-      {
-        title: "Mailbox OAuth",
-        description: "Provider OAuth flows with rotation and revocation visibility.",
-        href: "/security",
-      },
-      {
-        title: "Webhook verification",
-        description: "Signature checks, secrets, and logged deliveries.",
-        href: "/security",
-      },
-      {
-        title: "Retention boundaries",
-        description: "Workspace-bound records with audit trails.",
-        href: "/security",
-      },
-      {
-        title: "Incident response",
-        description: "Measurable recovery and transparency practices.",
-        href: "/security",
       },
     ],
   },

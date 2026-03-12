@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { controlPillars } from "@/components/marketing/marketing-site-data";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
+import Image from "next/image";
 
 export default function ControlsPage() {
   return (
@@ -23,6 +24,16 @@ export default function ControlsPage() {
 
         <section className="mt-10">
           <ErpMappingDiagram />
+        </section>
+
+        <section className="mt-10">
+          <Image
+            src="/assets/marketing/controls-erp-handoff.svg"
+            alt="ERP-ready handoff screenshot"
+            width={1200}
+            height={480}
+            className="rounded-[26px] border border-white/10"
+          />
         </section>
 
         <section className="mt-16">

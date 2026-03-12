@@ -17,9 +17,11 @@ test("marketing site data covers navigation, proof, and trust sections", () => {
   assert.match(marketingOrderReviewHref, /^\/preview\//);
   assert.equal(marketingSignals.length, 3);
   assert.equal(workflowSteps.length, 4);
-  assert.equal(headerMenuGroups.length, 4);
-  assert.equal(headerMenuGroups[0]?.label, "Platform");
-  assert.equal(headerMenuGroups[0]?.items[2]?.href, "/settings");
+  assert.ok(headerMenuGroups.length >= 4);
+  assert.ok(headerMenuGroups.some((g) => g.label === "Security"));
+  const platformGroup = headerMenuGroups.find((g) => g.label === "Platform");
+  assert.ok(platformGroup);
+  assert.ok(platformGroup?.items.some((item) => item.href === "/settings"));
   assert.equal(testimonials.length, 5);
   assert.equal(testimonials[0]?.company, "Atlas Industrial Supply");
   assert.match(testimonials[0]?.detail ?? "", /Microsoft 365/);
