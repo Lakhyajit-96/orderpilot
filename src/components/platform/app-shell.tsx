@@ -125,7 +125,7 @@ export function AppShell({
                 <BrandLogo href="/" size="sm" showTagline={false} />
               </div>
               <p className="text-xs uppercase tracking-[0.24em] text-white/38">Workspace</p>
-              <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "OrderPilot workspace"}</p>
+              <p className="mt-1 truncate text-sm text-white/76">{viewer.workspace?.name ?? "Workspace access"}</p>
             </div>
             <div className="flex max-w-full flex-wrap items-center justify-end gap-3">
               <Badge variant={viewer.isAuthenticated ? "success" : "muted"}>{viewer.modeLabel}</Badge>

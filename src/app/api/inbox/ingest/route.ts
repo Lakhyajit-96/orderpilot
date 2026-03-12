@@ -7,6 +7,8 @@ import {
   parseMailboxLineItems,
 } from "@/lib/order-write-core";
 import { createWorkspaceOrder } from "@/lib/orders";
+import { buildDashboardLaunchChecklist } from "@/lib/dashboard-checklist-core";
+import { recordLaunchChecklistTelemetry } from "@/lib/launch-telemetry";
 
 const mailboxIngestSchema = z.object({
   customerName: z.string().trim().min(2),
@@ -59,6 +61,25 @@ export async function POST(request: Request) {
         name: contextResult.context.displayName,
         role: contextResult.context.workspace.role,
       },
+    });
+
+    const checklist = buildDashboardLaunchChecklist({
+      viewerName: contextResult.context.displayName,
+      isAuthenticated: true,
+      workspaceName: contextResult.context.workspace.name,
+      workspaceRole: contextResult.context.workspace.role,
+      inboxConnectionCount: 0,
+      orderCount: 1,
+      orderStatuses: ["Intake captured"],
+      erpConnectionCount: 0,
+      subscriptionPlanKey: null,
+      subscriptionStatus: null,
+    });
+
+    await recordLaunchChecklistTelemetry({
+      organizationId: contextResult.context.workspace.id,
+      clerkUserId: contextResult.context.clerkUserId,
+      checklist,
     });
 
     return NextResponse.json({ orderId }, { status: 201 });

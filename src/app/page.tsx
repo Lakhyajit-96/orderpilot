@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { plans } from "@/lib/plans";
+import { flags } from "@/lib/env";
 
 const pricingHighlights = [
   "Start with shared inbox capture and a review flow buyers can understand immediately",
@@ -47,6 +48,13 @@ export default function Home() {
               <Button asChild size="lg"><Link href="/dashboard">Dashboard <ArrowRight className="size-4" /></Link></Button>
               <Button asChild size="lg" variant="secondary"><Link href={marketingOrderReviewHref}>See live order review</Link></Button>
             </div>
+            {flags.hasClerk ? (
+              <div className="mt-3">
+                <Button asChild size="sm" variant="secondary">
+                  <Link href="/sign-in">Open workspace</Link>
+                </Button>
+              </div>
+            ) : null}
             <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm text-white/54">
               {proofPills.map((item) => (
                 <div key={item} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2">
