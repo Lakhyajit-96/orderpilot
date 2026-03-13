@@ -79,10 +79,12 @@ export function AppShell({
   } satisfies CSSProperties;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(114,228,255,0.08),transparent_24%),radial-gradient(circle_at_80%_20%,rgba(124,92,255,0.14),transparent_26%),#050816] text-white">
+    <div className="relative min-h-screen bg-black text-white">
+      <div className="starfield" />
+      <div className="pointer-events-none absolute inset-0 grid-glow opacity-40" />
       <div className="mx-auto flex min-h-screen max-w-[1600px] gap-6 overflow-x-hidden px-4 py-4 lg:px-6" style={shellSpacingStyle}>
         {canNavigate ? (
-          <aside className="hidden w-[280px] shrink-0 rounded-[30px] border border-white/10 bg-white/[0.045] p-5 backdrop-blur-2xl lg:flex lg:flex-col">
+          <aside className="hidden w-[280px] shrink-0 rounded-[30px] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-2xl lg:flex lg:flex-col">
             <BrandLogo href="/" className="px-2 py-3" wordmarkClassName="pr-2" />
 
             <div className="mt-8 space-y-2">
@@ -118,7 +120,7 @@ export function AppShell({
           </aside>
         ) : null}
 
-        <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-slate-950/55 backdrop-blur-2xl">
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col overflow-x-hidden rounded-[30px] border border-white/10 bg-black/60 backdrop-blur-2xl">
           <header className="flex min-w-0 flex-wrap items-center justify-between gap-4 border-b border-white/8 px-5 py-3 lg:px-8">
             <div className="min-w-0 flex-1">
               <div className="mb-2 lg:hidden">
@@ -153,7 +155,7 @@ export function AppShell({
               aria-label="Mobile workspace navigation"
               style={mobileNavStyle}
             >
-              <div className="grid grid-cols-4 gap-2 rounded-[28px] border border-white/10 bg-slate-950/90 p-2 shadow-[0_20px_50px_rgba(5,8,22,0.45)] backdrop-blur-2xl">
+              <div className="grid grid-cols-4 gap-2 rounded-[28px] border border-white/10 bg-black/90 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
                 {navItems.map(({ href, icon: Icon, label }) => {
                   const active = isPlatformRouteActive(pathname, href);
 
