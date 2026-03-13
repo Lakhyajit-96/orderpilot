@@ -11,10 +11,10 @@ export function HeroVisual() {
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="panel shimmer-border relative isolate overflow-hidden rounded-[34px] p-6 lg:p-7"
+      className="panel shimmer-border relative isolate overflow-hidden rounded-[34px] p-6 lg:p-7 shadow-[0_32px_120px_rgba(0,0,0,0.50)]"
     >
-      <div className="ambient-orb absolute -left-12 top-10 size-36 rounded-full bg-cyan-300/18" />
-      <div className="ambient-orb-delayed absolute right-0 top-0 size-40 rounded-full bg-violet-400/18" />
+      <div className="ambient-orb absolute -left-12 top-10 size-36 rounded-full bg-cyan-300/15" />
+      <div className="ambient-orb-delayed absolute right-0 top-0 size-40 rounded-full bg-violet-400/15" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(114,228,255,0.18),transparent_34%),radial-gradient(circle_at_80%_0%,rgba(124,92,255,0.22),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_45%)]" />
       <div className="story-grid absolute inset-4 rounded-[28px] opacity-45" />
 
@@ -23,7 +23,7 @@ export function HeroVisual() {
         <Badge variant="muted">09:18 AM ingest cycle</Badge>
       </div>
 
-      <div className="relative z-10 mt-5 rounded-[30px] border border-white/10 bg-slate-950/82 shadow-[0_28px_110px_rgba(2,8,30,0.48)]">
+      <div className="relative z-10 mt-5 rounded-[30px] border border-white/[0.08] bg-black/85 shadow-[0_28px_110px_rgba(0,0,0,0.55)]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 px-5 py-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ export function HeroVisual() {
               <motion.div
                 animate={{ y: [0, 8, 0] }}
                 transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-                className="visual-float min-w-0 rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(2,8,30,0.34)]"
+                className="visual-float min-w-0 rounded-[26px] border border-white/[0.08] bg-white/[0.045] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.40)]"
               >
                 <div className="flex items-center justify-between gap-3">
                   <Badge variant="violet">Structured draft order</Badge>

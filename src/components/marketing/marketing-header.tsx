@@ -109,7 +109,7 @@ export function MarketingHeader() {
   };
 
   return (
-    <header className="panel sticky top-2 z-40 rounded-[24px] px-3 py-2.5 sm:px-3.5 sm:py-2.5">
+    <header className="panel sticky top-2 z-40 rounded-[24px] px-3 py-2.5 sm:px-3.5 sm:py-2.5 border-white/[0.08] shadow-[0_16px_64px_rgba(0,0,0,0.50)]">
       <div className="flex items-center justify-between gap-3">
         <BrandLogo href="/" size="xs" showTagline={false} />
 
@@ -158,7 +158,7 @@ export function MarketingHeader() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 6 }}
                     transition={{ duration: 0.16, ease: "easeOut" }}
-                    className="marketing-nav-panel absolute left-1/2 top-full z-50 w-[720px] max-w-[calc(100vw-6rem)] -translate-x-1/2 rounded-[26px] border border-white/10 bg-slate-950/95 p-3.5 shadow-[0_24px_80px_rgba(2,8,26,0.55)] backdrop-blur-2xl"
+                    className="marketing-nav-panel absolute left-1/2 top-full z-50 w-[720px] max-w-[calc(100vw-6rem)] -translate-x-1/2 rounded-[26px] border border-white/[0.08] bg-black/95 p-3.5 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-2xl"
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
                         e.stopPropagation();
@@ -174,7 +174,7 @@ export function MarketingHeader() {
                     }}
                   >
                     <div className="grid gap-4 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
-                      <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5">
+                      <div className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-5">
                         <div className={cn("inline-flex rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]", menuToneClasses[group.tone])}>
                           {group.label}
                         </div>
@@ -188,7 +188,7 @@ export function MarketingHeader() {
                             key={item.title}
                             href={item.href}
                             className={cn(
-                              "rounded-[22px] border border-white/10 bg-white/[0.04] p-4 transition-transform duration-200 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.06] focus:outline-none focus:ring-2",
+                              "rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.06] hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] focus:outline-none focus:ring-2",
                               ringToneClasses[group.tone],
                             )}
                           >

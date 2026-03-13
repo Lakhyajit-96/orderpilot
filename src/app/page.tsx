@@ -30,7 +30,8 @@ const pricingHighlights = [
 export default function Home() {
   return (
     <main className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 grid-glow opacity-70" />
+      <div className="starfield" />
+      <div className="pointer-events-none absolute inset-0 grid-glow opacity-60" />
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-20 pt-6 sm:px-6 lg:px-8">
         <MarketingHeader />
 

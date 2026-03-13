@@ -5,17 +5,17 @@ import { footerLinkGroups } from "@/components/marketing/marketing-site-data";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 border-t border-white/8 pt-10">
+    <footer className="mt-20 border-t border-white/[0.06] pt-10">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
         <div className="space-y-5">
           <BrandLogo href="/" size="lg" />
-          <p className="max-w-xl text-sm leading-7 text-white/58">
+          <p className="max-w-xl text-sm leading-7 text-white/55">
             OrderPilot gives distributor operations teams one place to capture inbound orders, route exceptions, and release ERP-ready drafts with confidence.
           </p>
           <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.22em] text-white/42">
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2">Shared inbox intake</span>
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2">Reviewer workflow</span>
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2">ERP handoff readiness</span>
+            <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">Shared inbox intake</span>
+            <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">Reviewer workflow</span>
+            <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2">ERP handoff readiness</span>
           </div>
         </div>
 
@@ -36,7 +36,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="mt-8 border-t border-white/8 pt-5 text-xs uppercase tracking-[0.2em] text-white/34">
+      <div className="mt-8 border-t border-white/[0.06] pt-5 text-xs uppercase tracking-[0.2em] text-white/34">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span>© {new Date().getFullYear()} OrderPilot</span>

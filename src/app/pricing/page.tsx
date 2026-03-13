@@ -5,12 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { plans } from "@/lib/plans";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
 import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { SiteFooter } from "@/components/marketing/site-footer";
 
 export default function PricingPage() {
   return (
     <main className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 grid-glow opacity-60" />
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-20 pt-6 sm:px-6 lg:px-8">
+        <MarketingHeader />
         <section className="max-w-3xl space-y-5">
           <Badge variant="success">Pricing</Badge>
           <h1 className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">
@@ -113,6 +116,8 @@ export default function PricingPage() {
             </Card>
           ))}
         </section>
+
+        <SiteFooter />
       </div>
     </main>
   );
