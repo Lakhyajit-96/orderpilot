@@ -35,7 +35,7 @@ export function BrandMark({ className, size = "md" }: { className?: string; size
   return (
     <div
       className={cn(
-        "flex items-center justify-center border border-white/14 bg-[linear-gradient(145deg,#081120_0%,#14386f_54%,#4f46e5_100%)] text-white shadow-[0_20px_54px_rgba(54,88,255,0.32)] ring-1 ring-white/6",
+        "flex items-center justify-center border border-white/14 bg-[linear-gradient(145deg,#060d1a_0%,#0f2d5e_54%,#4f46e5_100%)] text-white shadow-[0_20px_54px_rgba(54,88,255,0.36),0_0_20px_rgba(114,228,255,0.12)] ring-1 ring-white/8",
         logoSizeClasses[size],
         className,
       )}

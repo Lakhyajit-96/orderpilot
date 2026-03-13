@@ -4,15 +4,15 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/60 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
   {
     variants: {
       variant: {
         primary:
-          "bg-[linear-gradient(135deg,#72e4ff_0%,#7c5cff_55%,#5b34f2_100%)] px-5 py-3 text-slate-950 shadow-[0_12px_40px_rgba(64,181,255,0.28)] hover:scale-[1.01]",
+          "bg-[linear-gradient(135deg,#72e4ff_0%,#7c5cff_55%,#5b34f2_100%)] px-5 py-3 text-slate-950 font-semibold shadow-[0_12px_40px_rgba(64,181,255,0.32)] hover:shadow-[0_16px_48px_rgba(64,181,255,0.40)] hover:scale-[1.02] active:scale-[0.98]",
         secondary:
-          "border border-white/12 bg-white/6 px-5 py-3 text-white/88 backdrop-blur-xl hover:bg-white/10",
-        ghost: "px-4 py-2 text-white/72 hover:bg-white/6 hover:text-white",
+          "border border-white/12 bg-white/6 px-5 py-3 text-white/88 backdrop-blur-xl hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_32px_rgba(114,228,255,0.08)] active:scale-[0.98]",
+        ghost: "px-4 py-2 text-white/72 hover:bg-white/6 hover:text-white active:scale-[0.98]",
       },
       size: {
         default: "h-11",
