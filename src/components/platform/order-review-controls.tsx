@@ -67,6 +67,9 @@ export function OrderReviewControls({
           value={reasonCode}
           onChange={(event) => setReasonCode(event.target.value)}
         >
+          {reasonCodes.length === 0 && (
+            <option value="">No reason codes configured</option>
+          )}
           {reasonCodes.map((item) => (
             <option key={item.code} value={item.code}>
               {item.code} · {item.label}

@@ -1033,8 +1033,12 @@ export async function getWorkspaceOrderByExternalRef(
 
 export async function getWorkspaceReviewQueue(organizationId: string | null | undefined) {
   const orders = await getWorkspaceOrders(organizationId);
+  const reviewOrders = orders.filter(
+    (order) => order.status === "Needs review" || order.status === "Intake captured",
+  );
+  const queue = reviewOrders.length > 0 ? reviewOrders : orders;
 
-  return orders.slice(0, 3).map((order) => ({
+  return queue.slice(0, 3).map((order) => ({
     orderId: order.id,
     customer: order.customer,
     issue: order.exceptions[0] ?? "Awaiting approval",
