@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaqAccordion } from "@/components/marketing/faq-accordion";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
+import { FaqHeroVisual } from "@/components/marketing/visuals/faq-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -57,7 +57,9 @@ export default function FaqPage() {
           <FaqAccordion />
         </section>
 
-        <AnimatedConnectors className="mt-10" />
+        <section className="mt-10">
+          <FaqHeroVisual />
+        </section>
 
         <section className="mt-14">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">

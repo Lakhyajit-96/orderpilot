@@ -6,11 +6,8 @@ import { ArrowRight, ShieldCheck, Lock, KeyRound, Eye, FileWarning, RefreshCw, S
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
-import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
-import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import { SecurityHeroVisual } from "@/components/marketing/visuals/security-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -78,18 +75,7 @@ export default function SecurityPage() {
         </section>
 
         <section className="mt-14">
-          <MailboxOAuthFlow />
-        </section>
-
-        <AnimatedConnectors className="mt-8" />
-
-        <section className="mt-14 grid gap-6 lg:grid-cols-2">
-          <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
-            <ScreenshotFrame title="OAuth token lifecycle" lines={["Microsoft 365 - Connected", "Last rotation - Jun 12, 09:14 AM", "Token health - Healthy", "Revoke access - Available in Settings"]} accent="cyan" />
-          </motion.div>
-          <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.1 }}>
-            <ErpMappingDiagram />
-          </motion.div>
+          <SecurityHeroVisual />
         </section>
 
         <section className="mt-20">

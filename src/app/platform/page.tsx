@@ -6,12 +6,9 @@ import { ArrowRight, Users, FileSearch2, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FeatureVisualGrid } from "@/components/marketing/feature-visual-grid";
 import { TrustLogoStrip } from "@/components/marketing/trust-logo-strip";
-import { WorkflowVisualStrip } from "@/components/marketing/workflow-visual-strip";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import { PlatformHeroVisual } from "@/components/marketing/visuals/platform-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -57,34 +54,8 @@ export default function PlatformPage() {
           <TrustLogoStrip />
         </div>
 
-        <section className="mt-16 grid gap-6 lg:grid-cols-[0.68fr_1.32fr]">
-          <Card className="h-full">
-            <CardHeader>
-              <Badge>Operations overview</Badge>
-              <CardTitle className="mt-4 font-display text-3xl text-white">Operations command center</CardTitle>
-              <CardDescription className="text-base leading-8 text-white/70">
-                The dashboard surfaces queue health, launch readiness, and value proof in one place so operators and leaders can see whether the workflow is actually working.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm leading-7 text-white/72">
-              <p>Every workspace opens to a single operations overview: inbox coverage, orders in review, ERP handoff readiness, and launch checklist progress.</p>
-              <p>You can see whether the desk is keeping up with inbound demand, where exceptions are piling up, and which rollout steps still need attention.</p>
-            </CardContent>
-          </Card>
-          <FeatureVisualGrid />
-        </section>
-
-        <section className="mt-20 space-y-8">
-          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
-            <Badge variant="violet">Shared intake surface</Badge>
-            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Replace scattered inbox triage with one shared queue.
-            </h2>
-            <p className="mt-4 text-base leading-8 text-white/70">
-              Coordinators should not have to chase orders across personal inboxes and forwarded threads. OrderPilot captures customer POs and attachments into one shared queue built for operations, not marketing campaigns.
-            </p>
-          </motion.div>
-          <WorkflowVisualStrip />
+        <section className="mt-16">
+          <PlatformHeroVisual />
         </section>
 
         <section className="mt-20 grid gap-6 lg:grid-cols-3">
@@ -103,12 +74,6 @@ export default function PlatformPage() {
             </motion.div>
           ))}
         </section>
-
-        <section className="mt-14">
-          <ScreenshotFrame title="Operations dashboard - queue health and launch signals" lines={["Inbox coverage - 3 connections", "Orders in review - 4 active", "ERP readiness - 2 exports", "Launch checklist - 5/6 complete"]} accent="cyan" />
-        </section>
-
-        <AnimatedConnectors className="mt-10" />
 
         <section className="mt-14 grid gap-4 lg:grid-cols-3">
           {queueCards.map((card, index) => (

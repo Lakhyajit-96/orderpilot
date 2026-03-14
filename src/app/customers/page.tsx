@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
+import { CustomersHeroVisual } from "@/components/marketing/visuals/customers-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -83,7 +83,9 @@ export default function CustomersPage() {
           ))}
         </section>
 
-        <AnimatedConnectors className="mt-12" />
+        <section className="mt-12">
+          <CustomersHeroVisual />
+        </section>
 
         <section className="mt-14">
           <TestimonialsSection />
