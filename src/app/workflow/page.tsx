@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Bot, FileSearch, CheckCircle } from "lucide-react";
+import { ArrowRight, Mail, Bot, FileSearch, CheckCircle, Timer, Gauge, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { WorkflowHeroVisual } from "@/components/marketing/visuals/workflow-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -30,6 +29,27 @@ const evidenceCards = [
   { label: "Approval chains", title: "Human-controlled before export", text: "The workflow clarifies who signs off and when, without turning approvals into bureaucracy. Chains are configurable per workspace." },
 ];
 
+const pipelineSteps = [
+  { step: "01", label: "Inbound email arrives", connector: "OAuth sync captures the message and all attachments from the shared mailbox within seconds of delivery." },
+  { step: "02", label: "Attachment parsing begins", connector: "PDFs, spreadsheets, and embedded tables are identified, classified, and queued for structured extraction." },
+  { step: "03", label: "Draft order generated", connector: "SKUs, quantities, ship dates, and customer references populate a structured draft with field-level confidence scores." },
+  { step: "04", label: "Exceptions flagged", connector: "Low-confidence fields and unmapped SKUs are highlighted with source evidence for reviewer attention." },
+  { step: "05", label: "Reviewer assigns resolution", connector: "Reason codes and notes are attached to each resolved exception, creating an auditable decision trail." },
+  { step: "06", label: "ERP-ready release", connector: "Approved draft maps to the configured export adapter and hands off with full context and retry logic." },
+];
+
+const throughputBenefits = [
+  { icon: Timer, title: "Faster first-pass processing", text: "Structured drafts eliminate the manual re-keying step that slows down every inbound order. Coordinators start from a populated draft instead of a blank entry form." },
+  { icon: Gauge, title: "Reduced exception backlog", text: "By surfacing confidence gaps immediately, the queue stays clear of orders waiting for missing context. Reviewers work through real exceptions, not data-entry errors." },
+  { icon: ShieldCheck, title: "Cleaner downstream handoff", text: "Every approved order carries notes, approvals, and evidence forward so ERP teams receive a draft they can trust without re-verifying the source." },
+];
+
+const dataFlowDetails = [
+  { label: "Supported input formats", items: ["Email body text", "PDF attachments", "Excel and CSV files", "Embedded HTML tables", "Forwarded quote requests"] },
+  { label: "Extracted fields", items: ["Customer PO number", "Requested SKUs and quantities", "Ship-to addresses", "Requested delivery dates", "Special instructions and notes"] },
+  { label: "Output destinations", items: ["NetSuite REST API", "SAP integration layer", "Generic webhook endpoints", "CSV export for manual import", "Dynamics 365 adapter"] },
+];
+
 export default function WorkflowPage() {
   return (
     <main className="relative overflow-hidden">
@@ -50,8 +70,31 @@ export default function WorkflowPage() {
           </motion.div>
         </section>
 
-        <section>
-          <WorkflowHeroVisual />
+        <section className="mt-4">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge>Order pipeline</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Follow one order from email arrival to ERP release.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              Every inbound purchase order follows the same six-step pipeline. Each step adds structure and evidence so the next stage can trust the output.
+            </p>
+          </motion.div>
+          <div className="mt-8 space-y-3">
+            {pipelineSteps.map((item, index) => (
+              <motion.div key={item.step} {...fadeUp} transition={{ duration: 0.4, delay: index * 0.06 }}>
+                <div className="flex gap-5 rounded-[20px] border border-white/10 bg-white/[0.04] p-5">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 font-display text-lg font-semibold text-cyan-200">
+                    {item.step}
+                  </div>
+                  <div>
+                    <p className="text-base font-semibold text-white">{item.label}</p>
+                    <p className="mt-1 text-sm leading-7 text-white/66">{item.connector}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <section className="mt-20 grid gap-6 lg:grid-cols-3">
@@ -64,6 +107,59 @@ export default function WorkflowPage() {
               </div>
             </motion.div>
           ))}
+        </section>
+
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="success">Throughput impact</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Where the workflow removes friction from your operating rhythm.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              Operations leaders measure three things after rollout: how fast coordinators clear orders, how quickly exceptions resolve, and how clean the downstream handoff becomes.
+            </p>
+          </motion.div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {throughputBenefits.map((benefit, index) => (
+              <motion.div key={benefit.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <Card className="h-full">
+                  <CardHeader>
+                    <div className="flex size-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-cyan-200"><benefit.icon className="size-5" /></div>
+                    <CardTitle className="mt-4">{benefit.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-sm leading-7 text-white/72">
+                    <p>{benefit.text}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge>Data flow reference</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Inputs, extracted fields, and output destinations at a glance.
+            </h2>
+          </motion.div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {dataFlowDetails.map((group, index) => (
+              <motion.div key={group.label} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <div className="h-full rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+                  <p className="text-xs uppercase tracking-[0.24em] text-cyan-200">{group.label}</p>
+                  <ul className="mt-4 space-y-2">
+                    {group.items.map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm text-white/72">
+                        <CheckCircle className="size-3.5 shrink-0 text-emerald-300" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <section className="mt-20">

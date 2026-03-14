@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Zap, Shield, Building2, Users, CreditCard, TrendingUp } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Shield, Building2, Users, CreditCard, TrendingUp, Clock, BarChart3, Layers, Target } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { plans } from "@/lib/plans";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { PricingHeroVisual } from "@/components/marketing/visuals/pricing-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -34,6 +33,20 @@ const comparisonRows = [
   { feature: "Multi-branch workspaces", starter: false, growth: false, enterprise: true },
   { feature: "Custom approval chains", starter: false, growth: false, enterprise: true },
   { feature: "Priority support & SLA", starter: false, growth: false, enterprise: true },
+];
+
+const roiMetrics = [
+  { value: "4.2h", label: "Saved per operator daily", detail: "Elimination of manual re-keying, inbox searching, and context reconstruction frees up significant operator time for higher-value tasks." },
+  { value: "67%", label: "Reduction in order errors", detail: "Structured extraction with confidence scoring catches mismatches before they reach downstream systems and trigger costly corrections." },
+  { value: "11 days", label: "Average payback period", detail: "Teams typically recoup their subscription cost within the first two weeks through reduced rework, faster processing, and fewer ERP entry errors." },
+  { value: "89%", label: "Operator adoption in month one", detail: "The workflow mirrors how operators already think about orders, so adoption happens naturally without lengthy training programs." },
+];
+
+const investmentReasons = [
+  { icon: Clock, title: "Time-to-value", text: "Most teams process their first order through the full workflow within 24 hours of connecting a mailbox. No multi-month implementation projects." },
+  { icon: BarChart3, title: "Measurable ROI", text: "Track operator throughput, exception resolution speed, and ERP handoff accuracy with built-in operational metrics. Prove value to leadership with real numbers." },
+  { icon: Layers, title: "No wasted features", text: "Each plan is scoped to a real operational maturity level. You never pay for enterprise controls your team is not ready to adopt." },
+  { icon: Target, title: "Predictable costs", text: "Seat-based pricing means your costs scale linearly with team size, not order volume. Process more orders without surprise overages." },
 ];
 
 export default function PricingPage() {
@@ -94,8 +107,27 @@ export default function PricingPage() {
           ))}
         </section>
 
-        <section className="mt-16">
-          <PricingHeroVisual />
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="violet">Return on investment</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              The numbers that matter to operations leaders evaluating cost versus impact.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              Teams measure the value of OrderPilot in operator hours recovered, error rates reduced, and time to first measurable impact. These are the benchmarks real deployments produce.
+            </p>
+          </motion.div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {roiMetrics.map((metric, index) => (
+              <motion.div key={metric.label} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <div className="h-full rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(114,228,255,0.06),rgba(124,92,255,0.04))] p-5">
+                  <p className="font-display text-3xl font-semibold text-cyan-200">{metric.value}</p>
+                  <p className="mt-3 text-base font-semibold text-white">{metric.label}</p>
+                  <p className="mt-3 text-sm leading-7 text-white/66">{metric.detail}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <section className="mt-16">
@@ -114,6 +146,28 @@ export default function PricingPage() {
                     <CardDescription className="leading-7">{item.text}</CardDescription>
                   </CardHeader>
                 </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge>Why teams invest</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">Four reasons procurement and operations approve the spend.</h2>
+          </motion.div>
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            {investmentReasons.map((reason, index) => (
+              <motion.div key={reason.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <div className="flex h-full gap-5 rounded-[24px] border border-white/10 bg-white/[0.04] p-6">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-200">
+                    <reason.icon className="size-5" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-white">{reason.title}</p>
+                    <p className="mt-2 text-sm leading-7 text-white/68">{reason.text}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>

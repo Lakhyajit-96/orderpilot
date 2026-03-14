@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, FileText, ShieldCheck, CreditCard, Database, Server, AlertTriangle, RefreshCw } from "lucide-react";
+import { ArrowRight, FileText, ShieldCheck, CreditCard, Database, Server, AlertTriangle, RefreshCw, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { TermsHeroVisual } from "@/components/marketing/visuals/terms-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -25,6 +24,20 @@ const termsSections = [
   { icon: Server, title: "Availability", subtitle: "Reasonable efforts; maintenance windows and incidents.", texts: ["We use commercially reasonable efforts to provide availability. Maintenance and incidents are communicated through appropriate channels with recovery steps and diagnostics.", "Scheduled maintenance windows are communicated in advance. Emergency maintenance may occur without advance notice when required to protect service integrity.", "Enterprise customers may have access to SLA guarantees with defined uptime commitments and remedies."] },
   { icon: AlertTriangle, title: "Liability", subtitle: "Limitations, disclaimers, and indemnities.", texts: ["To the extent permitted by law, liability is limited. The service is provided as-is for operational use, with no guarantees of specific business outcomes.", "Customers indemnify OrderPilot against claims arising from misuse, unauthorized access, or violation of these terms.", "Neither party is liable for indirect, incidental, or consequential damages arising from use of the service."] },
   { icon: RefreshCw, title: "Updates", subtitle: "Changes to these terms.", texts: ["We may update these terms to reflect service changes. Material updates will be communicated through appropriate channels with effective dates.", "Continued use of the service after updates take effect constitutes acceptance of the revised terms.", "We maintain a changelog of material updates for transparency and reference."] },
+];
+
+const keyPoints = [
+  { title: "No volume caps", detail: "Plans are seat-based, not volume-based. Process as many orders as your team needs without worrying about per-order charges or overage fees." },
+  { title: "Cancel anytime", detail: "No long-term lock-in. Cancel your subscription at any time and retain access through the end of your current billing period." },
+  { title: "Data portability", detail: "Request an export of your operational data at any time. We provide structured exports of orders, approvals, and audit trails." },
+  { title: "No data selling", detail: "We never sell, share, or monetize your operational data. Your order information stays within your workspace boundary." },
+];
+
+const serviceGuarantees = [
+  { label: "Uptime target", value: "99.9%", note: "Measured monthly across the platform API and web application." },
+  { label: "Support response", value: "<4h", note: "Business hours response time for Growth and Enterprise plan customers." },
+  { label: "Data export", value: "24h", note: "Operational data exports delivered within 24 hours of authorized request." },
+  { label: "Notice period", value: "30 days", note: "Material changes to terms are communicated at least 30 days in advance." },
 ];
 
 export default function TermsPage() {
@@ -47,7 +60,19 @@ export default function TermsPage() {
           </motion.div>
         </section>
 
-        <section className="space-y-6">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {keyPoints.map((point, index) => (
+            <motion.div key={point.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+              <div className="h-full rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(114,228,255,0.06),rgba(124,92,255,0.04))] p-5">
+                <CheckCircle2 className="size-5 text-emerald-300" />
+                <p className="mt-3 text-base font-semibold text-white">{point.title}</p>
+                <p className="mt-2 text-sm leading-7 text-white/68">{point.detail}</p>
+              </div>
+            </motion.div>
+          ))}
+        </section>
+
+        <section className="mt-14 space-y-6">
           {termsSections.map((section, index) => (
             <motion.div key={section.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.05 }}>
               <Card>
@@ -68,11 +93,30 @@ export default function TermsPage() {
           ))}
         </section>
 
-        <section className="mt-12">
-          <TermsHeroVisual />
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="violet">Service commitments</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Measurable guarantees behind the terms.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              These commitments define the operational standards we hold ourselves to. They reflect what teams can expect from the platform and our support organization.
+            </p>
+          </motion.div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {serviceGuarantees.map((item, index) => (
+              <motion.div key={item.label} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <div className="h-full rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center">
+                  <p className="font-display text-3xl font-semibold text-cyan-200">{item.value}</p>
+                  <p className="mt-2 text-sm font-semibold text-white">{item.label}</p>
+                  <p className="mt-2 text-xs leading-6 text-white/55">{item.note}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
-        <section className="mt-14 pb-6">
+        <section className="mt-20 pb-6">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
             <div className="panel shimmer-border rounded-[32px] px-6 py-8 sm:px-8 sm:py-10">
               <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
