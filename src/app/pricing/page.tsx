@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { plans } from "@/lib/plans";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
+import { PricingHeroVisual } from "@/components/marketing/visuals/pricing-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -96,10 +95,8 @@ export default function PricingPage() {
         </section>
 
         <section className="mt-16">
-          <ScreenshotFrame title="Workspace billing overview" lines={["Current plan - Growth", "Billing status - Active", "Seats - 6 operators", "Next invoice - Jul 28", "Payment method - Visa ending 4242"]} accent="emerald" />
+          <PricingHeroVisual />
         </section>
-
-        <AnimatedConnectors className="mt-12" />
 
         <section className="mt-16">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">

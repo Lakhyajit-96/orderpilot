@@ -7,9 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { controlPillars, marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { ErpMappingDiagram } from "@/components/marketing/visuals/erp-mapping-diagram";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
-import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import { ControlsHeroVisual } from "@/components/marketing/visuals/controls-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -52,10 +50,8 @@ export default function ControlsPage() {
         </section>
 
         <section>
-          <ErpMappingDiagram />
+          <ControlsHeroVisual />
         </section>
-
-        <AnimatedConnectors className="mt-10" />
 
         <section className="mt-14 grid gap-4 lg:grid-cols-3">
           {controlCards.map((card, index) => (
@@ -123,10 +119,6 @@ export default function ControlsPage() {
               </motion.div>
             ))}
           </div>
-        </section>
-
-        <section className="mt-16">
-          <ScreenshotFrame title="Export readiness overview" lines={["Adapter - NetSuite REST", "Last export - Jun 12, 14:22", "Status - Healthy", "Retries - 0 pending", "Diagnostics - All clear"]} accent="emerald" />
         </section>
 
         <section className="mt-20 pb-6">

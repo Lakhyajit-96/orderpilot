@@ -6,11 +6,8 @@ import { ArrowRight, Mail, Bot, FileSearch, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { WorkflowVisualStrip } from "@/components/marketing/workflow-visual-strip";
-import { AnimatedConnectors } from "@/components/marketing/animated-connectors";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { MailboxOAuthFlow } from "@/components/marketing/visuals/mailbox-oauth-flow";
-import { ScreenshotFrame } from "@/components/marketing/visuals/screenshot-frame";
+import { WorkflowHeroVisual } from "@/components/marketing/visuals/workflow-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -54,13 +51,7 @@ export default function WorkflowPage() {
         </section>
 
         <section>
-          <MailboxOAuthFlow />
-        </section>
-
-        <AnimatedConnectors className="mt-10" />
-
-        <section className="mt-12">
-          <WorkflowVisualStrip />
+          <WorkflowHeroVisual />
         </section>
 
         <section className="mt-20 grid gap-6 lg:grid-cols-3">
@@ -101,10 +92,6 @@ export default function WorkflowPage() {
               </motion.div>
             ))}
           </div>
-        </section>
-
-        <section className="mt-16">
-          <ScreenshotFrame title="Order review surface" lines={["Customer PO - #WH-4821", "Line items - 6 mapped, 1 exception", "Reviewer - Sarah Kim", "Status - Pending approval", "Source - orders@acme-dist.com"]} accent="violet" />
         </section>
 
         <section className="mt-20 pb-6">
