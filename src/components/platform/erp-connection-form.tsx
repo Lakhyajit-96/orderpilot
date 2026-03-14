@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 const fieldClassName =
   "w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/28 focus:border-cyan-300/40";
 
-export function ErpConnectionForm() {
+export function ErpConnectionForm({ disabled }: { disabled?: boolean }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
@@ -73,7 +73,7 @@ export function ErpConnectionForm() {
       </div>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <p className="text-xs text-white/45">Choose your destination and, if needed, match your team’s field names to the outgoing order format.</p>
-        <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
+        <Button type="submit" className="w-full sm:w-auto" disabled={isLoading || disabled}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
           Save handoff destination
         </Button>

@@ -36,6 +36,7 @@ import {
 } from "@/lib/stripe-event-processor";
 import { getStripeServer } from "@/lib/stripe";
 import { getWorkspaceNotifications, getWorkspaceWorkflowSettings } from "@/lib/workflow";
+import { hasPlanFeature, buildUpgradePrompt } from "@/lib/plan-features";
 import { cn } from "@/lib/utils";
 
 const settingsCards = [
@@ -227,6 +228,8 @@ export default async function SettingsPage({
   const checklistProgress = getDashboardLaunchProgress(checklist);
   const nextLaunchStep = getNextDashboardLaunchStep(checklist);
   const settingsChecklistLinks = checklist.filter((item) => item.href.startsWith("/settings#"));
+  const hasErpExport = hasPlanFeature(activePlan, "erp_export_adapters");
+  const hasApprovalWorkflows = hasPlanFeature(activePlan, "approval_workflows");
   const notices: SettingsNotice[] = [];
 
   if (mailboxOAuthState === "connected") {
@@ -584,7 +587,14 @@ export default async function SettingsPage({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <ErpConnectionForm />
+          {!hasErpExport ? (
+            <div className="rounded-2xl border border-amber-300/20 bg-amber-300/8 px-4 py-4 text-sm text-amber-50">
+              <p className="font-medium">{buildUpgradePrompt("erp_export_adapters")}</p>
+              <p className="mt-1 text-amber-100/70">ERP export adapters, field matching, and handoff tracking are available on the Growth plan and above.</p>
+              <Link href="#workspace-billing" className="mt-2 inline-block text-sm font-medium text-cyan-200 hover:underline">View plans</Link>
+            </div>
+          ) : null}
+          <ErpConnectionForm disabled={!hasErpExport} />
           <div className="grid gap-3 md:grid-cols-3">
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
               ERP connections: {erpConnections.length}
@@ -643,6 +653,13 @@ export default async function SettingsPage({
           <CardDescription>Control approval roles, thresholds, and reason codes for this workspace.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!hasApprovalWorkflows ? (
+            <div className="rounded-2xl border border-amber-300/20 bg-amber-300/8 px-4 py-4 text-sm text-amber-50">
+              <p className="font-medium">{buildUpgradePrompt("approval_workflows")}</p>
+              <p className="mt-1 text-amber-100/70">Approval workflows, reason codes, and audit trails are available on the Growth plan and above.</p>
+              <Link href="#workspace-billing" className="mt-2 inline-block text-sm font-medium text-cyan-200 hover:underline">View plans</Link>
+            </div>
+          ) : null}
           <div className="grid gap-3 md:grid-cols-3">
             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70">
               Reason codes: {workflowSettings.reasonCodes.length}
@@ -663,6 +680,7 @@ export default async function SettingsPage({
               minOrderValueCents: stage.minOrderValueCents ?? null,
             }))}
             initialReasonCodesText={workflowReasonCodesText}
+            disabled={!hasApprovalWorkflows}
           />
         </CardContent>
       </Card>

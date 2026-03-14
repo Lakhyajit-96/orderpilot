@@ -4,6 +4,7 @@ import { getWorkspaceRequestContext } from "@/lib/api-workspace";
 import { captureError, trackEvent } from "@/lib/error-tracking";
 import { parseJsonRecord } from "@/lib/erp-core";
 import { getWorkspaceErpConnections, upsertErpConnection } from "@/lib/erp";
+import { hasPlanFeature } from "@/lib/plan-features";
 import { checkRateLimit, getRateLimitIdentifier, RATE_LIMITS } from "@/lib/rate-limit";
 
 const erpConnectionSchema = z.object({
@@ -77,6 +78,15 @@ export async function POST(request: Request) {
           "X-RateLimit-Reset": String(rateLimit.reset),
         },
       },
+    );
+  }
+
+  const activePlan = contextResult.context.workspace.subscription?.planKey ?? null;
+
+  if (!hasPlanFeature(activePlan, "erp_export_adapters")) {
+    return NextResponse.json(
+      { error: "ERP export adapters require the Growth plan or above. Upgrade your plan to use this feature." },
+      { status: 403 },
     );
   }
 
