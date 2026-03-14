@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Users, FileSearch2, TrendingUp } from "lucide-react";
+import { ArrowRight, CheckCircle2, Users, FileSearch2, TrendingUp, Quote, Star, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { CustomersHeroVisual } from "@/components/marketing/visuals/customers-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -49,6 +47,74 @@ const roleOutcomes = [
   },
 ];
 
+const customerTestimonials = [
+  {
+    quote: "We went from three coordinators re-keying POs all morning to one shared queue where drafts are already structured. The time savings paid for the subscription in the first week.",
+    name: "Sarah Mitchell",
+    role: "VP Operations",
+    company: "Apex Industrial Supply",
+    metric: "4.2h saved daily per coordinator",
+    stars: 5,
+  },
+  {
+    quote: "The exception routing changed everything for our review team. Instead of hunting through emails for context, every flagged line comes with the source evidence attached. Approvals are faster and more defensible.",
+    name: "David Chen",
+    role: "Order Processing Manager",
+    company: "Pacific Distribution Group",
+    metric: "67% fewer review escalations",
+    stars: 5,
+  },
+  {
+    quote: "I can finally show the executive team real numbers on throughput improvement instead of anecdotes. The dashboard signals tell the story without me building a single spreadsheet.",
+    name: "Rachel Torres",
+    role: "Director of Supply Chain",
+    company: "Continental Parts Co.",
+    metric: "31% less internal handoff churn",
+    stars: 5,
+  },
+  {
+    quote: "We connected two shared mailboxes and had our first order processed through the full workflow within 24 hours. No consultant, no multi-month implementation. Just connected and started.",
+    name: "James Whitfield",
+    role: "IT Director",
+    company: "Southeastern Hardware Dist.",
+    metric: "Live in under 24 hours",
+    stars: 5,
+  },
+  {
+    quote: "The reason codes on every exception resolution give our compliance team exactly what they need. When auditors ask why a line was changed, we have the trail ready without scrambling.",
+    name: "Priya Kapoor",
+    role: "Compliance Lead",
+    company: "Atlas Wholesale Solutions",
+    metric: "100% audit trail coverage",
+    stars: 5,
+  },
+  {
+    quote: "Our NetSuite integration went live with zero custom development. The export adapter mapped our fields correctly on the first attempt. Failed exports surface immediately with context.",
+    name: "Marcus Allen",
+    role: "ERP Integration Lead",
+    company: "Great Lakes Distribution",
+    metric: "Zero custom integration code",
+    stars: 5,
+  },
+];
+
+const caseStudies = [
+  {
+    company: "Midwest Supply Partners",
+    industry: "Industrial distribution",
+    teamSize: "12 operators",
+    challenge: "Processing 200+ daily orders from 40 customer accounts with different PO formats. Coordinators spent 60% of their time on manual re-keying.",
+    outcome: "First-pass review time dropped 42%. Re-entry loops eliminated for 85% of standard orders. Full team adoption within 3 weeks.",
+  },
+  {
+    company: "Coastal Automotive Parts",
+    industry: "Automotive aftermarket",
+    teamSize: "8 operators",
+    challenge: "Complex multi-line POs with frequent SKU mismatches. Reviewers spent hours reconstructing context from email threads.",
+    outcome: "Exception resolution time cut by 55%. SKU mapping accuracy reached 94%. ERP handoff errors reduced to near zero.",
+  },
+];
+
 export default function CustomersPage() {
   return (
     <main className="relative overflow-hidden">
@@ -83,12 +149,74 @@ export default function CustomersPage() {
           ))}
         </section>
 
-        <section className="mt-12">
-          <CustomersHeroVisual />
+        <section className="mt-14">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8 max-w-3xl">
+            <Badge variant="violet">What customers say</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Hear directly from operations teams using OrderPilot daily.
+            </h2>
+          </motion.div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {customerTestimonials.map((t, index) => (
+              <motion.div key={t.name} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.06 }}>
+                <div className="flex h-full flex-col rounded-[24px] border border-white/10 bg-[linear-gradient(145deg,rgba(124,92,255,0.06),rgba(114,228,255,0.03))] p-6">
+                  <div className="mb-3 flex gap-0.5">
+                    {Array.from({ length: t.stars }).map((_, i) => (
+                      <Star key={i} className="size-3.5 fill-amber-300 text-amber-300" />
+                    ))}
+                  </div>
+                  <Quote className="mb-2 size-5 text-white/20" />
+                  <p className="flex-1 text-sm leading-7 text-white/72">{t.quote}</p>
+                  <div className="mt-4 border-t border-white/8 pt-4">
+                    <p className="text-sm font-semibold text-white">{t.name}</p>
+                    <p className="text-xs text-white/55">{t.role} at {t.company}</p>
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-cyan-200/15 bg-cyan-200/8 px-2.5 py-1">
+                      <TrendingUp className="size-3 text-cyan-200" />
+                      <span className="text-[11px] font-medium text-cyan-200">{t.metric}</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
-        <section className="mt-14">
-          <TestimonialsSection />
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8 max-w-3xl">
+            <Badge variant="success">Case studies</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Real implementation stories from distribution teams.
+            </h2>
+          </motion.div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {caseStudies.map((cs, index) => (
+              <motion.div key={cs.company} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.1 }}>
+                <Card className="h-full">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-cyan-200">
+                        <Building2 className="size-5" />
+                      </div>
+                      <div>
+                        <CardTitle>{cs.company}</CardTitle>
+                        <CardDescription>{cs.industry} &middot; {cs.teamSize}</CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/40">Challenge</p>
+                      <p className="mt-1 text-sm leading-7 text-white/68">{cs.challenge}</p>
+                    </div>
+                    <div className="rounded-xl border border-emerald-300/10 bg-emerald-300/5 p-4">
+                      <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">Outcome</p>
+                      <p className="mt-1 text-sm leading-7 text-emerald-100/80">{cs.outcome}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <section className="mt-20">

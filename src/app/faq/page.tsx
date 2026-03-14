@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Rocket, ShieldCheck, HeadphonesIcon } from "lucide-react";
+import { ArrowRight, Rocket, ShieldCheck, HeadphonesIcon, Clock, Zap, Settings, HelpCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaqAccordion } from "@/components/marketing/faq-accordion";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { FaqHeroVisual } from "@/components/marketing/visuals/faq-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -33,6 +32,20 @@ const additionalFaqs = [
   { q: "Is there a limit on the number of orders?", a: "Plans are seat-based, not volume-based. Your team can process as many orders as needed within your plan. Higher-tier plans unlock deeper controls and integrations, not higher volume caps." },
 ];
 
+const quickAnswers = [
+  { icon: Clock, question: "How fast can we start?", answer: "Connect a mailbox in 15 minutes, process your first order within the hour, and have your full review workflow running within a day." },
+  { icon: Zap, question: "What if our team is small?", answer: "OrderPilot works for lean desks with 2-3 operators just as well as for large multi-branch teams. The Starter plan is designed for smaller operations." },
+  { icon: Settings, question: "Do we need to change our ERP?", answer: "No. Export adapters map approved drafts to your existing ERP format. OrderPilot sits upstream of your ERP, not inside it." },
+  { icon: HelpCircle, question: "Is training required?", answer: "The workflow mirrors how operators already think about orders. Most teams are productive within the first session without formal training." },
+];
+
+const rolloutMilestones = [
+  { milestone: "Day 1", title: "Mailbox connected", description: "OAuth consent flow completes. Inbound orders begin arriving in the shared queue as structured drafts with source evidence attached." },
+  { milestone: "Week 1", title: "Review workflow active", description: "Coordinators and reviewers are working from one queue. Exceptions surface with evidence. The desk starts seeing time savings on routine orders." },
+  { milestone: "Week 2", title: "Approval chains configured", description: "Reason codes and approval workflows are live. Every change is explainable. Leaders can see review throughput and queue health signals." },
+  { milestone: "Month 1", title: "ERP export running", description: "Export adapters are configured and tested. Approved orders flow downstream with context, notes, and audit trails intact. Full operational value realized." },
+];
+
 export default function FaqPage() {
   return (
     <main className="relative overflow-hidden">
@@ -53,12 +66,43 @@ export default function FaqPage() {
           </motion.div>
         </section>
 
-        <section>
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {quickAnswers.map((item, index) => (
+            <motion.div key={item.question} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+              <div className="h-full rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(114,228,255,0.06),rgba(124,92,255,0.04))] p-5">
+                <div className="flex size-10 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-200"><item.icon className="size-4" /></div>
+                <p className="mt-4 text-base font-semibold text-white">{item.question}</p>
+                <p className="mt-2 text-sm leading-7 text-white/68">{item.answer}</p>
+              </div>
+            </motion.div>
+          ))}
+        </section>
+
+        <section className="mt-14">
           <FaqAccordion />
         </section>
 
-        <section className="mt-10">
-          <FaqHeroVisual />
+        <section className="mt-14">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="success">Typical rollout timeline</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              From first connection to full operational value in under a month.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              Most teams follow a natural adoption curve that builds confidence at each stage. Here is what the typical rollout looks like for a mid-size distributor desk.
+            </p>
+          </motion.div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-4">
+            {rolloutMilestones.map((item, index) => (
+              <motion.div key={item.milestone} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <div className="h-full rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+                  <p className="text-xs uppercase tracking-[0.24em] text-cyan-200">{item.milestone}</p>
+                  <p className="mt-3 text-base font-semibold text-white">{item.title}</p>
+                  <p className="mt-3 text-sm leading-7 text-white/72">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <section className="mt-14">

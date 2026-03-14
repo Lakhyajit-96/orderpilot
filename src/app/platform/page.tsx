@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Users, FileSearch2, TrendingUp } from "lucide-react";
+import { ArrowRight, Users, FileSearch2, TrendingUp, Inbox, GitBranch, Settings, Plug, Database, BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrustLogoStrip } from "@/components/marketing/trust-logo-strip";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { PlatformHeroVisual } from "@/components/marketing/visuals/platform-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -28,6 +27,22 @@ const queueCards = [
   { title: "Queue health", subtitle: "See intake pace and review clearance in one view.", text: "Leaders evaluate stability by watching intake throughput, backlog, and ERP-ready release without asking for spreadsheets." },
   { title: "Launch readiness", subtitle: "Track signals that move rollout forward.", text: "Mailbox coverage, approvals policy, and export readiness stay visible so the first rollout feels controlled." },
   { title: "Proof metrics", subtitle: "Show value in operations terms, not vanity usage.", text: "We highlight faster first-pass review, fewer re-entry loops, and cleaner handoff downstream." },
+];
+
+const platformCapabilities = [
+  { icon: Inbox, title: "Shared mailbox sync", text: "Connect one or more shared inboxes via OAuth. Inbound emails with order attachments are captured automatically and queued for structured extraction." },
+  { icon: GitBranch, title: "Exception routing", text: "Low-confidence fields and unmapped SKUs are flagged and routed to the right reviewer. Routing rules are configurable per workspace." },
+  { icon: Settings, title: "Approval workflows", text: "Define single or multi-step approval chains. Approvers see full context including source evidence, reviewer notes, and reason codes before signing off." },
+  { icon: Plug, title: "ERP export adapters", text: "Pre-built adapters for NetSuite, SAP, and Dynamics 365. Generic webhook and CSV export options for custom integrations." },
+  { icon: Database, title: "Structured data model", text: "Every order follows a consistent schema with line items, headers, addresses, and metadata. This structure makes downstream integration predictable and reliable." },
+  { icon: BarChart3, title: "Operational analytics", text: "Track intake volume, review throughput, exception rates, and export success. Dashboard signals give leaders visibility without asking for manual reports." },
+];
+
+const architectureLayers = [
+  { layer: "Ingestion", description: "OAuth-connected mailboxes capture inbound emails and queue attachments for processing. Deduplication logic prevents double-counting forwarded messages." },
+  { layer: "Extraction", description: "PDF, spreadsheet, and HTML table parsers generate structured drafts with field-level confidence scores. Unmapped SKUs are flagged for manual resolution." },
+  { layer: "Review", description: "Operators and reviewers work from a shared queue. Exception routing, reason codes, and approval chains ensure every decision is traceable and defensible." },
+  { layer: "Export", description: "Approved orders map to configured adapters with retry logic, payload logging, and error diagnostics. Failed exports surface immediately for operator attention." },
 ];
 
 export default function PlatformPage() {
@@ -54,11 +69,7 @@ export default function PlatformPage() {
           <TrustLogoStrip />
         </div>
 
-        <section className="mt-16">
-          <PlatformHeroVisual />
-        </section>
-
-        <section className="mt-20 grid gap-6 lg:grid-cols-3">
+        <section className="mt-14 grid gap-6 lg:grid-cols-3">
           {personaCards.map((card, index) => (
             <motion.div key={card.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
               <Card className="h-full">
@@ -89,6 +100,53 @@ export default function PlatformPage() {
               </Card>
             </motion.div>
           ))}
+        </section>
+
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="violet">Platform capabilities</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Every layer of the order workflow, handled in one workspace.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              From mailbox sync to ERP export, each capability is designed to eliminate manual work while preserving full operator control and auditability.
+            </p>
+          </motion.div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {platformCapabilities.map((cap, index) => (
+              <motion.div key={cap.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.06 }}>
+                <Card className="h-full">
+                  <CardHeader>
+                    <div className="flex size-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-cyan-200"><cap.icon className="size-5" /></div>
+                    <CardTitle className="mt-4">{cap.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-sm leading-7 text-white/72">
+                    <p>{cap.text}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="success">Architecture</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Four layers that turn inbound email into ERP-ready output.
+            </h2>
+          </motion.div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-4">
+            {architectureLayers.map((item, index) => (
+              <motion.div key={item.layer} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+                <div className="h-full rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
+                  <p className="text-xs uppercase tracking-[0.24em] text-cyan-200">Layer {index + 1}</p>
+                  <p className="mt-3 text-base font-semibold text-white">{item.layer}</p>
+                  <p className="mt-3 text-sm leading-7 text-white/72">{item.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <section className="mt-20 pb-6">

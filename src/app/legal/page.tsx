@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Scale, KeyRound, Truck, Shield, FileText } from "lucide-react";
+import { ArrowRight, Scale, KeyRound, Truck, Shield, FileText, BookOpen, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { marketingOrderReviewHref } from "@/components/marketing/marketing-site-data";
-import { LegalHeroVisual } from "@/components/marketing/visuals/legal-hero-visual";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -23,6 +22,19 @@ const legalSections = [
   { icon: Truck, title: "ERP handoff", subtitle: "Adapters, credentials, and data mapping accuracy.", texts: ["Export adapters send approved order payloads to configured destinations. Customers manage endpoint credentials and mappings; OrderPilot logs request and response bodies for operational diagnostics.", "Supported adapters include NetSuite REST, SAP, and generic webhook destinations. Retry logic handles transient failures automatically.", "Customers are responsible for verifying that export mappings produce accurate data in their downstream systems."] },
   { icon: Shield, title: "Security", subtitle: "Access controls, encryption, and incident response.", texts: ["Role-based access governs who can view and act on orders. Transport encryption protects data in motion. We follow reasonable incident response practices to triage and communicate issues.", "Workspace isolation ensures that each team only sees their own operational data. Cross-workspace data access is not possible.", "We maintain incident response procedures with clear escalation paths and communication timelines."] },
   { icon: FileText, title: "Export logs", subtitle: "Operational diagnostics for downstream handoff.", texts: ["We maintain export attempt logs and outcomes for troubleshooting and accountability. Logs are workspace-bound and accessible to authorized operators.", "Export diagnostics include request payloads, response codes, timestamps, and retry history to support fast resolution of integration issues.", "Log retention follows workspace-level policies and supports audit requirements."] },
+];
+
+const documentIndex = [
+  { icon: BookOpen, title: "Terms of Service", href: "/terms", description: "Service scope, acceptable use, payment, liability, and update policies governing your use of OrderPilot." },
+  { icon: Shield, title: "Privacy Policy", href: "/privacy", description: "How we collect, use, store, and protect customer and operator data across workspace boundaries." },
+  { icon: Scale, title: "Security Overview", href: "/security", description: "OAuth practices, token rotation, webhook verification, data retention, and incident response posture." },
+];
+
+const customerObligations = [
+  { title: "Data accuracy", detail: "Customers are responsible for the accuracy of operational data entered into the system, including SKU mappings, customer references, and shipping details." },
+  { title: "Access management", detail: "Workspace administrators manage member access, role assignments, and mailbox connections. Timely removal of departed team members is the customer's responsibility." },
+  { title: "Export verification", detail: "Customers should verify that export adapter mappings produce accurate data in downstream ERP systems before relying on automated handoff at scale." },
+  { title: "Compliance obligations", detail: "Industry-specific and jurisdiction-specific compliance obligations remain the customer's responsibility. OrderPilot provides audit trails and controls to support these requirements." },
 ];
 
 export default function LegalPage() {
@@ -45,7 +57,24 @@ export default function LegalPage() {
           </motion.div>
         </section>
 
-        <section className="space-y-6">
+        <section className="grid gap-4 lg:grid-cols-3">
+          {documentIndex.map((doc, index) => (
+            <motion.div key={doc.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.08 }}>
+              <Link href={doc.href} className="group block h-full">
+                <div className="h-full rounded-[24px] border border-white/10 bg-[linear-gradient(135deg,rgba(114,228,255,0.06),rgba(124,92,255,0.04))] p-5 transition-colors group-hover:border-cyan-300/20">
+                  <div className="flex size-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-cyan-200"><doc.icon className="size-5" /></div>
+                  <p className="mt-4 text-lg font-semibold text-white group-hover:text-cyan-200 transition-colors">{doc.title}</p>
+                  <p className="mt-2 text-sm leading-7 text-white/68">{doc.description}</p>
+                  <div className="mt-4 flex items-center gap-2 text-sm font-medium text-cyan-200">
+                    Read document <ArrowRight className="size-3.5" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </section>
+
+        <section className="mt-14 space-y-6">
           {legalSections.map((section, index) => (
             <motion.div key={section.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.05 }}>
               <Card>
@@ -66,11 +95,32 @@ export default function LegalPage() {
           ))}
         </section>
 
-        <section className="mt-12">
-          <LegalHeroVisual />
+        <section className="mt-20">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-3xl">
+            <Badge variant="violet">Customer responsibilities</Badge>
+            <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              What customers own in the shared responsibility model.
+            </h2>
+            <p className="mt-4 text-base leading-8 text-white/68">
+              OrderPilot provides the platform, controls, and audit infrastructure. Customers retain responsibility for data accuracy, access management, and compliance obligations specific to their operations.
+            </p>
+          </motion.div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            {customerObligations.map((item, index) => (
+              <motion.div key={item.title} {...fadeUp} transition={{ duration: 0.45, delay: index * 0.06 }}>
+                <div className="flex h-full gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] p-5">
+                  <AlertCircle className="mt-0.5 size-5 shrink-0 text-amber-200" />
+                  <div>
+                    <p className="text-base font-semibold text-white">{item.title}</p>
+                    <p className="mt-2 text-sm leading-7 text-white/68">{item.detail}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
-        <section className="mt-14 pb-6">
+        <section className="mt-20 pb-6">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
             <div className="panel shimmer-border rounded-[32px] px-6 py-8 sm:px-8 sm:py-10">
               <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
