@@ -22,12 +22,14 @@ export function WorkflowPolicyForm({
   initialFinanceThresholdCents,
   initialStages,
   initialReasonCodesText,
+  disabled,
 }: {
   initialRequireReasonCodes: boolean;
   initialAutoApproveConfidence: number | null;
   initialFinanceThresholdCents: number | null;
   initialStages: StageConfig[];
   initialReasonCodesText: string;
+  disabled?: boolean;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -100,7 +102,7 @@ export function WorkflowPolicyForm({
       ))}
       <textarea className={fieldClassName} rows={6} value={reasonCodesText} onChange={(event) => setReasonCodesText(event.target.value)} placeholder="One per line: action | code | label" />
       <div className="flex justify-end">
-        <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
+        <Button type="submit" className="w-full sm:w-auto" disabled={isLoading || disabled}>
           {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
           Save review policy
         </Button>

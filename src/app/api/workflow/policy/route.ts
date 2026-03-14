@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getWorkspaceRequestContext } from "@/lib/api-workspace";
+import { hasPlanFeature } from "@/lib/plan-features";
 import { getWorkspaceWorkflowSettings, updateWorkspaceWorkflowSettings } from "@/lib/workflow";
 
 const workflowSchema = z.object({
@@ -35,6 +36,15 @@ export async function POST(request: Request) {
 
   if (!contextResult.ok) {
     return NextResponse.json({ error: contextResult.error }, { status: contextResult.status });
+  }
+
+  const activePlan = contextResult.context.workspace.subscription?.planKey ?? null;
+
+  if (!hasPlanFeature(activePlan, "approval_workflows")) {
+    return NextResponse.json(
+      { error: "Approval workflows and reason codes require the Growth plan or above. Upgrade your plan to use this feature." },
+      { status: 403 },
+    );
   }
 
   const parsed = workflowSchema.safeParse(await request.json());

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExceptionResolveButton } from "@/components/platform/exception-resolve-button";
 import { OrderExportButton } from "@/components/platform/order-export-button";
@@ -9,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getViewer } from "@/lib/auth";
 import { flags } from "@/lib/env";
 import { getWorkspaceOrderByExternalRef } from "@/lib/orders";
+import { hasPlanFeature, buildUpgradePrompt } from "@/lib/plan-features";
 import { getPlatformAccessState } from "@/lib/platform-shell-core";
 import { getReasonCodesForAction, getWorkspaceWorkflowSettings } from "@/lib/workflow";
 
@@ -32,15 +34,19 @@ export default async function OrderDetailPage({
     notFound();
   }
 
+  const activePlan = viewer.workspace?.subscription?.planKey ?? null;
+  const hasApprovalWorkflows = hasPlanFeature(activePlan, "approval_workflows");
+  const hasErpExport = hasPlanFeature(activePlan, "erp_export_adapters");
+  const hasReasonCodes = hasPlanFeature(activePlan, "reason_codes_audit_trails");
   const openExceptionCount = order.exceptions.filter((item) => item.state !== "RESOLVED").length;
   const canEdit = Boolean(flags.hasDatabase && viewer.workspace?.id);
-  const canExport = canEdit && (order.statusKey === "APPROVED" || order.statusKey === "EXPORTED");
+  const canExport = canEdit && hasErpExport && (order.statusKey === "APPROVED" || order.statusKey === "EXPORTED");
   const hasUndoableAction = order.activity.some((item) => item.undoable && !item.isUndone);
-  const workflowReasonCodes = [
+  const workflowReasonCodes = hasReasonCodes ? [
     ...getReasonCodesForAction(workflowSettings.reasonCodes, "APPROVAL"),
     ...getReasonCodesForAction(workflowSettings.reasonCodes, "RETURN_TO_REVIEW"),
     ...getReasonCodesForAction(workflowSettings.reasonCodes, "EXPORT"),
-  ];
+  ] : [];
 
   return (
     <div className="min-w-0 space-y-6">
@@ -63,7 +69,7 @@ export default async function OrderDetailPage({
           </div>
           <div className="flex w-full flex-wrap gap-3 lg:w-auto lg:justify-end">
             <OrderUndoButton orderId={order.id} disabled={!hasUndoableAction || !canEdit} />
-            <OrderExportButton orderId={order.id} disabled={!canExport} />
+            <OrderExportButton orderId={order.id} disabled={!canExport} upgradeMessage={!hasErpExport ? buildUpgradePrompt("erp_export_adapters") : undefined} />
             <Badge variant="violet">{order.value}</Badge>
             <Badge variant="success">{order.confidence}% confidence</Badge>
             <Badge variant="muted">{order.lines} active lines</Badge>
@@ -107,22 +113,30 @@ export default async function OrderDetailPage({
               <CardDescription>Role-based approval steps for this order.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {order.approvals.length ? (
-                order.approvals.map((approval) => (
-                  <div key={approval.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                    <p className="text-sm font-medium text-white/84">Step {approval.sequence} · {approval.title}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-white/38">{approval.requiredRole} · {approval.status}</p>
-                    <p className="mt-2 text-sm text-white/60">
-                      {approval.reasonCode ? `Reason ${approval.reasonCode}` : "No reason code recorded yet"}
-                      {approval.approvedByName ? ` · ${approval.approvedByName}` : ""}
-                      {approval.approvedAt ? ` · ${approval.approvedAt}` : ""}
-                    </p>
-                    {approval.comment ? <p className="mt-2 text-sm text-white/60">{approval.comment}</p> : null}
+              {hasApprovalWorkflows ? (
+                order.approvals.length ? (
+                  order.approvals.map((approval) => (
+                    <div key={approval.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                      <p className="text-sm font-medium text-white/84">Step {approval.sequence} · {approval.title}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.24em] text-white/38">{approval.requiredRole} · {approval.status}</p>
+                      <p className="mt-2 text-sm text-white/60">
+                        {approval.reasonCode ? `Reason ${approval.reasonCode}` : "No reason code recorded yet"}
+                        {approval.approvedByName ? ` · ${approval.approvedByName}` : ""}
+                        {approval.approvedAt ? ` · ${approval.approvedAt}` : ""}
+                      </p>
+                      {approval.comment ? <p className="mt-2 text-sm text-white/60">{approval.comment}</p> : null}
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
+                    No extra approval steps are required for this order right now.
                   </div>
-                ))
+                )
               ) : (
-                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-                  No extra approval steps are required for this order right now.
+                <div className="rounded-2xl border border-amber-300/20 bg-amber-300/8 px-4 py-4 text-sm text-amber-50">
+                  <p className="font-medium">{buildUpgradePrompt("approval_workflows")}</p>
+                  <p className="mt-1 text-amber-100/70">Multi-step approval chains are available on the Growth plan and above.</p>
+                  <Link href="/settings#workspace-billing" className="mt-2 inline-block text-sm font-medium text-cyan-200 hover:underline">View plans</Link>
                 </div>
               )}
             </CardContent>
@@ -207,17 +221,25 @@ export default async function OrderDetailPage({
               <CardDescription>Downstream ERP push attempts and results.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {order.exportRuns.length ? (
-                order.exportRuns.map((run) => (
-                  <div key={run.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                    <p className="text-sm font-medium text-white/84">{run.connectionName ?? "ERP"} · {run.status}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-white/38">{run.createdAt}</p>
-                    <p className="mt-2 text-sm text-white/60">{run.message ?? "No export message recorded."}</p>
+              {hasErpExport ? (
+                order.exportRuns.length ? (
+                  order.exportRuns.map((run) => (
+                    <div key={run.id} className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                      <p className="text-sm font-medium text-white/84">{run.connectionName ?? "ERP"} · {run.status}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.24em] text-white/38">{run.createdAt}</p>
+                      <p className="mt-2 text-sm text-white/60">{run.message ?? "No export message recorded."}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
+                    No ERP handoff has been attempted for this order yet. Approve the order to enable export.
                   </div>
-                ))
+                )
               ) : (
-                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-white/55">
-                  No ERP handoff has been attempted for this order yet. Approve the order to enable export.
+                <div className="rounded-2xl border border-amber-300/20 bg-amber-300/8 px-4 py-4 text-sm text-amber-50">
+                  <p className="font-medium">{buildUpgradePrompt("erp_export_adapters")}</p>
+                  <p className="mt-1 text-amber-100/70">ERP export and handoff tracking require the Growth plan or above.</p>
+                  <Link href="/settings#workspace-billing" className="mt-2 inline-block text-sm font-medium text-cyan-200 hover:underline">View plans</Link>
                 </div>
               )}
             </CardContent>

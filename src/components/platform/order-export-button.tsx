@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function OrderExportButton({ orderId, disabled }: { orderId: string; disabled: boolean }) {
+export function OrderExportButton({ orderId, disabled, upgradeMessage }: { orderId: string; disabled: boolean; upgradeMessage?: string }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,9 +38,9 @@ export function OrderExportButton({ orderId, disabled }: { orderId: string; disa
   }
 
   return (
-    <Button disabled={disabled || isLoading} onClick={handleExport}>
+    <Button disabled={disabled || isLoading} onClick={handleExport} title={upgradeMessage}>
       {isLoading ? <LoaderCircle className="size-4 animate-spin" /> : null}
-      Push to ERP
+      {upgradeMessage ? "ERP export (upgrade required)" : "Push to ERP"}
     </Button>
   );
 }
