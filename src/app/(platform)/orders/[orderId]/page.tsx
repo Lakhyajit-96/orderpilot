@@ -78,8 +78,8 @@ export default async function OrderDetailPage({
             <CardDescription>Each line keeps its confidence and mapping state before export.</CardDescription>
           </CardHeader>
           <CardContent className="min-w-0 space-y-3">
-            {order.lineItems.map((line) => (
-              <div key={`${order.id}-${line.sku}`} className="overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            {order.lineItems.map((line, index) => (
+              <div key={`${order.id}-${line.sku}-${index}`} className="overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
                 <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                   <div className="min-w-0 flex-1">
                     <p className="break-words text-sm font-medium text-white">{line.description}</p>
